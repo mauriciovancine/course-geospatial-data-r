@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Câmeras_instaladas2020_08_d20" id="Câmeras_instaladas2020_08_d20">
+	<SimpleField name="elevation" type="float"></SimpleField>
+	<SimpleField name="comment" type="string"></SimpleField>
+	<SimpleField name="source" type="string"></SimpleField>
+	<SimpleField name="url" type="string"></SimpleField>
+	<SimpleField name="url name" type="string"></SimpleField>
+</Schema>
+<Folder><name>Câmeras_instaladas2020_08_d20</name>
+  <Placemark>
+	<name>102</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">603.04541</SimpleData>
+		<SimpleData name="comment">33</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.540504,-22.39524</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>103</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">595.294678</SimpleData>
+		<SimpleData name="comment">71</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.539796,-22.395114</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>104</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">581.988525</SimpleData>
+		<SimpleData name="comment">11</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.539688,-22.394237</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>105</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">587.456848</SimpleData>
+		<SimpleData name="comment">72</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.54019,-22.394236</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>106</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">581.226501</SimpleData>
+		<SimpleData name="comment">68</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.539734,-22.393532</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>107</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">593.684448</SimpleData>
+		<SimpleData name="comment">121</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.540729,-22.393952</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>108</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">591.409729</SimpleData>
+		<SimpleData name="comment">83</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.540591,-22.392843</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>109</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">594.114319</SimpleData>
+		<SimpleData name="comment">162</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.541659,-22.392093</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>110</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">594.458191</SimpleData>
+		<SimpleData name="comment">103</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.541606,-22.392577</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>111</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">602.015625</SimpleData>
+		<SimpleData name="comment">52</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.542447,-22.392461</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<name>112</name>
+	<ExtendedData><SchemaData schemaUrl="#Câmeras_instaladas2020_08_d20">
+		<SimpleData name="elevation">601.712402</SimpleData>
+		<SimpleData name="comment">164</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-47.542261,-22.393433</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>

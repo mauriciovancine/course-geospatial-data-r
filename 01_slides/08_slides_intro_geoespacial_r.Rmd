@@ -1,0 +1,2991 @@
+---
+title: "Introdução ao uso de dados geoespaciais no R <br><br><br>"
+subtitle: "8 Estrutura e manipulação de dados matriciais"
+author: " Maurício H. Vancine <br> Milton C. Ribeiro"
+institute: "UNESP - Rio Claro <br> Laboratório de Ecologia Espacial e Conservação (LEEC)"
+date: "25/10/2021-05/11/2021"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: false
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"   
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, encoding = "UTF-8")
+knitr::opts_chunk$set(fig.retina = 3, fig.align = 'center', out.width='30%', warning = FALSE, message = FALSE, eval = TRUE)
+if(!require(raster)) install.packages("raster")
+if(!require(sf)) install.packages("sf")
+if(!require(tidyverse)) install.packages("tidyverse")
+if(!require(geobr)) install.packages("geobr")
+if(!require(rnaturalearth)) install.packages("rnaturalearth")
+```
+
+class: clear
+background-image: url(img/geo_raster_wd.png)
+background-size: 800px
+
+---
+
+background-image: url(img/r_spatial.jpeg)
+background-size: 350px
+background-position: 80% 65%
+
+# 8 Estrutura e manejo de dados raster
+
+## Tópicos
+
+1. Principais pacotes
+1. Classes raster
+1. Importar dados matriciais
+1. Descrição de objetos raster
+1. Converter CRS de objetos raster
+1. Operações de objetos raster
+1. Interações raster-vetor
+1. Conversões raster-vetor
+1. Índices espectrais
+1. Exportar objetos raster
+
+---
+
+# 8 Estrutura e manejo de dados raster
+
+## Script
+
+<br><br><br><br>
+
+## .center[`08_script_intro_geoespacial_r.R`]
+
+---
+
+background-image: url(img/geo_raster_package.png)
+background-size: 650px
+background-position: 50% 75%
+
+# 1. Principais pacotes
+
+## Pacote raster
+```{r eval=FALSE}
+# raster
+install.packages("raster")
+library(raster)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[The raster package](https://rspatial.org/raster/pkg/)
+
+---
+
+background-image: url(img/geo_terra_package.png)
+background-size: 650px
+background-position: 50% 75%
+
+# 1. Principais pacotes
+
+## Pacote terra
+```{r eval=FALSE}
+# raster
+install.packages("terra")
+library(terra)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[The terra package](https://rspatial.org/terra/pkg/)
+
+---
+
+background-image: url(img/geo_raster_stars.png)
+background-size: 500px
+background-position: 50% 70%
+
+# 1. Principais pacotes
+
+## Pacote stars
+```{r eval=FALSE}
+# raster
+install.packages("stars")
+library(stars)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[stars](https://r-spatial.github.io/stars/)
+
+---
+
+class: inverse, center, middle
+
+# Qual usar?
+
+---
+
+background-image: url(img/raster_convertion.png)
+background-size: 500px
+background-position: 50% 50%
+
+# 1. Principais pacotes 
+
+## Conversões
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Nowosad (2021)](https://geocompr.github.io/post/2021/spatial-classes-conversion/)
+
+---
+
+background-image: url(img/geo_raster.png)
+background-size: 500px
+background-position: 50% 80%
+
+# 2. Classes raster
+
+## Raster ou Gride ou Dado Matricial (matriz)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+background-image: url(img/geo_raster_cont_cat.png)
+background-size: 700px
+background-position: 50% 60%
+
+# 2. Classes raster
+
+## Tipos de dados: contínuos ou categóricos
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/geo_raster_plot.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 2. Classes raster
+
+## Valores
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/geo_raster_single_multi_raster.png)
+background-size: 800px
+background-position: 50% 60%
+
+# 2. Classes raster
+
+## RasterLayer, RasterStack ou RasterBrick
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+background-image: url(img/geo_raster_single_raster.png)
+background-size: 400px
+background-position: 50% 60%
+
+# 2. Classes raster
+
+## RasterLayer
+
+### A classe **RasterLayer** representa apenas uma camada raster
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 2. Classes raster
+
+## RasterLayer
+
+### A classe **RasterLayer** representa apenas uma camada raster
+
+```{r}
+# volcano
+volcano
+```
+
+---
+
+# 2. Classes raster
+
+## RasterLayer
+
+### A classe **RasterLayer** representa apenas uma camada raster
+
+```{r}
+# raster layer
+ra_layer <- raster::raster(volcano)
+ra_layer
+```
+
+---
+
+# 2. Classes raster
+
+## RasterLayer
+
+### A classe **RasterLayer** representa apenas uma camada raster
+
+```{r}
+# plot
+plot(ra_layer)
+```
+
+---
+
+# 2. Classes raster
+
+## RasterLayer
+
+### A classe **RasterLayer** representa apenas uma camada raster
+
+```{r}
+# plot
+plot(ra_layer, col = viridis::viridis(10))
+```
+
+---
+
+# 2. Classes raster
+
+## RasterLayer
+
+### A classe **RasterLayer** representa apenas uma camada raster
+
+```{r}
+# plot
+plot(ra_layer, col = viridis::viridis(100))
+```
+
+---
+
+background-image: url(img/geo_raster_multi_raster.png)
+background-size: 400px
+background-position: 50% 90%
+
+# 2. Classes raster
+
+## RasterStack
+
+### A classe **RasterStack** é uma lista de **RasterLayer** com extensão e resolução iguais
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 2. Classes raster
+
+## RasterStack
+
+```{r}
+# raster stack
+ra_layer1 <- ra_layer
+ra_layer2 <- ra_layer * ra_layer
+ra_layer3 <- sqrt(ra_layer)
+ra_layer4 <- log10(ra_layer)
+
+ra_stack <- raster::stack(ra_layer1, 
+                          ra_layer2, 
+                          ra_layer3, 
+                          ra_layer4)
+ra_stack
+```
+
+---
+
+# 2. Classes raster
+
+## RasterStack
+
+```{r}
+# plot
+plot(ra_stack, col = viridis::viridis(100))
+```
+
+---
+
+background-image: url(img/geo_raster_multi_raster.png)
+background-size: 400px
+background-position: 50% 90%
+
+# 2. Classes raster
+
+## RasterBrick
+
+### A classe **RasterStack** é uma lista de **RasterLayer** com extensão e resolução iguais
+
+---
+
+background-image: url(img/geo_raster_brick.png)
+background-size: 700px
+background-position: 50% 75%
+
+# 2. Classes raster
+
+## RasterBrick
+
+### A principal diferença entre **RasterStack** e **RasterBrick** é que o segundo é vinculado a um **único arquivo (multicamadas)**
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 2. Classes raster
+
+## RasterBrick
+
+```{r}
+# raster brick
+ra_layer1 <- ra_layer
+ra_layer2 <- ra_layer * ra_layer
+ra_layer3 <- sqrt(ra_layer)
+ra_layer4 <- log10(ra_layer)
+
+ra_brick <- raster::brick(ra_layer1, 
+                          ra_layer2, 
+                          ra_layer3, 
+                          ra_layer4)
+ra_brick
+```
+
+---
+
+# 2. Classes raster
+
+## RasterBrick
+
+```{r}
+# plot
+plot(ra_brick, col = viridis::viridis(100))
+```
+
+---
+
+background-image: url(img/geo_raster_dem01.png), url(img/geo_dem.webp)
+background-size: 350px, 700px
+background-position: 5% 75%, 80% 75%
+
+# 3. Importar dados matriciais
+
+## MDE (Modelo Digital de Elevação) 
+
+> Infere a **elevação** por sensores ativos - MDT (Modelo Digital de Terreno) e MDS (Modelo Digital de Superfície)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Guth et al. (2021)](https://doi.org/10.3390/rs13183581)
+
+---
+
+background-image: url(img/geo_raster_srtm01.png), url(img/geo_raster_srtm02.png), url(img/geo_raster_srtm03.png), url(img/geo_srtm.jpg)
+background-size: 450px, 300px, 350px, 300px
+background-position: 5% 55%, 55% 25%, 95% 50%, 55% 75%
+
+# 3. Importar dados matriciais
+
+## SRTM (*Shuttle Radar Topography Mission*) 
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Farr et al. (2007)](https://doi.org/10.1002/joc.5086), [Guth et al. (2021)](https://doi.org/10.3390/rs13183581)
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar uma camada
+
+### RasterLayer
+
+```{r}
+# importar raster
+dem <- raster::raster(here::here("03_dados", "raster", "srtm_27_17.tif"))
+dem
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar uma camada
+
+### Rio Claro/SP
+
+```{r}
+# rio claro
+rc_2020 <- geobr::read_municipality(code_muni = 3543907, showProgress = FALSE) %>% 
+  sf::st_transform(crs = 4326)
+rc_2020
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar uma camada
+
+### RasterLayer
+
+```{r}
+# plot
+plot(dem, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_crop_mask_buffer_square.png)
+background-size: 700px
+background-position: 50% 70%
+
+# 3. Importar dados matriciais
+
+## Importar uma camada
+
+### Ajuste do limite do RasterLayer
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar uma camada
+
+### Ajuste do limite do RasterLayer
+
+```{r}
+# ajuste do limite
+dem_rc <- raster::crop(dem, rc_2020)
+dem_rc
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar uma camada
+
+### Ajuste do limite do RasterLayer
+
+```{r}
+# plot
+plot(dem_rc, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_wc_artigo.png)
+background-size: 700px
+background-position: 50% 70%
+
+# 3. Importar dados matriciais
+
+## O que é o WorldClim?
+
+- Principal bases de **dados climáticos** para o mundo
+- Dados temporais de **temperatura e precipitação**
+- Construído a partir de dados de **estações meteorológicas, interpolação e topografia**
+- Principal forma de uso: **variáveis bioclimáticas**
+
+<br><br><br><br><br><br><br><br><br><br>
+[Fick & Hijmans (2017)](https://doi.org/10.1002/joc.5086)
+
+---
+
+background-image: url(img/geo_raster_wc_method.png), url(img/geo_raster_wc_mapas.png)
+background-size: 550px, 400px
+background-position: 15% 60%, 85% 55%
+
+# 3. Importar dados matriciais
+
+## Estações meteorológicas e interpolação
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Fick & Hijmans (2017)](https://doi.org/10.1002/joc.5086)
+
+---
+
+background-image: url(img/geo_raster_bioclim.png)
+background-size: 570px
+background-position: 50% 75%
+
+# 3. Importar dados matriciais
+
+## Variáveis bioclimáticas
+
+- São **19 variáveis** relacionadas com a **biologia das organismos**
+
+- Combinações temporais de **temperatura (BIO01-BIO11)** e **precipitação (BIO12-BIO19)**
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Fick & Hijmans (2017)](https://doi.org/10.1002/joc.5086)
+
+---
+
+background-image: url(img/geo_raster_bio01.png)
+background-size: 1000px
+background-position: 50% 75%
+
+# 3. Importar dados matriciais
+
+## Variáveis bioclimáticas
+
+### BIO01: Temperatura média anual (º C)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Fick & Hijmans (2017)](https://doi.org/10.1002/joc.5086)
+
+---
+
+background-image: url(img/geo_raster_merraclim.jpg)
+background-size: 1000px
+background-position: 50% 65%
+
+# 3. Importar dados matriciais
+
+## Variáveis Bioclimáticas
+
+### Disponível em **várias resoluções** e **períodos (passado, presente e futuro)**
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Vega (2017)](https://www.nature.com/articles/sdata201778)
+
+---
+
+background-image: url(img/geo_raster_worldclim.png)
+background-size: 800px
+background-position: 50% 55%
+
+# 3. Importar dados matriciais
+
+## Site
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[WorldClim](https://www.worldclim.org/)
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### Listar arquivos
+
+```{r}
+# listar arquivos
+files <- dir(path = here::here("03_dados", "raster"), pattern = "wc", full.names = TRUE) %>% 
+  grep(".tif", ., value = TRUE)
+files
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterStack
+
+```{r}
+# importar
+bioclim <- raster::stack(files)
+bioclim
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterStack
+
+```{r fig.width=10, fig.height=5, out.height='60%', out.width='60%'}
+# plot
+plot(bioclim[[1:2]], col = viridis::viridis(10))
+```
+
+---
+
+background-image: url(img/geo_landsat.jpg)
+background-size: 600px
+background-position: 50% 80%
+
+# 3. Importar dados matriciais
+
+## Imagens de satélite
+
+### Landsat
+
+- Série de satélites dedicado exclusivamente à observação dos **recursos naturais terrestres**, desenvolvido pela NASA
+
+---
+
+background-image: url(img/geo_rs_landsat_timeline.gif)
+background-size: 700px
+background-position: 50% 80%
+
+# 3. Importar dados matriciais
+
+## Imagens de satélite
+
+### Landsat - 9 Missões
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[landsat-9](https://landsat.gsfc.nasa.gov/landsat-9)
+
+---
+
+background-image: url(img/geo_sr_landsat8.png), url(img/geo_rs_spectrum_satelites_landsat.png), url(img/geo_landsat_composition_bands.png)
+background-size: 250px, 650px, 500px
+background-position: 10% 35%, 4% 99%, 95% 75%
+
+# 3. Importar dados matriciais
+
+## Imagens de satélite
+
+### Landsat 8 - Bandas
+
+---
+
+background-image: url(img/geo_sr_landsat8.png), url(img/geo_rs_bands.jpg)
+background-size: 300px, 600px
+background-position: 90% 20%, 50% 80%
+
+# 3. Importar dados matriciais
+
+## Imagens de satélite
+
+### Landsat 8 - Bandas como camadas
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# importar
+landsat_rc <- raster::brick(here::here("03_dados", "imagem", "landsat_rc.tif"))
+landsat_rc
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# plot
+plot(landsat_rc$landsat_rc.2)
+```
+
+---
+
+background-image: url(img/geo_raster_brick.png)
+background-size: 800px
+background-position: 50% 65%
+
+# 2. Classes raster
+
+## RasterBrick
+
+### Plot RGB (*Red*, *Green* e *Blue*)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+
+---
+
+background-image: url(img/geo_stretch.png)
+background-size: 1000px
+background-position: 50% 65%
+
+# 3. Importar dados matriciais
+
+## Stretch
+
+### Ajustar o **stretch** da imagem para aumentar ou diminuir o contraste
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# plot - cores naturais
+plotRGB(landsat_rc, r = 4, g = 3, b = 2, stretch = "lin")
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# plot - cores naturais
+plotRGB(landsat_rc, r = 4, g = 3, b = 2, stretch = "hist")
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# plot - falsa cor infravermelho
+plotRGB(landsat_rc, r = 5, g = 4, b = 3, stretch = "hist")
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# plot - cores naturais simuladas
+plotRGB(landsat_rc, r = 7, g = 6, b = 4, stretch = "hist")
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# plot - cores naturais simuladas
+plotRGB(landsat_rc, r = 6, g = 5, b = 4, stretch = "hist")
+```
+
+---
+
+# 3. Importar dados matriciais
+
+## Importar várias camadas
+
+### RasterBrick
+
+```{r}
+# plot - cores naturais simuladas
+plotRGB(landsat_rc, r = 7, g = 5, b = 3, stretch = "hist")
+```
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+```{r}
+# rio claro
+dem_rc
+```
+
+- *class*: classe raster do objeto
+- *dimensions*: número de linhas, colunas, células e camadas
+- *resolution*: largura e altura da célula
+- *extent*: coordenadas mínimas e máximas da longitude e latitude
+- *crs*: Sistema de Referência de Coordenadas
+- *source*: fonte dos dados (memória ou disco)
+- *names*: nome das camadas
+- *values*: valores máximos e mínimos das células
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+#### Classe
+
+```{r}
+# classe
+class(dem_rc)
+```
+
+--
+
+#### Dimensões
+
+```{r}
+# dimensoes
+dim(dem_rc)
+```
+
+--
+
+#### Número de camadas
+
+```{r}
+# numero de camadas
+nlayers(dem_rc)
+```
+
+---
+
+background-image: url(img/geo_raster.png)
+background-size: 450px
+background-position: 50% 80%
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Número de linhas, colunas e células
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+#### Número de linhas
+
+```{r}
+# numero de linhas
+nrow(dem_rc)
+```
+
+--
+
+#### Número de colunas
+
+```{r}
+# numero de colunas
+ncol(dem_rc)
+```
+
+--
+
+#### Número de células
+
+```{r}
+# numero de celulas
+ncell(dem_rc)
+```
+
+---
+
+background-image: url(img/geo_raster_resolution.png)
+background-size: 700px
+background-position: 60% 65%
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Resolução
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Resolução
+
+```{r}
+# resolucao do raster
+res(dem_rc)
+```
+
+--
+
+```{r}
+# resolucao do stack
+res(bioclim)
+```
+
+---
+
+background-image: url(img/geo_raster_extent.png)
+background-size: 500px
+background-position: 50% 60%
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Extensão
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r)
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Extensão
+
+```{r}
+# extensao do raster
+extent(dem_rc)
+```
+
+--
+
+```{r}
+# extensao do stack
+extent(bioclim)
+```
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Projeção
+
+```{r}
+# projecao
+projection(dem_rc)
+```
+
+--
+
+```{r}
+# projecao
+projection(bioclim)
+```
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Nomes
+
+```{r}
+# nomes da camada do raster
+names(dem_rc)
+```
+
+--
+
+```{r}
+# nomes das camadas do stack
+names(bioclim)
+```
+
+---
+
+background-image: url(img/geo_raster_values.gif)
+background-size: 650px
+background-position: 50% 70%
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Valores
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Raster basics - ESRI](https://desktop.arcgis.com/en/arcmap/10.3/manage-data/geodatabases/raster-basics.htm)
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Valores
+
+```{r}
+# valores do raster
+getValues(dem_rc) %>% head()
+```
+
+--
+
+```{r}
+# valores do raster
+values(dem_rc) %>% head()
+```
+
+--
+
+```{r}
+# valores do raster
+dem_rc[] %>% head()
+```
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Valores
+
+```{r out.width='25%'}
+# valores do raster - histograma
+dem_rc %>% 
+  raster::values() %>% 
+  hist(col = "steelblue", border = "white", main = NA, xlab = "Elevação (m)", ylab = "Frequência")
+```
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Valores
+
+```{r}
+# valores do stack
+values(bioclim[[1:3]]) %>% head()
+```
+
+---
+
+# 4. Descrição de objetos raster
+
+## Informações geográficas
+
+### Valores
+
+```{r out.width='20%'}
+# valores do stack - grafico pareado
+bioclim[[1:3]] %>% 
+  raster::values() %>% 
+  tibble::as_tibble() %>% 
+  dplyr::sample_n(1e3) %>% 
+  pairs(cex = 1.4, pch = 20, col = adjustcolor("steelblue", .7))
+```
+
+---
+
+background-image: url(img/geo_raster_reprojection.png)
+background-size: 550px
+background-position: 50% 50%
+
+# 5. Converter CRS de objetos raster
+
+## Reprojeção
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Hardware Implementation of the Video Polynomial Transformation + LPF](http://vlsi.eelabs.technion.ac.il/projects/hardware-implementation-of-the-video-polynomial-transformation-lpf/)
+
+---
+
+background-image: url(img/geo_raster_crs.png)
+background-size: 800px
+background-position: 50% 90%
+
+# 5. Converter CRS de objetos raster
+
+## Reprojeção
+
+1. Reprojeção vetorial de centroides celulares (muda a **posição e tamanho** do pixel)
+1. Cálculo de novos valores dos pixels por meio de reamostragem (muda o **valor** do pixel)
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS local
+
+### WGS84/GCS -> SIRGAS2000/UTM23s (proj4string)
+
+```{r}
+# projecao do raster
+raster::projection(dem_rc)
+raster::crs(dem_rc)
+```
+
+---
+
+background-image: url(img/geo_utm_zones.png)
+background-size: 500px
+background-position: 50% 80%
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS local
+
+### WGS84/GCS -> SIRGAS2000/UTM23s (proj4string)
+
+```{r}
+# proj4string utm 23s
+utm23s <- "+init=epsg:31983"
+```
+
+<br><br><br><br><br><br><br><br><br><br>
+[EPSG: 32723](https://epsg.io/32723)
+[ESRI (2021)](https://pro.arcgis.com/en/pro-app/help/mapping/properties/transverse-mercator.htm)
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS local
+
+### WGS84/GCS -> SIRGAS2000/UTM23s (proj4string)
+
+```{r}
+# reprojecao
+dem_rc_utm23s <- raster::projectRaster(dem_rc, crs = utm23s)
+dem_rc_utm23s
+```
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS local - especificando parâmetros
+
+### WGS84/GCS -> SIRGAS2000/UTM23s (proj4string)
+
+```{r}
+# reprojecao
+dem_rc_utm23s <- raster::projectRaster(dem_rc, crs = utm23s, res = 90, method = "bilinear")
+dem_rc_utm23s
+```
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS local - especificando parâmetros
+
+### WGS84/GCS -> SIRGAS2000/UTM23s (proj4string)
+
+```{r}
+# reprojecao de vector
+rc_2020_utm23s <- sf::st_transform(rc_2020, crs = utm23s)
+rc_2020_utm23s
+```
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS local
+
+### WGS84/GCS -> SIRGAS2000/UTM23s (proj4string)
+
+```{r}
+# plot
+plot(dem_rc_utm23s, col = viridis::viridis(10))
+plot(rc_2020_utm23s$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Datum WGS84 e coordenadas geográficas
+
+```{r}
+# WGS84/GCS
+bioclim$wc2.1_10m_bio_1
+```
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Datum WGS84 e coordenadas geográficas
+
+```{r}
+# plot
+plot(bioclim$wc2.1_10m_bio_1, col = viridis::viridis(10))
+```
+
+---
+
+background-image: url(img/geo_proj_moll.png)
+background-size: 500px
+background-position: 50% 70%
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Projeção de Mollweide: preserva as relações de área
+
+```{r}
+# proj4string mollweide
+moll <- "+proj=moll"
+```
+
+<br><br><br><br><br><br><br><br><br><br>
+[EPSG: 54009](https://epsg.io/54009)
+[ESRI (2021)](https://pro.arcgis.com/en/pro-app/help/mapping/properties/mollweide.html)
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Projeção de Mollweide
+
+```{r}
+# reprojecao
+bio01_moll <- raster::projectRaster(bioclim$wc2.1_10m_bio_1, crs = moll, res = 25e3, method = "bilinear")
+bio01_moll
+```
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Projeção de Mollweide
+
+```{r}
+# plot
+plot(bio01_moll, col = viridis::viridis(10))
+```
+
+---
+
+background-image: url(img/geo_proj_laea.png)
+background-size: 280px
+background-position: 50% 75%
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Projeção Azimutal de Lambert: preserva os tamanhos e senso de direção (centro)
+
+```{r}
+# proj4string lambert 
+laea <- "+proj=laea +x_0=0 +y_0=0 +lon_0=0 +lat_0=0"
+```
+
+<br><br><br><br><br><br><br><br>
+[ESRI(2021)](https://pro.arcgis.com/en/pro-app/help/mapping/properties/lambert-azimuthal-equal-area.html)
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Projeção Azimutal de Lambert: preserva os tamanhos e senso de direção (centro)
+
+```{r}
+# reprojecao
+bio01_laea <- raster::projectRaster(bioclim$wc2.1_10m_bio_1, crs = laea, res = 25e3, method = "bilinear")
+bio01_laea
+```
+
+---
+
+# 5. Converter CRS de objetos raster
+
+## Converter CRS global
+
+### Projeção Azimutal de Lambert: preserva os tamanhos e senso de direção (centro)
+
+```{r}
+# plot
+plot(bio01_laea, col = viridis::viridis(10))
+```
+
+---
+
+background-image: url(img/geo_raster_focal.png), url(img/geo_raster_aggregate.png)
+background-size: 450px, 460px
+background-position: 15% 80%, 85% 80%
+
+# 6. Operações de objetos raster
+
+## As operações podem ser separadas em três tipos
+
+### **1. Operações de atributos**: acessar valores, camadas e nome das camadas
+### **2. Operações espaciais**: aplicar regras espaciais para mudar valores dos pixels
+### **3. Operações geométricas**: mudar a posição, tamanho e número dos pixels
+
+<br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/geo_raster_values.png)
+background-size: 600px
+background-position: 95% 105%
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### Modificação de objetos *raster* baseado em **informações não espaciais**, como **valores das células e nome das camadas**
+
+### **Operações**
+
+### *1.1. Subconjunto de células ou camadas*
+### *1.2. Renomear camadas*
+### *1.3. Estatística das células*
+
+<br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de valores*
+
+```{r}
+# raster - linha 1 e coluna 1
+dem_rc[1, 1]
+```
+
+--
+
+```{r}
+# celula 1
+dem_rc[1]
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de valores*
+
+```{r}
+# stack - linha 1 e coluna 1
+bioclim[1, 1]
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de valores*
+
+```{r}
+# celula 1
+bioclim[1]
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de camadas*
+
+```{r}
+# selecao de camada num objeto stack utilizando a funcao subset
+bioclim_bio01 <- raster::subset(bioclim, "wc2.1_10m_bio_1")
+bioclim_bio01
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de camadas*
+
+```{r}
+# selecao de camada num objeto stack utilizando a funcao raster
+bioclim_bio01 <- raster::raster(bioclim, layer = 1)
+bioclim_bio01
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de camadas*
+
+```{r}
+# selecao de camada num objeto stack utilizando os operadores [[]] e o nome
+bioclim_bio01 <- bioclim[["wc2.1_10m_bio_1"]]
+bioclim_bio01
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de camadas*
+
+```{r}
+# selecao de camada num objeto stack utilizando os operadores [[]] e a posicao
+bioclim_bio01 <- bioclim[[1]]
+bioclim_bio01
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de camadas*
+
+```{r}
+# selecao de camada num objeto stack utilizando o operador $
+bioclim_bio01 <- bioclim$wc2.1_10m_bio_1
+bioclim_bio01
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.1. Subconjunto - Seleção de camadas*
+
+```{r}
+# plot
+plot(bioclim_bio01, col = viridis::viridis(10))
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.2. Renomear camadas*
+
+```{r}
+# nomes
+names(dem_rc)
+```
+
+--
+
+```{r}
+# renomear
+names(dem_rc) <- "elevation"
+```
+
+--
+
+```{r}
+# nomes
+names(dem_rc)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.2. Renomear camadas*
+
+```{r}
+# nomes
+names(bioclim)
+```
+
+--
+
+```{r}
+# renomear
+names(bioclim) <- c("bio01", paste0("bio", 10:19), paste0("bio0", 2:9))
+```
+
+--
+
+```{r}
+# nomes
+names(bioclim)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.3. Estatística das células - Média*
+
+```{r}
+# media de todas as celulas de altitude
+raster::cellStats(x = dem_rc, stat = mean)
+```
+
+--
+
+```{r}
+# media de todas as celulas de cada camada bioclimatica
+raster::cellStats(x = bioclim, stat = mean)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.3. Estatística das células - Frequência*
+
+```{r}
+# frequencia das celulas
+raster::freq(x = dem_rc) %>% head()
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **1. Operações de atributos**
+
+### *1.3. Estatística das células - Frequência*
+
+```{r}
+# frequencia das celulas
+raster::freq(x = bioclim[[1]]) %>% head()
+```
+
+---
+
+background-image: url(img/geo_zonal.png)
+background-size: 330px
+background-position: 85% 80%
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### Aplicação de **regras espaciais** para **mudar valores dos pixels**, geralmente com o intuito de **resumir as informações das células**
+
+<br>
+
+### **Operações**
+
+*2.1. Operações locais (por célula)*  
+*2.2. Operações focais (por bloco de múltiplas células regulares - e.g. 3x3)*  
+*2.3. Operações zonais (por bloco de múltiplas células irregulares)*  
+*2.4. Operações globais (por um ou vários rasters inteiros)*
+
+<br><br><br>
+[The Zonal Statistics function](http://www.geography.hunter.cuny.edu/~jochen/GTECH361/lectures/lecture11/concepts/Zonal%20Statistics.htm)
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster*
+
+```{r}
+# soma
+dem_rc2 <- dem_rc + dem_rc
+dem_rc2
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster *
+
+```{r}
+# plot
+plot(dem_rc2, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster*
+
+```{r}
+# log10
+dem_rc_log10 <- log10(dem_rc)
+dem_rc_log10
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster*
+
+```{r}
+# plot
+plot(dem_rc_log10, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster - Operador lógico*
+
+```{r}
+# acima de 600
+dem_rc_acima_600 <- dem_rc > 600
+dem_rc_acima_600
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster - Operador lógico*
+
+```{r}
+# plot
+plot(dem_rc_acima_600, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster - Função `calc()`*
+
+```{r}
+# produto dos pixel - calc
+dem_rc_prod <- raster::calc(x = dem_rc, fun = function(x){x * x})
+dem_rc_prod 
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Álgebra de raster - Função `calc()`*
+
+```{r}
+# plot
+plot(dem_rc_prod, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_reclass.gif)
+background-size: 700px
+background-position: 50% 65%
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Reclassificação*
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Reclass by individual values - ESRI](https://desktop.arcgis.com/en/arcmap/10.3/tools/spatial-analyst-toolbox/reclass-by-individual-values.htm)
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+###  - Reclassificação
+
+```{r}
+# matriz de reclassificacao
+rcl  <- matrix(
+  c(400, 600, 1, 
+    600, 800, 2, 
+    800, 1000, 3), 
+  ncol = 3, byrow = TRUE)
+rcl
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Reclassificação*
+
+```{r}
+# reclassificao
+dem_rc_rcl <- raster::reclassify(x = dem_rc, rcl = rcl)
+dem_rc_rcl
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.1. Operações locais - Reclassificação*
+
+```{r}
+# plot
+plot(dem_rc_rcl, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_focal.png)
+background-size: 700px
+background-position: 50% 75%
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.2 Operação focal - Janela móvel (Moving window)*
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/geo_raster_moving_window.gif)
+background-size: 450px
+background-position: 50% 70%
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.2 Operação focal - Janela móvel (Moving window)*
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Nowosad & Hesselbarth (2020)](https://r-spatialecology.github.io/ialena-2020/#1)
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.2 Operação focal - Janela móvel (Moving window)*
+
+```{r}
+# janela movel
+dem_rc_focal_sd <- raster::focal(x = dem_rc, w = matrix(data = 1, nrow = 3, ncol = 3), fun = sd)
+dem_rc_focal_sd
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.2 Operação focal - Janela móvel (Moving window)*
+
+```{r}
+# plot
+plot(dem_rc_focal_sd, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *Declividade (Slope)*
+
+```{r}
+# declividade
+dem_rc_dec <- raster::terrain(x = dem_rc, opt = "slope", unit = "degrees")
+dem_rc_dec
+```
+
+---
+
+background-image: url(img/geo_raster_slope.png), url(img/geo_raster_slope2.jpg), url(img/geo_raster_slope3.png)
+background-size: 450px, 450px, 380px
+background-position: 80% 10%, 80% 85%, 20% 85%
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *Declividade (Slope)*
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *Declividade (Slope)*
+
+```{r}
+# plot
+plot(dem_rc_dec, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.3. Operações zonais - Estatística por zonas*
+
+```{r}
+# estatistica zonal
+dem_rc_zonal <- data.frame(raster::zonal(dem_rc, dem_rc_rcl, fun = "summary"))
+dem_rc_zonal
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.3. Operações zonais - Estatística por zonas*
+
+```{r}
+# estatistica zonal
+colnames(dem_rc_zonal) <- c("zona", "min", "1qt", "mediana", "media", "3qt", "max")
+dem_rc_zonal
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.4. Operações globais - Distância Euclideana*
+
+```{r}
+# reclassificacao
+dem_rc_abaixo_500 <- raster::calc(x = dem_rc, fun = function(x) ifelse(x < 500, 1, NA))
+dem_rc_abaixo_500
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.4. Operações globais - Distância Euclideana*
+
+```{r}
+# plot
+plot(dem_rc_abaixo_500, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.4. Operações globais - Distância Euclideana*
+
+```{r}
+# distancia euclideana
+dem_rc_global_dist <- raster::distance(dem_rc_abaixo_500)
+dem_rc_global_dist
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **2. Operações espaciais**
+
+### *2.4. Operações globais - Distância Euclideana*
+
+```{r}
+# plot
+plot(dem_rc_global_dist, col = viridis::viridis(10))
+plot(dem_rc_abaixo_500, add = TRUE, col = "white", legend = FALSE)
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_aggregate2.png)
+background-size: 800px
+background-position: 85% 70%
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### Envolve mudar a **posição, tamanho e número dos pixels** e **atribuir novos valores**, geralmente aumentando ou diminuindo o tamanho desses pixels
+
+<br>
+
+### **Operações**
+
+### *3.1. Agregação*
+### *3.2. Desagregação*
+### *3.3. Alinhamento*
+
+---
+
+background-image: url(img/geo_raster_resolution_diff.png), url(img/geo_raster_aggregate.png)
+background-size: 600px, 350px
+background-position: 50% 40%, 50% 95%
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *Agregação e desagregação*
+
+---
+
+background-image: url(img/geo_raster_long_lat_dist.gif)
+background-size: 550px
+background-position: 50% 85%
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *Resolução - Relação de graus e distância em metros*
+
+---
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *3.1 Agregação - Aumentar o tamanho do pixel*
+
+```{r}
+# resolucao
+res(dem_rc_utm23s)[1]
+
+# agregacao - aumentar o tamanho do pixel
+dem_rc_utm23s_agre_media <- raster::aggregate(x = dem_rc_utm23s, fact = 10, fun = "mean")
+dem_rc_utm23s_agre_media
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *3.1. Agregação - Aumentar o tamanho do pixel*
+
+```{r}
+# plot
+plot(dem_rc_utm23s_agre_media, col = viridis::viridis(10))
+plot(rc_2020_utm23s$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_disaggregate.png)
+background-size: 700px
+background-position: 50% 100%
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### 3.2 Desagregação - Diminuir o tamanho do pixel
+
+---
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *3.2. Desagregação - Diminuir o tamanho do pixel*
+
+```{r}
+# resolucao
+res(dem_rc_utm23s)[1]
+
+# desagregacao - diminuir o tamanho do pixel
+dem_rc_utm23s_dis_bil <- raster::disaggregate(dem_rc_utm23s, fact = 2, fun = "bilinear")
+dem_rc_utm23s_dis_bil
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *3.2. Desagregação - Diminuir o tamanho do pixel*
+
+```{r}
+# plot
+plot(dem_rc_utm23s_dis_bil, col = viridis::viridis(10))
+plot(rc_2020_utm23s$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *3.3. Alinhamento - Ajustar extensão, número e origem dos pixels*
+
+```{r}
+# reamostragem
+st_rc <- raster::resample(x = bioclim$bio01, y = dem_rc, method = "bilinear")
+st_rc
+```
+
+---
+
+# 6. Operações de objetos raster
+
+## **3. Operações geométricas**
+
+### *3.3. Alinhamento - Ajustar extensão, número e origem dos pixels*
+
+```{r}
+# plot
+plot(st_rc, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_crop_mask_buffer_square.png), url(img/geo_raster_crop_mask_buffer_circular.png), url(img/geo_zonal.png)
+background-size: 350px, 350px, 330px
+background-position: 5% 80%, 50% 80%, 90% 70%
+
+# 7. Interação raster-vetor
+
+## Podemos fazer operações da **interação entre objetos vetoriais e raster**, com diferentes finalidades, que podem ser diferentes tipos de vetores
+
+### **Interações**
+
+#### **1. Corte e máscara: ajuste da extensão e limite**  
+#### **2. Extração dos valores dos pixels para vetores**  
+#### **3. Estatísticas zonais para um vetor**
+
+<br><br><br><br><br><br><br>
+[National Ecological Observatory Network (NEON)](https://www.neonscience.org/resources/learning-hub/tutorials/dc-raster-data-r), [The Zonal Statistics function](http://www.geography.hunter.cuny.edu/~jochen/GTECH361/lectures/lecture11/concepts/Zonal%20Statistics.htm)
+
+---
+
+background-image: url(img/geo_raster_crop_mask.png)
+background-size: 1000px
+background-position: 50% 70%
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Ajustar o **tamanho de um objeto raster** a uma **área menor de interesse**, geralmente definido por um **objeto vetorial**
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Crop - Ajusta a extensão
+
+```{r}
+# crop - ajustar da extensao
+dem_rc_crop <- raster::crop(dem, rc_2020)
+dem_rc_crop
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Crop - Ajusta a extensão
+
+```{r}
+# plot
+plot(dem_rc_crop, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Mask - Ajusta o limite
+
+```{r}
+# mask - ajuste o limite
+dem_rc_mask <- raster::mask(dem, rc_2020)
+dem_rc_mask
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Mask
+
+```{r}
+# plot
+plot(dem_rc_mask, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Crop e Mask - Ajuste da extensão e do limite
+
+```{r}
+# crop e mask - ajuste da extensao e do limite
+dem_rc_crop_mask <- dem %>% 
+  raster::crop(rc_2020) %>% 
+  raster::mask(rc_2020)
+dem_rc_crop_mask
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Crop e Mask - Ajuste da extensão e do limite
+
+```{r}
+# plot
+plot(dem_rc_crop_mask, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Crop e Mask inverse - Ajuste da extensão e do limite inverso
+
+```{r}
+# crop e mask inversa - ajuste da extensão e do limite inverso
+dem_rc_crop_mask_inv <- dem %>% 
+  raster::crop(rc_2020) %>% 
+  raster::mask(rc_2020, inverse = TRUE)
+dem_rc_crop_mask_inv
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **1. Cortes e máscaras**
+
+### Crop e Mask inverse - Ajuste da extensão e do limite inverso
+
+```{r}
+# plot
+plot(dem_rc_crop_mask_inv, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **2. Extração**
+
+### Importar pontos das nascentes
+
+```{r}
+# importar pontos
+rc_nas <- sf::st_read(here::here("03_dados", "vetor", "SP_3543907_NASCENTES.shp"), quiet = TRUE) %>% 
+  sf::st_transform(crs = 4326)
+rc_nas
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **2. Extração**
+
+### Importar pontos das nascentes
+
+```{r}
+# plot
+plot(rc_nas$geometry, pch = 20, col = "blue", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **2. Extração**
+
+### Extração da altitude para os pontos das nascentes
+
+```{r}
+# extracao
+rc_nas_ele <- rc_nas %>% 
+  dplyr::mutate(elev = raster::extract(x = dem_rc_utm23s, y = .))
+rc_nas_ele
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **2. Extração**
+
+### Extração da altitude para os pontos das nascentes
+
+```{r}
+# plot
+plot(rc_nas_ele["elev"], pch = 20, main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **2. Extração**
+
+### Histograma dos valores
+
+```{r out.width='25%'}
+# histograma
+rc_nas_ele %>% 
+  dplyr::pull(elev) %>% 
+  hist(col = "steelblue", border = "white", main = NA, xlab = "Elevação (m)", ylab = "Frequência")
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **3. Estatística zonal**
+
+### Buffers
+
+```{r}
+# buffers
+set.seed(42)
+rc_nas_buf <- rc_nas %>% 
+  dplyr::sample_n(10) %>% 
+  sf::as_Spatial() %>% 
+  raster::buffer(width = 1000, dissolve = FALSE) %>% 
+  sf::st_as_sf()
+rc_nas_buf
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **3. Estatística zonal**
+
+### Estatística zonal - Buffers
+
+```{r}
+# plot
+plot(rc_nas_buf$geometry, col = adjustcolor("steelblue", .7), pch = 20, main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **3. Estatística zonal**
+
+### Estatística zonal
+
+```{r}
+# estatistica zonal
+rc_nas_buf <- rc_nas_buf %>% 
+  dplyr::mutate(elev_mean = raster::extract(x = dem_rc, y = rc_nas_buf, fun = mean, na.rm = TRUE))
+rc_nas_buf
+```
+
+---
+
+# 7. Interação raster-vetor
+
+## **3. Estatística zonal**
+
+### Estatística zonal
+
+```{r}
+# plot
+plot(rc_nas_buf["elev_mean"], pch = 20, main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+background-image: url(img/geo_data_convert.png)
+background-size: 450px
+background-position: 50% 80%
+
+# 8. Conversão raster-vetor
+
+## Podemos fazer operações de conversão entre objetos vetoriais para raster e vice-versa
+
+---
+
+background-image: url(img/geo_rasterization.png)
+background-size: 700px
+background-position: 50% 60%
+
+# 8. Conversão raster-vetor
+
+## Rasterização
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de pontos
+
+### Rasterize
+
+```{r}
+# importar pontos
+rc_nas <- sf::st_read(here::here("03_dados", "vetor", "SP_3543907_NASCENTES.shp"), quiet = TRUE)
+rc_nas
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de pontos
+
+### Rasterize
+
+```{r}
+# rasterizar pontos
+rc_nas_rasterizacao <- raster::rasterize(x = rc_nas, y = dem_rc_utm23s_agre_media, field = 1, fun = "count")
+rc_nas_rasterizacao
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de pontos
+
+### Rasterize
+
+```{r}
+# plot
+plot(rc_nas_rasterizacao, col = viridis::viridis(10))
+plot(rc_nas$geometry, pch = 20, cex = .5, col = adjustcolor("gray", .5), add = TRUE)
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de linhas
+
+### Rasterize
+
+```{r}
+# importar linhas
+rc_hid_simp <- sf::st_read(here::here("03_dados", "vetor", "SP_3543907_RIOS_SIMPLES.shp"), quiet = TRUE) %>% 
+  sf::st_simplify(x = ., dTolerance = 1000)
+rc_hid_simp
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de linhas
+
+### Rasterize
+
+```{r}
+# rasterizar linhas
+rc_hid_rasterizacao <- raster::rasterize(x = rc_hid_simp,
+                                         y = dem_rc_utm23s_agre_media,
+                                         field = 1, fun = "count")
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de linhas
+
+### Rasterize
+
+```{r}
+# plot
+plot(rc_hid_rasterizacao, col = viridis::viridis(10))
+plot(rc_hid_simp$geom, col = "gray", add = TRUE)
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de polígonos
+
+### Rasterize
+
+```{r}
+# importar poligonos
+rc_cob <- sf::st_read(here::here("03_dados", "vetor", "SP_3543907_USO.shp"), quiet = TRUE) %>% 
+  dplyr::mutate(classe = as.factor(CLASSE_USO))
+rc_cob
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de polígonos
+
+### Rasterize
+
+```{r}
+# rasterizar poligonos
+rc_cob_rasterizacao <- raster::rasterize(x = rc_cob, y = dem_rc_utm23s_agre_media, field = "classe")
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de polígonos
+
+### Rasterize
+
+```{r}
+# plot
+plot(rc_cob_rasterizacao, col = viridis::viridis(10))
+plot(rc_cob$geom, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_fasterize.png)
+background-size: 500px
+background-position: 50% 80%
+
+# 8. Conversão raster-vetor
+
+## Rasterização de polígonos
+
+### Fasterize
+
+```{r}
+# package fasterize
+# install.packages("fasterize")
+library(fasterize)
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de polígonos
+
+### Fasterize
+
+```{r}
+# rasterizacao com fasterize
+rc_cob_fast <- fasterize::fasterize(sf = rc_cob, raster = dem_rc_utm23s_agre_media, field = "classe")
+rc_cob_fast
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Rasterização de polígonos
+
+### Fasterize
+
+```{r}
+# plot
+plot(rc_cob_fast, col = viridis::viridis(10))
+plot(rc_cob$geom, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_vectorization_points.png)
+background-size: 700px
+background-position: 50% 65%
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para pontos
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para pontos
+
+```{r}
+# vetorizacao de pontos
+dem_rc_utm23s_agre_media_pontos <- raster::rasterToPoints(dem_rc_utm23s_agre_media, spatial = TRUE) %>% 
+  sf::st_as_sf()
+dem_rc_utm23s_agre_media_pontos
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para pontos
+
+```{r}
+# plot
+plot(dem_rc_utm23s_agre_media, col = viridis::viridis(10, alpha = .8))
+plot(dem_rc_utm23s_agre_media_pontos, pch = 20, cex = .7, main = FALSE, add = TRUE)
+plot(rc_2020_utm23s$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_vectorization_lines_contour.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para linhas
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para linhas
+
+```{r}
+# vetorizacao de linhas
+dem_rc_utm23s_agre_media_linhas <- raster::rasterToContour(x = dem_rc_utm23s_agre_media) %>% 
+  sf::st_as_sf()
+dem_rc_utm23s_agre_media_linhas
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para linhas
+
+```{r}
+# plot
+plot(dem_rc_utm23s_agre_media, col = viridis::viridis(10, alpha = .8))
+contour(dem_rc_utm23s_agre_media, levels =  seq(500, 900, by = 50),
+        col = "white", pch = 20, lwd = 1.5, labcex = 2, main = FALSE, add = TRUE)
+plot(rc_2020_utm23s$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_vectorization_polygons.png)
+background-size: 1000px
+background-position: 50% 50%
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para polígonos
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para polígonos
+
+```{r}
+# vetorizacao de poligonos
+rc_cob_rasterizacao_poligonos <- raster::rasterToPolygons(rc_cob_rasterizacao) %>% 
+  sf::st_as_sf()
+rc_cob_rasterizacao_poligonos
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para polígonos
+
+```{r}
+# plot
+plot(rc_cob_rasterizacao, col = viridis::viridis(10))
+plot(rc_cob_rasterizacao_poligonos$geometry, col = NA, border = "gray", lwd = 1, main = FALSE, add = TRUE)
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para polígonos dissolvidos
+
+```{r}
+# vetorizacao de poligonos dissolvendo
+rc_cob_rasterizacao_poligonos_dissolvidos <- raster::rasterToPolygons(rc_cob_rasterizacao, dissolve = TRUE) %>% 
+  sf::st_as_sf()
+rc_cob_rasterizacao_poligonos_dissolvidos
+```
+
+---
+
+# 8. Conversão raster-vetor
+
+## Vetorização - Raster para polígonos dissolvidos
+
+```{r}
+# plot
+plot(rc_cob_rasterizacao, col = viridis::viridis(10))
+plot(rc_cob_rasterizacao_poligonos_dissolvidos$geometry, col = NA, border = "gray", lwd = 1, main = FALSE, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_sr_spectral_index.png)
+background-size: 600px
+background-position: 70% 90%
+
+# 9. Índices espectrais
+
+## **Definição**
+
+### **Equação matemática** aplicada por pixel em **várias bandas espectrais** de uma imagem, cuja finalidade é **realçar alguma característica na imagem**
+
+## **Aplicações**
+
+1. Vegetação
+1. Solo
+1. Incêndios
+1. Água
+1. ....
+
+<br><br><br>
+[Wegmann et al. (2016)](http://book.ecosens.org/rsebook/)
+
+---
+
+background-image: url(img/geo_sr_spectral_index_list.png)
+background-size: 500px
+background-position: 50% 70%
+
+# 9. Índices espectrais
+
+## Lista de índices espectrais (quase infinita...)
+
+---
+
+background-image: url(img/geo_sr_ndvi.png), url(img/geo_sr_ndvi_response2.jpg), url(img/ndvi.jpg)
+background-size: 300px, 550px, 350px 
+background-position: 20% 90%, 85% 90%, 95% 15%
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+- Os valores do NDVI variam de -1 a +1
+
+- Valores **próximos de 1** indicam **maior atividade fotossintética** da vegetação
+
+- Valores **próximos de 0** são geralmente **áreas sem vegetação**
+
+- Valores **próximos de -1** geralmente indicam **água**
+
+---
+
+background-image: url(img/geo_sr_landsat8.png), url(img/geo_sr_ndvi_response3.png), url(img/geo_sr_ndvi.jpg)
+background-size: 300px, 550px, 550px
+background-position: 20% 20%, 6% 83%, 92% 71%
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+---
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+### Landsat 8 - Rio Claro/SP
+
+```{r}
+# landsat 8 - Rio Claro/SP
+landsat_rc
+```
+
+---
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+### Landsat 8 - Rio Claro/SP
+
+```{r}
+# plot - cores naturais
+plotRGB(landsat_rc, r = 4, g = 3, b = 2, stretch = "hist")
+```
+
+---
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+### Landsat 8 - Rio Claro/SP
+
+```{r}
+# plot - falsa cor infravermelho
+plotRGB(landsat_rc, r = 5, g = 4, b = 3, stretch = "hist")
+```
+
+---
+
+background-image: url(img/geo_sr_rstbx.png), url(img/geo_sr_rstbx_image.png)
+background-size: 250px, 650px
+background-position: 13% 73%, 80% 90%
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+### RStoolbox
+
+```{r}
+# package RStoolbox
+# install.packages("RStoolbox")
+library(RStoolbox)
+```
+
+<br><br><br><br><br><br><br><br><br>
+[RStoolbox](http://bleutner.github.io/RStoolbox/)
+
+---
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+```{r}
+# ndvi
+landsat_rc_ndvi <- RStoolbox::spectralIndices(img = landsat_rc, red = 4, nir = 5, indices = "NDVI")
+landsat_rc_ndvi
+```
+
+---
+
+# 9. Índices espectrais
+
+## *Normalized Difference Vegetation Index* (NDVI)
+
+```{r}
+# plot
+plot(landsat_rc_ndvi)
+```
+
+---
+
+background-image: url(img/general_subdirectory.jpeg)
+background-size: 300px
+background-position: 50% 90%
+
+# 10. Exportar objetos raster
+
+## Exportar raster
+
+### Criar um diretório
+
+```{r}
+# diretorio
+dir.create(here::here("03_dados", "raster", "exportados"))
+```
+
+---
+
+
+background-image: url(img/geo_raster_single_raster.png)
+background-size: 250px
+background-position: 50% 90%
+
+# 10. Exportar objetos raster
+
+## Exportar raster
+
+```{r eval=FALSE}
+# exportar raster layer
+raster::writeRaster(dem_rc, 
+                    filename = here::here("03_dados", "raster", "exportados", "elevation_rio_claro"),
+                    format = "GTiff",
+                    datatype = "INT2S",
+                    options = c("COMPRESS=DEFLATE", "TFW=YES"),
+                    progress = "text",
+                    overwrite = TRUE)
+```
+
+---
+
+background-image: url(img/geo_raster_multi_raster.png)
+background-size: 230px
+background-position: 50% 95%
+
+# 10. Exportar objetos raster
+
+## Exportar stack ou brick
+
+```{r eval=FALSE}
+# exportar raster stack ou brick
+raster::writeRaster(x = bioclim[[1:3]], 
+                    filename = here::here("03_dados", "raster", "exportados", names(bioclim[[1:3]])),
+                    bylayer = TRUE, 
+                    format = "GTiff",
+                    datatype = "INT2S",
+                    options = c("COMPRESS=DEFLATE", "TFW=YES"),
+                    progress = "text",
+                    overwrite = TRUE)
+```
+
+---
+
+class: inverse, middle, center
+
+# Dúvidas?
+
+---
+
+class: clear, middle
+background-image: url(img/gif_frog.gif), url(img/gif_frogs.gif), url(img/package_xaringan.png)
+background-size: 250px, 500px, 130px
+background-position: 35% 50%, 90% 55%, 5% 86%
+
+## Maurício Vancine
+
+<br><br>
+
+Contatos:
+
+`r icons::icon_style(icons::fontawesome(name = "envelope", style = "solid"), fill = "#23373b")` [mauricio.vancine@gmail.com]()  
+`r icons::icon_style(icons::fontawesome("twitter"), fill = "#23373b")` [@mauriciovancine](https://twitter.com/mauriciovancine)  
+`r icons::icon_style(icons::fontawesome(name = "github"), fill = "#23373b")` [mauriciovancine](https://github.com/mauriciovancine)
+`r icons::icon_style(icons::fontawesome(name = "link", style = "solid"), fill = "#23373b")` [mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+<br><br><br><br><br>
+
+Slides criados via pacote [xaringan](https://github.com/yihui/xaringan) e tema [Metropolis](https://github.com/pat-s/xaringan-metropolis). Animação dos sapos por [@probzz](https://twitter.com/probzz/status/1367613720294170627).

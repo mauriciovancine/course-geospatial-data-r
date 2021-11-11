@@ -1,0 +1,2110 @@
+---
+title: "Introdução ao uso de dados geoespaciais no R <br><br><br>"
+subtitle: "9 Visualização de dados geoespaciais"
+author: " Maurício H. Vancine <br> Milton C. Ribeiro"
+institute: "UNESP - Rio Claro <br> Laboratório de Ecologia Espacial e Conservação (LEEC)"
+date: "25/10/2021-05/11/2021"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: false
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"  
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, fig.align = "center", warning = FALSE, message = FALSE, eval = TRUE)
+if(!require(knitr)) devtools::install_github("knitr")
+if(!require(tidyverse)) devtools::install_github("tidyverse")
+if(!require(sf)) devtools::install_github("sf")
+if(!require(raster)) devtools::install_github("raster")
+if(!require(ggspatial)) devtools::install_github("ggspatial")
+if(!require(tmap)) install.packages("tmap")
+if(!require(mapsf)) install.packages("mapsf")
+```
+
+class: clear
+background-image: url(img/geo_map_elements.png)
+background-size: 800px
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Gimond (2021)](https://mgimond.github.io/Spatial/index.html)
+
+---
+
+background-image: url(img/package_ggplot2.png), url(img/package_tmap.png), url(img/package_mapsf.png), url(img/package_leaflet.jpeg), url(img/box_anim.gif)
+background-size: 200px, 200px, 200px, 200px, 200px
+background-position: 60% 30%, 85% 30%, 50% 90%, 73% 90%, 95% 90%
+
+# 9 Visualização de dados geoespaciais
+
+## Conteúdo
+
+1. Elementos de um mapa
+1. Pacotes para produção de mapas
+1. Mapas estáticos
+1. Mapas animados
+1. Mapas interativos
+
+<br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/), [tmap](https://r-tmap.github.io/tmap/), [mapsf](https://riatelab.github.io/mapsf/), [leaflet](https://rstudio.github.io/leaflet/), [mapview](https://r-spatial.github.io/mapview/)
+
+---
+
+# 9 Visualização de dados geoespaciais
+
+## Script
+
+<br><br><br><br><br>
+## .center[`09_script_intro_geoespacial_r.R`]
+
+---
+
+background-image: url(img/geo_map_elements.png)
+background-size: 650px
+background-position: 95% 50%
+
+# 1. Elementos de um mapa
+
+## Elementos 
+
+<br>
+
+- Mapa principal
+- Mapa secundário
+- Título
+- Legenda
+- Barra de escala
+- Indicador de orientação (Norte)
+- Gride de coordenadas
+- Descrição do Sistema de Referência de Coordenadas
+- Informações de origem
+- Elementos auxiliares
+
+<br><br>
+[Gimond (2021)](https://mgimond.github.io/Spatial/index.html)
+
+---
+
+# 2. Pacotes para produção de mapas
+
+## Principais pacotes
+
+<br> 
+
+- [ggplot2](https://ggplot2.tidyverse.org/): cria mapas elegantes usando a Gramática de Gráficos
+- [ggspatial](https://paleolimbot.github.io/ggspatial/): estrutura de dados espaciais para ggplot2
+- [ggmap](https://cran.r-project.org/web/packages/ggmap/index.html): visualização espacial com ggplot2
+- [tmap](https://mtennekes.github.io/tmap/): cria mapas temáticos
+- [mapsf](https://riatelab.github.io/mapsf/): cria mapas temáticos com dados vetoriais
+- [linemap](https://github.com/riatelab/linemap): cria mapas de linhas
+- [cartography](http://riatelab.github.io/cartography/docs/): cartografia temática
+- [cartogram](https://github.com/sjewo/cartogram): métodos de visualização para cartogramas
+- [googleway](http://symbolixau.github.io/googleway/): acessa Google Maps APIs para recuperar dados e traçar mapas
+- [rasterVis](https://oscarperpinan.github.io/rastervis/): métodos de visualização para dados raster
+- [mapview](https://r-spatial.github.io/mapview/): visualização interativa de dados espaciais em R
+- [leaflet](http://rstudio.github.io/leaflet/): cria Web Maps interativos com Leaflet
+- [plotly](https://plotly.com/r/maps/): crie gráficos interativos da Web por meio de ‘plotly.js’ 
+- [mapedit](https://r-spatial.github.io/mapview/): edição interativa de dados geoespaciais em R
+
+---
+
+background-image: url(img/geo_map_tmap.png)
+background-size: 700px
+background-position: 80% 80%
+
+# 3. Mapas estáticos
+
+## Mapas estáticos são mapas simples e fixos para visualização de dados
+
+## **Principais**
+
+1. `plot()` (vários pacotes)
+1. ggplot2
+1. ggmap
+1. tmap
+1. mapsf
+1. linemap
+1. cartography
+1. cartogram
+1. googleway
+1. rasterVis
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+
+```{r}
+# biomas
+biomas <- geobr::read_biomes(showProgress = FALSE) %>%
+  dplyr::filter(name_biome != "Sistema Costeiro")
+biomas
+```
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+.pull-left[
+```{r plot1, eval=FALSE}
+# plot
+plot(biomas)
+```
+]
+
+.pull-right[
+```{r ref.label="plot1", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+.pull-left[
+```{r plot2, eval=FALSE}
+# plot
+plot(biomas$geom, 
+     col = c("darkgreen", "orange", "orange4", 
+             "forestgreen", "yellow", "yellow3"),
+     main = "Biomas do Brasil", axes = TRUE, 
+     graticule = TRUE)
+
+# legend
+legend(x = -73, y = -20, pch = 15, cex = 1, 
+       pt.cex = 2.5, legend = biomas$name_biome, 
+       col = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"))
+```
+]
+
+.pull-right[
+```{r ref.label="plot2", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+
+```{r}
+# rio claro
+rc_2020 <- geobr::read_municipality(code_muni = 3543907, year = 2020, showProgress = FALSE) %>% 
+  sf::st_transform(crs = 4326)
+rc_2020
+```
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+
+```{r}
+# importar raster
+dem_rc <- raster::raster(here::here("03_dados", "raster", "srtm_27_17.tif")) %>% 
+  raster::crop(rc_2020)
+dem_rc
+```
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+.pull-left[
+```{r plot3, eval=FALSE}
+# plot
+plot(dem_rc)
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+]
+
+.pull-right[
+```{r ref.label="plot3", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+.pull-left[
+```{r plot4, eval=FALSE}
+# plot
+plot(dem_rc, col = viridis::viridis(10))
+plot(rc_2020$geom, col = NA, border = "red", lwd = 2, add = TRUE)
+```
+]
+
+.pull-right[
+```{r ref.label="plot4", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+
+```{r}
+# listar arquivos
+files <- dir(path = here::here("03_dados", "raster"), pattern = "wc", full.names = TRUE) %>% 
+  grep(".tif", ., value = TRUE)
+
+# importar
+bioclim <- raster::stack(files)
+
+# names
+names(bioclim) <- c("bio01", paste0("bio", 10:19), paste0("bio0", 2:9))
+bioclim
+```
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+.pull-left[
+```{r plot5, eval=FALSE}
+# plot
+plot(bioclim[[1:2]], col = viridis::viridis(10))
+```
+]
+
+.pull-right[
+```{r ref.label="plot5", fig.align='center', echo=FALSE, fig.width=10, fig.height=7, out.height='100%', out.width='100%'}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## Função `plot()`
+
+```{r eval=FALSE}
+# diretorio
+dir.create(here::here("03_dados", "mapas"))
+
+# exportar mapa
+png(filename = here::here("03_dados", "mapas", "mapa_biomas.png"), 
+    width = 20, height = 20, units = "cm", res = 300)
+plot(biomas$geom, 
+     col = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"),
+     main = "Biomas do Brasil", axes = TRUE, graticule = TRUE)
+legend(x = -73, y = -20, pch = 15, cex = 1, pt.cex = 2.5, legend = biomas$name_biome, 
+       col = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"))
+dev.off()
+```
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+background-image: url(img/stats_illustrations_ggplot2_obra_prima_pt.png)
+background-size: 500px
+background-position: 80% 80%
+
+# 3. Mapas estáticos
+
+## **ggplot2**, **ggspatial** e **ggmap**
+
+### Integrado ao **tidyverse**, possui uma sintaxe própria
+
+### Principal pacote para **visualização de dados** no R
+
+### Estrutura:
+
+`ggplot(...) +`<br>
+`aes(...) +`<br>
+`geom_(...) +`<br>
+`stats_(...) +`<br>
+`coord_(...) +`<br>
+`facet_(...) +`<br>
+`theme_(...)`<br>
+
+[ggplot2](https://ggplot2.tidyverse.org/), [@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+background-image: url(img/plot_ggplot.gif)
+background-size: 750px
+background-position: 50% 50%
+
+# 3. Mapas estáticos
+
+## **ggplot2**, **ggspatial** e **ggmap**
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Think About the Grammar of Graphics When Improving Your Graphs](https://medium.com/tdebeus/think-about-the-grammar-of-graphics-when-improving-your-graphs-18e3744d8d18)
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot1, eval=FALSE}
+# dados
+ggplot() +
+  geom_sf(data = biomas)
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot1", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot2, eval=FALSE}
+# cor e preenchimento
+ggplot() +
+  geom_sf(data = biomas, color = "black", fill = NA)
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot2", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot3, eval=FALSE}
+# cor e preenchimento
+ggplot() +
+  geom_sf(data = biomas, 
+          aes(color = name_biome), 
+          fill = NA)
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot3", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot4, eval=FALSE}
+# cor e preenchimento
+ggplot() +
+  geom_sf(data = biomas, 
+          aes(fill = name_biome), 
+          color = NA)
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot4", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot5, eval=FALSE}
+# definir cor
+ggplot() +
+  geom_sf(data = biomas, aes(fill = name_biome), color = NA) +
+  scale_fill_manual(values = c("darkgreen", "orange", "orange4", 
+                               "forestgreen", "yellow", "yellow3"))
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot5", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot6, eval=FALSE}
+# tema
+ggplot() +
+  geom_sf(data = biomas, aes(fill = name_biome), color = NA) +
+  scale_fill_manual(values = c("darkgreen", "orange", "orange4", 
+                               "forestgreen", "yellow", "yellow3")) + 
+  theme_bw(base_size = 15) +
+  theme(legend.title = element_text(size = 15, face = "bold"),
+        legend.position = c(.2, .2),
+        legend.background = element_rect(colour = "black"))
+```
+]
+.pull-right[
+```{r ref.label="ggplot6", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot7, eval=FALSE}
+# barra de escala e norte
+ggplot() +
+  geom_sf(data = biomas, aes(fill = name_biome), color = NA) +
+  scale_fill_manual(values = c("darkgreen", "orange", "orange4", 
+                               "forestgreen", "yellow", "yellow3")) +
+  theme_bw(base_size = 15) +
+  theme(legend.title = element_text(size = 15, face = "bold"),
+        legend.position = c(.2, .2),
+        legend.background = element_rect(colour = "black")) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "br", which_north = "true",
+                         pad_x = unit(0, "cm"), pad_y = unit(.5, "cm"),
+                         style = north_arrow_fancy_orienteering)
+```
+]
+.pull-right[
+```{r ref.label="ggplot7", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot8, eval=FALSE}
+# nomes e anotacoes
+ggplot(data = biomas) +
+  aes(fill = name_biome) +
+  geom_sf(color = "black") +
+  scale_fill_manual(values = c("darkgreen", "orange", "orange4", 
+                               "forestgreen", "yellow", "yellow3")) +
+  theme_bw(base_size = 15) +
+  theme(legend.title = element_text(size = 15, face = "bold"),
+        legend.position = c(.2, .2),
+        legend.background = element_rect(colour = "black")) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "br", which_north = "true",
+                         pad_x = unit(0, "cm"), pad_y = unit(.5, "cm"),
+                         style = north_arrow_fancy_orienteering) +
+  annotate(geom = "text", label = "CRS: SIRGAS2000/Geo", x = -38, y = -31, size = 2.5) +
+  annotate(geom = "text", label = "Fonte: IBGE (2019)", x = -39, y = -32.5, size = 2.5) +
+  labs(title = "Biomas do Brasil", fill = "Legenda", x = "Longitude", y = "Latitude")
+```
+]
+.pull-right[
+```{r ref.label="ggplot8", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot9, eval=FALSE}
+# atribuicao
+map_biomas_ggplot2 <- ggplot(data = biomas) +
+  aes(fill = name_biome) +
+  geom_sf(color = "black") +
+  scale_fill_manual(values = c("darkgreen", "orange", "orange4", 
+                               "forestgreen", "yellow", "yellow3")) +
+  theme_bw(base_size = 15) +
+  theme(legend.title = element_text(size = 15, face = "bold"),
+        legend.position = c(.2, .2),
+        legend.background = element_rect(colour = "black")) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "br", which_north = "true",
+                         pad_x = unit(0, "cm"), pad_y = unit(.5, "cm"),
+                         style = north_arrow_fancy_orienteering) +
+  annotate(geom = "text", label = "CRS: SIRGAS2000/Geo", x = -38, y = -31, size = 2.5) +
+  annotate(geom = "text", label = "Fonte: IBGE (2019)", x = -39, y = -32.5, size = 2.5) +
+  labs(title = "Biomas do Brasil", fill = "Legenda", x = "Longitude", y = "Latitude")
+map_biomas_ggplot2
+```
+]
+.pull-right[
+```{r ref.label="ggplot9", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot10, eval=FALSE}
+# dados
+dem_rc_da <- raster::rasterToPoints(dem_rc) %>% 
+  tibble::as_tibble()
+head(dem_rc_da)
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot10", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+.pull-left[
+```{r ggplot11, eval=FALSE}
+# plot
+map_dem_rc_ggplot2 <- ggplot() +
+  geom_raster(data = dem_rc_da, aes(x = x, y = y, fill = srtm_27_17)) +
+  geom_sf(data = rc_2020, col = "red", fill = NA, size = 1.3) +
+  scale_fill_viridis_c() +
+  coord_sf() +
+  theme_bw(base_size = 15) +
+  theme(legend.title = element_text(size = 15, face = "bold"),
+        legend.position = c(.2, .2),
+        legend.background = element_rect(colour = "black")) +
+  annotation_scale(location = "br",
+                   pad_x = unit(.5, "cm"), pad_y = unit(.7, "cm"),) +
+  annotation_north_arrow(location = "br", which_north = "true",
+                         pad_x = unit(.4, "cm"), pad_y = unit(1.3, "cm"),
+                         style = north_arrow_fancy_orienteering) +
+  annotate(geom = "text", label = "CRS: WGS84/Geo", x = -47.51, y = -22.53, size = 3) +
+  labs(title = "Elevação de Rio Claro/SP", fill = "Elevação (m)", x = "Longitude", y = "Latitude")
+map_dem_rc_ggplot2
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot11", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+
+```{r eval=FALSE}
+# exportar
+ggsave(
+  filename = here::here("03_dados", "mapas", "mapa_biomas_ggplot2.png"),
+  plot = map_biomas_ggplot2, 
+  width = 20, 
+  height = 20, 
+  units = "cm", 
+  dpi = 300
+)
+```
+
+---
+
+# 3. Mapas estáticos
+
+## **ggplot2** e **ggspatial**
+
+```{r eval=FALSE}
+# exportar
+ggsave(
+  filename = here::here("03_dados", "mapas", "mapa_dem_rc_rc_ggplot2.png"), 
+  plot = map_dem_rc_ggplot2, 
+  width = 20, 
+  height = 20, 
+  units = "cm", 
+  dpi = 300
+)
+```
+
+---
+
+background-image: url(img/ggmap.jpg)
+background-size: 400px
+background-position: 50% 90%
+
+# 3. Mapas estáticos
+
+## **ggmap**
+```{r}
+# pacote
+# install.packages("ggmap")
+library(ggmap)
+
+# limite
+brasil <- c(left = -80, bottom = -35, right = -30, top = 5)
+rio_claro <- c(left = -47.67, bottom = -22.48, right = -47.46, top = -22.32)
+```
+
+<br><br><br><br><br><br><br><br>
+[ggmap](https://github.com/dkahle/ggmap)
+
+---
+
+# 3. Mapas estáticos
+
+## **ggmap**
+.pull-left[
+```{r ggplot12, eval=FALSE}
+# plot
+get_stamenmap(bbox = brasil, 
+              maptype = "terrain", 
+              zoom = 5) %>% 
+  ggmap()
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot12", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggmap**
+.pull-left[
+```{r ggplot13, eval=FALSE}
+# plot
+get_stamenmap(bbox = brasil, 
+              maptype = "toner",
+              zoom = 5) %>% 
+  ggmap()
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot13", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggmap**
+.pull-left[
+```{r ggplot14, eval=FALSE}
+# plot
+get_stamenmap(bbox = brasil, 
+              maptype = "toner-lite", 
+              zoom = 5) %>% 
+  ggmap()
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot14", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggmap**
+.pull-left[
+```{r ggplot15, eval=FALSE}
+# plot
+get_stamenmap(bbox = brasil, 
+              maptype = "watercolor",
+              zoom = 5) %>% 
+  ggmap()
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot15", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **ggmap**
+.pull-left[
+```{r ggplot16, eval=FALSE}
+# plot
+get_stamenmap(bbox = rio_claro, 
+              maptype = "terrain",
+              zoom = 12) %>% 
+  ggmap()
+```
+]
+
+.pull-right[
+```{r ref.label="ggplot16", echo=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_tmap.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[tmap](https://mtennekes.github.io/tmap/)
+
+---
+
+background-image: url(img/geo_tmap_article.png)
+background-size: 400px
+background-position: 50% 65%
+
+# 3. Mapas estáticos
+
+## **tmap**
+
+### Artigo
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Tennekes (2018)](https://www.jstatsoft.org/article/view/v084i06)
+
+---
+
+background-image: url(img/geo_tmap_classic.png)
+background-size: 600px
+background-position: 80% 80%
+
+# 3. Mapas estáticos
+
+## **tmap**
+
+### Sintaxe baseada no **ggplot2** e na **Gramática dos Gráficos**
+
+### Dois modos: **plot** (estáticos) e **visualização** (interativos)
+
+### Estrutura:
+
+`tm_shape(...) +`<br>
+`tm_*(...) +`<br>
+`tm_facets(...) +`<br>
+`tm_layout(...)`<br>
+
+`tm_style(...)`<br>
+`tmap_arrange(...)`<br>
+`tm_mode(...)`<br>
+
+[tmap](https://mtennekes.github.io/tmap/)
+
+---
+
+background-image: url(img/cover_geocompr.png)
+background-size: 230px
+background-position: 50% 65%
+
+# 3. Mapas estáticos
+
+## **tmap**
+
+### **Geocomputation with R (2019)**
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2019)](https://geocompr.robinlovelace.net/adv-map.html)
+
+---
+
+background-image: url(img/geo_tmap_book.png)
+background-size: 350px
+background-position: 50% 65%
+
+# 3. Mapas estáticos
+
+## **tmap**
+
+### **Elegant and informative maps with tmap**
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Tennekes & Nowosad (inacabado)](https://r-tmap.github.io/tmap-book/)
+
+---
+
+background-image: url(img/geo_tmap_ggplot01.png), url(img/geo_tmap_ggplot02.png)
+background-size: 700px, 550px
+background-position: 50% 20%, 50% 90%
+
+# 3. Mapas estáticos
+
+## **tmap**
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap1, eval=FALSE}
+# poligonos
+tm_shape(biomas) +
+  tm_polygons()
+```
+]
+
+.pull-right[
+```{r ref.label="tmap1", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap2, eval=FALSE}
+# bordas
+tm_shape(biomas) +
+  tm_borders()
+```
+]
+
+.pull-right[
+```{r ref.label="tmap2", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap3, eval=FALSE}
+# prenchimento
+tm_shape(biomas) +
+  tm_fill()
+```
+]
+
+.pull-right[
+```{r ref.label="tmap3", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap4, eval=FALSE}
+# cores
+tm_shape(biomas) +
+  tm_fill(col = "name_biome", title = "Legenda")
+```
+]
+
+.pull-right[
+```{r ref.label="tmap4", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap5, eval=FALSE}
+# definir cores
+tm_shape(biomas) +
+  tm_fill(col = "name_biome", 
+          pal = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"),
+          title = "Legenda")
+```
+]
+
+.pull-right[
+```{r ref.label="tmap5", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap6, eval=FALSE}
+# gride coordenadas
+tm_shape(biomas) +
+  tm_fill(col = "name_biome", 
+          pal = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"), 
+          title = "Legenda") +
+  tm_grid(lines = FALSE, 
+          labels.format = list(big.mark = ""), 
+          labels.rot = c(0, 90))
+```
+]
+
+.pull-right[
+```{r ref.label="tmap6", echo=FALSE}
+```
+]
+```{r eval=FALSE}
+
+```
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap7, eval=FALSE}
+# barra de escala e norte
+tm_shape(biomas) +
+  tm_fill(col = "name_biome", 
+          pal = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"), 
+          title = "Legenda") +
+  tm_grid(lines = FALSE, 
+          labels.format = list(big.mark = ""), 
+          labels.rot = c(0, 90)) +
+  tm_compass() +
+  tm_scale_bar()
+```
+]
+
+.pull-right[
+```{r ref.label="tmap7", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap8, eval=FALSE}
+# nomes
+tm_shape(biomas) +
+  tm_fill(col = "name_biome", 
+          pal = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"), 
+          title = "Legenda") +
+  tm_grid(lines = FALSE, 
+          labels.format = list(big.mark = ""), 
+          labels.rot = c(0, 90)) +
+  tm_compass() +
+  tm_scale_bar() +
+  tm_xlab("Longitude") +
+  tm_ylab("Latitude") +
+  tm_credits("CRS: SIRGAS2000/Geo", position = c(.58, .13)) +
+  tm_credits("Fonte: IBGE (2019)", position = c(.58, .09))
+```
+]
+
+.pull-right[
+```{r ref.label="tmap8", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap9, eval=FALSE}
+# titulos
+tm_shape(biomas) +
+  tm_fill(col = "name_biome", 
+          pal = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"), 
+          title = "Legenda") +
+  tm_graticules(lines = FALSE, 
+                labels.format = list(big.mark = ""), 
+                labels.rot = c(0, 90),
+                labels.size = 1) +
+  tm_compass(size = 3) +
+  tm_scale_bar(size = 1) +
+  tm_xlab("Longitude", size = 1.5) +
+  tm_ylab("Latitude", size = 1.5) +
+  tm_credits("CRS: SIRGAS2000/Geo", position = c(.58, .13), size = 1) +
+  tm_credits("Fonte: IBGE (2019)", position = c(.58, .09), size = 1) +
+  tm_layout(main.title = "Biomas do Brasil",
+            main.title.position = c(.1, .95),
+            main.title.size = 3,
+            title.fontface = "bold",
+            legend.frame = TRUE,
+            legend.position = c("left", "bottom"),
+            legend.title.fontface = "bold",
+            legend.title.size = 2,
+            legend.text.size = 1)
+```
+].pull-right[
+```{r ref.label="tmap9", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap10, eval=FALSE}
+# atribuicao
+map_biomas_tmap <- tm_shape(biomas) +
+  tm_fill(col = "name_biome", 
+          pal = c("darkgreen", "orange", "orange4", "forestgreen", "yellow", "yellow3"), 
+          title = "Legenda") +
+  tm_graticules(lines = FALSE, 
+                labels.format = list(big.mark = ""), 
+                labels.rot = c(0, 90),
+                labels.size = 1) +
+  tm_compass(size = 3) +
+  tm_scale_bar(size = 1) +
+  tm_xlab("Longitude", size = 1.5) +
+  tm_ylab("Latitude", size = 1.5) +
+  tm_credits("CRS: SIRGAS2000/Geo", position = c(.58, .13), size = 1) +
+  tm_credits("Fonte: IBGE (2019)", position = c(.58, .09), size = 1) +
+  tm_layout(main.title = "Biomas do Brasil",
+            main.title.position = c(.1, .95),
+            main.title.size = 3,
+            title.fontface = "bold",
+            legend.frame = TRUE,
+            legend.position = c("left", "bottom"),
+            legend.title.fontface = "bold",
+            legend.title.size = 2,
+            legend.text.size = 1)
+map_biomas_tmap
+```
+]
+
+.pull-right[
+```{r ref.label="tmap10", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap11, eval=FALSE}
+# plot
+map_dem_rc_tmap <- tm_shape(dem_rc) +
+  tm_raster(title = "Legenda") +
+  tm_shape(rc_2020) +
+  tm_borders(col = "red", lwd = 2) +
+  tm_grid(lines = FALSE, 
+          labels.format = list(big.mark = ""), 
+          labels.rot = c(0, 90)) +
+  tm_compass() +
+  tm_scale_bar() +
+  tm_xlab("Longitude") +
+  tm_ylab("Latitude") +
+  tm_layout(legend.position = c("left", "bottom"), 
+            main.title = "Elevação Rio Claro/SP")
+map_dem_rc_tmap
+```
+]
+
+.pull-right[
+```{r ref.label="tmap11", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap12, eval=FALSE}
+# plot
+map_dem_rc_tmap <- tm_shape(dem_rc) +
+  tm_raster(pal = wesanderson::wes_palette("Zissou1"), title = "Legenda") +
+  tm_shape(rc_2020) +
+  tm_borders(col = "red", lwd = 2) +
+  tm_grid(lines = FALSE, 
+          labels.format = list(big.mark = ""), 
+          labels.rot = c(0, 90)) +
+  tm_compass() +
+  tm_scale_bar() +
+  tm_xlab("Longitude") + tm_ylab("Latitude") +
+  tm_layout(legend.position = c("left", "bottom"), 
+            main.title = "Elevação Rio Claro/SP")
+map_dem_rc_tmap
+```
+]
+
+.pull-right[
+```{r ref.label="tmap12", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+.pull-left[
+```{r tmap13, eval=FALSE}
+# plot
+map_dem_rc_tmap <- tm_shape(dem_rc) +
+  tm_raster(pal = cptcity::cpt(pal = "gmt_GMT_dem4"), n = 20, title = "Legenda") +
+  tm_shape(rc_2020) +
+  tm_borders(col = "red", lwd = 2) +
+  tm_grid(lines = FALSE,
+          labels.format = list(big.mark = ""), 
+          labels.rot = c(0, 90)) +
+  tm_compass(position = c("left", "bottom")) +
+  tm_scale_bar(position = c("left", "bottom")) +
+  tm_xlab("Longitude") +
+  tm_ylab("Latitude") +
+  tm_layout(legend.outside = TRUE,
+            main.title = "Elevação Rio Claro/SP")
+map_dem_rc_tmap
+```
+]
+
+.pull-right[
+```{r ref.label="tmap13", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+```{r eval=FALSE}
+# exportar
+tmap::tmap_save(tm = map_biomas_tmap, 
+                filename = here::here("03_dados", "mapas", "mapa_biomas_tmap.png"), 
+                width = 20, 
+                height = 20, 
+                units = "cm", 
+                dpi = 300)
+```
+
+---
+
+# 3. Mapas estáticos
+
+## **tmap**
+```{r eval=FALSE}
+# exportar
+tmap::tmap_save(tm = map_dem_rc_tmap, 
+                filename = here::here("03_dados", "mapas", "mapa_dem_rc_tmap.png"), 
+                width = 20, 
+                height = 20, 
+                units = "cm", 
+                dpi = 300)
+```
+
+---
+
+class: clear
+background-image: url(img/package_mapsf.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[mapsf](https://riatelab.github.io/mapsf/index.html)
+
+---
+
+background-image: url(img/mapsf_types01.png), url(img/mapsf_types02.png)
+background-size: 350px, 350px
+background-position: 25% 90%, 75% 90%
+
+# 3. Mapas estáticos
+
+## **mapsf**
+```{r eval=FALSE}
+# pacote
+# install.packages("mapsf")
+library(mapsf)
+
+# sintaxe
+mf_map(x, var, type)
+```
+
+<br><br><br><br><br><br><br><br><br>
+[mapsf](https://riatelab.github.io/mapsf/index.html)
+
+---
+
+background-image: url(img/mapsf_map.png)
+background-size: 700px
+background-position: 50% 70%
+
+# 3. Mapas estáticos
+
+## **mapsf**
+
+## Layout
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[mapsf](https://riatelab.github.io/mapsf/index.html)
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf1, eval=FALSE}
+# plot
+mf_map(x = biomas)
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf1", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf2, eval=FALSE}
+# plot
+mf_map(x = biomas, var = "name_biome", type = "typo")
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf2", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf3, eval=FALSE}
+# plot
+mf_map(x = biomas, var = "name_biome", type = "typo",
+       pal = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"),
+       leg_title = "Biomas",
+       leg_pos = c(-73, -15))
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf3", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf4, eval=FALSE}
+# plot
+mf_map(x = biomas, var = "name_biome", type = "typo",
+       pal = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"),
+       leg_title = "Biomas",
+       leg_pos = c(-73, -15))
+mf_title("Biomas do Brasil")
+mf_credits("IBGE, 2019")
+mf_scale()
+mf_arrow()
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf4", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf5, eval=FALSE}
+# plot
+mf_init(x = biomas, theme = "dark")
+mf_map(x = biomas, var = "name_biome", type = "typo",
+       pal = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"),
+       leg_title = "Biomas",
+       leg_pos = c(-75, -15),
+       add = TRUE)
+mf_title("Biomas do Brasil")
+mf_credits("IBGE, 2019")
+mf_scale()
+mf_arrow()
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf5", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf6, eval=FALSE}
+# plot
+mf_theme(bg = "lightblue", fg = "gray20")
+mf_map(x = biomas, var = "name_biome", type = "typo",
+       pal = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"),
+       leg_title = "Biomas",
+       leg_pos = c(-73, -15))
+mf_title("Biomas do Brasil")
+mf_credits("IBGE, 2019")
+mf_scale()
+mf_arrow()
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf6", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf7, eval=FALSE}
+# plot
+mf_init(x = biomas, theme = "dark")
+mf_shadow(x = biomas, col = "gray10", add = TRUE)
+mf_map(x = biomas, var = "name_biome", type = "typo",
+       pal = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"),
+       leg_title = "Biomas",
+       leg_pos = c(-75, -15),
+       add = TRUE)
+mf_title("Biomas do Brasil")
+mf_credits("IBGE, 2019")
+mf_scale()
+mf_arrow()
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf7", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+.pull-left[
+```{r mapsf8, eval=FALSE}
+# plot
+mf_init(x = biomas, theme = "dark")
+mf_shadow(x = biomas, col = "gray10", add = TRUE)
+mf_map(x = biomas, var = "name_biome", type = "typo",
+       pal = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"),
+       leg_title = "Biomas",
+       leg_pos = c(-75, -15),
+       add = TRUE)
+mf_inset_on(x = "worldmap", pos = "topright")
+mf_worldmap(biomas, col = "#0E3F5C")
+mf_inset_off()
+mf_title("Biomas do Brasil")
+mf_credits("IBGE, 2019")
+mf_scale()
+mf_arrow()
+```
+]
+
+.pull-right[
+```{r ref.label="mapsf8", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **mapsf**
+```{r eval=FALSE}
+# export
+mf_export(x = biomas, 
+          filename = here::here("03_dados", "mapas", "mapa_biomas_mapsf.png"), 
+          wi = 20, he = 20, un = "cm", res = 300)
+mf_init(x = biomas, theme = "dark")
+mf_shadow(x = biomas, col = "gray10", add = TRUE)
+mf_map(x = biomas, var = "name_biome", type = "typo",
+       pal = c("darkgreen", "orange", "orange4", 
+               "forestgreen", "yellow", "yellow3"),
+       leg_title = "Biomas",
+       leg_pos = c(-70, -17),
+       add = TRUE)
+mf_inset_on(x = "worldmap", pos = "topright")
+mf_worldmap(biomas, col = "#0E3F5C")
+mf_inset_off()
+mf_title("Biomas do Brasil")
+mf_credits("IBGE, 2019")
+mf_scale()
+mf_arrow()
+dev.off()
+```
+
+---
+
+background-image: url(img/cover_time_series.png), url(img/time_series.png)
+background-size: 200px, 800px
+background-position: 10% 70%, 90% 70%
+
+# 3. Mapas estáticos
+
+## **rasterVis**
+
+```{r}
+# pacote
+# install.packages('rasterVis')
+library(rasterVis)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Lamigueiro (2018)](https://www.routledge.com/Displaying-Time-Series-Spatial-and-Space-Time-Data-with-R-Second-Edition/Lamigueiro/p/book/9781138089983), [Displaying time series, spatial and space-time data with R](https://oscarperpinan.github.io/bookvis/)
+
+---
+
+# 3. Mapas estáticos
+
+## **rasterVis**
+.pull-left[
+```{r vis1, eval=FALSE}
+# plot
+levelplot(bioclim[[8:11]])
+```
+]
+
+.pull-right[
+```{r ref.label="vis1", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **rasterVis**
+.pull-left[
+```{r vis2, eval=FALSE}
+# plot
+levelplot(bioclim, 
+          layers = 1,
+          margin = list(FUN = "median"))
+```
+]
+
+.pull-right[
+```{r ref.label="vis2", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **rasterVis**
+.pull-left[
+```{r vis3, eval=FALSE}
+# plot
+levelplot(bioclim,
+          layers = 4, 
+          margin = list(FUN = "median"))
+```
+]
+
+.pull-right[
+```{r ref.label="vis3", echo=FALSE}
+```
+]
+
+---
+
+# 3. Mapas estáticos
+
+## **rasterVis**
+```{r eval=FALSE}
+# export
+png(filename = here::here("03_dados", "mapas", "mapa_bioclim_rastervis.png"), 
+    wi = 20, he = 20, un = "cm", res = 300)
+levelplot(bioclim, 
+          layers = 4, 
+          margin = 
+            list(FUN = "median"))
+dev.off()
+```
+
+---
+
+background-image: url(img/geo_map_urban_animated.gif)
+background-size: 800px
+background-position: 50% 110%
+
+# 4. Mapas animados
+
+## **Mapas animados** são utilizados para entender a mudanças espaciais e/ou no tempo
+
+---
+
+# 4. Mapas animados
+
+## Mudança dos estados do Brasil ao longo do tempo
+
+```{r eval=TRUE}
+# dados
+br_anos <- NULL
+for(i in c(1872, 1900, 1911, 1920, 1933, 1940, 1950, 1960, 1970, 1980, 1991, 2001, 2010, 2019, 2020)){
+  br_anos <- geobr::read_state(code_state = "all", year = i, showProgress = FALSE) %>% 
+    sf::st_geometry() %>% 
+    sf::st_as_sf() %>%
+    dplyr::mutate(year = i) %>% 
+    dplyr::bind_rows(br_anos, .)
+}
+```
+
+--
+
+```{r}
+# numero de estados ao longo do tempo
+br_anos$year %>% table()
+```
+
+---
+
+# 4. Mapas animados
+
+## Mudança dos estados do Brasil ao longo do tempo
+.pull-left[
+```{r ani1, eval=FALSE}
+# mapa facetado
+map_brasil_tmap <- tm_shape(br_anos) + 
+  tm_polygons() + 
+  tm_facets(by = "year", nrow = 4)
+map_brasil_tmap
+```
+]
+
+.pull-right[
+```{r ref.label="ani1", echo=FALSE}
+```
+]
+
+---
+
+# 4. Mapas animados
+
+## Mudança dos estados do Brasil ao longo do tempo
+.pull-left[
+```{r ani2, eval=FALSE}
+# mapa animado
+map_brasil_tmap_ani <- tm_shape(br_anos) + 
+  tm_polygons() + 
+  tm_facets(along = "year", free.coords = FALSE)
+map_brasil_tmap_ani
+```
+]
+
+.pull-right[
+```{r ref.label="ani2", echo=FALSE}
+```
+]
+
+---
+
+background-image: url(img/geo_br_anos.gif)
+background-size: 500px
+background-position: 50% 70%
+
+# 4. Mapas animados
+
+```{r eval=FALSE}
+# exportar
+tmap::tmap_animation(tm = map_brasil_tmap_ani, 
+                     filename = here::here("03_dados", "mapas", "mapa_dem_rc_tmap_ani.gif"), 
+                     delay = 30)
+```
+
+
+---
+
+# 5. Mapas interativos
+
+## **Mapas interativos** são utilizados quando precisamos interagir
+
+<br>
+```{r echo=FALSE, out.width='100%'}
+include_url("img/map_int.html")
+```
+
+---
+
+class: clear
+background-image: url(img/package_tmap.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[tmap](https://mtennekes.github.io/tmap/)
+
+---
+
+# 5. Mapas interativos
+
+## **tmap**
+```{r eval=FALSE}
+# mudar o modo de exibicao do tmap
+tmap::tmap_mode(mode = "view")
+
+map_biomas_tmap_int <- map_biomas_tmap
+map_biomas_tmap_int
+```
+
+```{r echo=FALSE, out.width='80%'}
+include_url("img/geo_map_biomas_tmap.html")
+```
+
+---
+
+# 5. Mapas interativos
+
+## **tmap**
+```{r eval=FALSE}
+map_dem_rc_tmap_int <- map_dem_rc_tmap
+map_dem_rc_tmap_int
+```
+
+```{r echo=FALSE, out.width='100%'}
+include_url("img/geo_map_tmap.html")
+```
+
+---
+
+background-image: url(img/package_tmap.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 5. Mapas interativos
+
+## **tmap**
+
+```{r eval=FALSE}
+# exportar mapa tmap interativo
+tmap::tmap_save(tm = map_dem_rc_tmap_int, 
+                filename = here::here("dados", "mapas", "mapa_dem_rc_tmap_int.html"))
+```
+
+---
+
+class: clear
+background-image: url(img/geo_mapview.gif)
+background-size: 450px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[mapview](https://r-spatial.github.io/mapview/)
+
+---
+
+background-image: url(img/mapview_basic_small.png)
+background-size: 600px
+background-position: 50% 90%
+
+# 5. Mapas interativos
+
+## **mapview**
+
+### Display
+.pull-left[
+```{r eval=FALSE}
+# pacote
+# install.packge("mapview")
+library(mapview)
+```
+]
+
+.pull-right[
+```{r echo=FALSE}
+```
+]
+
+<br><br><br><br><br><br><br><br><br>
+[mapview](https://r-spatial.github.io/mapview/)
+
+---
+
+# 5. Mapas interativos
+
+## **mapview**
+
+```{r eval=FALSE}
+# plot
+map_dem_rc_mapview_int <- mapview::mapview(dem_rc, col.regions = viridis::viridis(100))
+map_dem_rc_mapview_int
+```
+
+```{r echo=FALSE, out.width='100%'}
+include_url("img/geo_map_mapview.html")
+```
+
+---
+
+background-image: url(img/geo_mapview.gif)
+background-size: 350px
+background-position: 50% 90%
+
+# 5. Mapas interativos
+
+## **mapview**
+
+```{r eval=FALSE}
+# exportar mapa tmap interativo
+mapview::mapshot(x = map_dem_rc_mapview_int, 
+                 url = here::here("03_dados", "mapas", "mapa_dem_rc_mapview_int.html"))
+```
+
+---
+
+class: clear
+background-image: url(img/package_leaflet.png)
+background-size: 450px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[leaflet](https://rstudio.github.io/leaflet/)
+
+---
+
+background-image: url(img/leaflet.png), url(img/leaflet_r.png)
+background-size: 500px, 500px
+background-position: 5% 60%, 85% 50%
+
+# 5. Mapas interativos
+
+## **leaflet**
+.pull-left[
+```{r eval=FALSE}
+# pacote
+# install.packge("leaflet")
+library(leaflet)
+```
+]
+
+.pull-right[
+```{r echo=FALSE}
+```
+]
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[leafletjs](https://leafletjs.com/),
+[leaflet for R](https://rstudio.github.io/leaflet/)
+
+---
+
+# 5. Mapas interativos
+
+## **leaflet**
+
+```{r eval=FALSE}
+# paleta de cores
+pal <- colorNumeric(viridis::viridis(10), raster::values(dem_rc))
+
+# mapa
+map_dem_rc_leaflet_int <- leaflet() %>%
+  addProviderTiles("CartoDB.Positron") %>% 
+  addRasterImage(dem_rc, colors = pal, opacity = .8) %>%
+  addLegend(pal = pal, values = raster::values(dem_rc), title = "Elevação (m)") %>% 
+  addPolygons(data = rc_2020, col = "red", fill = NA)
+map_dem_rc_leaflet_int
+```
+
+---
+
+# 5. Mapas interativos
+
+## **leaflet**
+
+<br>
+
+```{r echo=FALSE, out.width='100%'}
+include_url("img/geo_map_leaflet.html")
+```
+
+---
+
+background-image: url(img/package_leaflet.png)
+background-size: 350px
+background-position: 50% 90%
+
+# 5. Mapas interativos
+
+## **leaflet**
+
+```{r eval=FALSE}
+# exportar mapa tmap interativo
+mapview::mapshot(x = map_dem_rc_leaflet_int, 
+                 url = here::here("03_dados", "mapas", "mapa_dem_rc_leaflet_int.html"))
+```
+
+---
+
+class: clear
+background-image: url(img/package_plotly.png)
+background-size: 450px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[plotly](https://plotly.com/r/)
+
+---
+
+background-image: url(img/plotly.png)
+background-size: 700px
+background-position: 50% 80%
+
+# 5. Mapas interativos
+
+## **plotly**
+.pull-left[
+```{r}
+# pacote
+# install.packge("plotly")
+library(plotly)
+```
+]
+
+.pull-right[
+```{r echo=FALSE}
+```
+]
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[plotly](https://plotly.com/r/)
+
+---
+
+# 5. Mapas interativos
+
+## **plotly**
+.pull-left[
+```{r int1, eval=FALSE}
+# plot
+map_rc_2020_plotly_int <- plot_geo(rc_2020)
+map_rc_2020_plotly_int
+```
+]
+
+.pull-right[
+```{r ref.label="int1", echo=FALSE}
+```
+]
+
+---
+
+# 5. Mapas interativos
+
+## **plotly**
+.pull-left[
+```{r int2, eval=FALSE}
+# plot
+map_rc_2020_plotly_int <- ggplotly(
+  ggplot() +
+    geom_sf(data = rc_2020) +
+    theme_bw(base_size = 15))
+map_rc_2020_plotly_int
+```
+]
+
+.pull-right[
+```{r ref.label="int2", echo=FALSE}
+```
+]
+
+---
+
+# 5. Mapas interativos
+
+## **plotly**
+.pull-left[
+```{r int3, eval=FALSE}
+# plot
+map_biomas_plotly_int <- ggplotly(
+  ggplot(data = biomas) +
+    aes(fill = name_biome) +
+    geom_sf(color = "black") +
+    scale_fill_manual(values = c("darkgreen", "orange", "orange4", 
+                                 "forestgreen", "yellow", "yellow3")) +
+    theme_bw(base_size = 15) +
+    annotate(geom = "text", label = "CRS: SIRGAS2000/Geo", x = -38, y = -31, size = 2.5) +
+    annotate(geom = "text", label = "Fonte: IBGE (2019)", x = -39, y = -32.5, size = 2.5) +
+    labs(title = "Biomas do Brasil", fill = "Legenda", x = "Longitude", y = "Latitude"))
+map_biomas_plotly_int
+```
+]
+
+.pull-right[
+```{r ref.label="int3", echo=FALSE}
+```
+]
+
+---
+
+background-image: url(img/package_plotly.png)
+background-size: 350px
+background-position: 50% 90%
+
+# 5. Mapas interativos
+
+## **plotly**
+```{r eval=FALSE}
+# exportar mapa tmap interativo
+mapview::mapshot(x = map_biomas_plotly_int, 
+                 url = here::here("03_dados", "mapas", "mapa_dem_rc_leaflet_int.html"))
+```
+
+---
+
+class: inverse, center, middle
+
+# E para finalizar, vamos editar dados vetoriais no R
+
+---
+
+background-image: url(img/mapedit-leafpm01.gif), url(img/mapedit-leafpm02.gif)
+background-size: 400px, 400px
+background-position: 20% 85%, 80% 85%
+
+# 5. Mapas interativos
+
+## **mapedit**
+
+### Edições simples de pontos, linhas e polígonos
+```{r}
+# pacote
+# install.packages("mapedit")
+library(mapedit)
+```
+
+<br><br><br><br><br><br><br><br><br><br>
+[mapedit](https://github.com/r-spatial/mapedit)
+
+---
+
+# 5. Mapas interativos
+
+## **mapedit**
+```{r eval=FALSE}
+# criar
+unesp <- mapedit::drawFeatures()
+unesp
+
+# editar
+unesp_editado <- mapedit::editFeatures(unesp)
+unesp_editado
+
+# mapa
+mapview::mapview(unesp_editado)
+```
+
+---
+
+class: inverse, center, middle
+# Dúvidas?
+
+---
+
+class: inverse, center, middle
+# Muito bem, finalizamos a parte teórico-prática...
+
+---
+
+class: inverse, center, middle
+# Agora vem a parte do projeto, ou seja, onde vocês trabalham
+
+---
+
+class: inverse, center, middle
+# Gostaria de agradecer todas e todos pela paciência e confiança `r icons::icon_style(icons::fontawesome(name = "grin-beam-sweat", style = "solid"), fill = "white")`
+
+---
+
+class: clear, middle
+background-image: url(img/gif_frog.gif),url(img/gif_frogs.gif), url(img/package_xaringan.png)
+background-size: 250px, 500px, 130px
+background-position: 35% 50%, 90% 55%, 5% 86%
+
+## Maurício Vancine
+
+<br><br>
+
+Contatos:
+
+`r icons::icon_style(icons::fontawesome(name = "envelope", style = "solid"), fill = "#23373b")` [mauricio.vancine@gmail.com]()  
+`r icons::icon_style(icons::fontawesome("twitter"), fill = "#23373b")` [@mauriciovancine](https://twitter.com/mauriciovancine)  
+`r icons::icon_style(icons::fontawesome(name = "github"), fill = "#23373b")` [mauriciovancine](https://github.com/mauriciovancine)
+`r icons::icon_style(icons::fontawesome(name = "link", style = "solid"), fill = "#23373b")` [mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+<br><br><br><br><br>
+
+Slides criados via pacote [xaringan](https://github.com/yihui/xaringan) e tema [Metropolis](https://github.com/pat-s/xaringan-metropolis). Animação dos sapos por [@probzz](https://twitter.com/probzz/status/1367613720294170627).

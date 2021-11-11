@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introdução ao uso de dados geoespaciais no R    </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Maurício H. Vancine   Milton C. Ribeiro" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introdução ao uso de dados geoespaciais no R <br><br><br>
+## PPG Ecologia, Evolução e Biodiversidade
+### Maurício H. Vancine <br> Milton C. Ribeiro
+### UNESP - Rio Claro <br> Laboratório de Ecologia Espacial e Conservação (LEEC)
+### 25/10/2021-05/11/2021
+
+---
+
+
+
+
+class: inverse, center, middle
+
+# Primeiramente, gostaria de agradecê-los pela presença na disciplina, sejam muito bem-vindas e bem-vindos!
+
+---
+
+class: inverse, center, middle
+
+# Apresentações
+
+---
+
+background-image: url(img/general_licenca.png)
+background-size: 400px
+background-position: 50% 90%
+
+# Licença
+
+## Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)
+
+- **Atribuição** — Você deve dar o crédito apropriado, prover um link para a licença e indicar se mudanças foram feitas. Você deve fazê-lo em qualquer circunstância razoável, mas de nenhuma maneira que sugira que o licenciante apoia você ou o seu uso
+
+- **NãoComercial** — Você não pode usar o material para fins comerciais
+
+- **CompartilhaIgual** — Se você remixar, transformar, ou criar a partir do material, tem de distribuir as suas contribuições sob a mesma licença que o original. 
+
+### Saiba mais em: [Creative Commons](https://br.creativecommons.net/licencas/)
+
+---
+
+# Apresentações
+
+## Edições
+
+### 1.0 - Ministrada em 2019, a pedido do **Prof. Thiago Gonçalves Souza (Toyoyo)** na UFRPE
+
+--
+
+### 2.0 - Ministrada em 2020, a pedido do **Prof. Miltinho** na UNESP (remoto)
+
+--
+
+### 3.0 - Ministrada agora em 2021, a pedido do **Prof. Miltinho** na UNESP (remoto)
+
+--
+
+...
+
+---
+
+background-image: url(img/person_miltinho.jpg)
+background-size: 300px
+background-position: 50% 70%
+
+# Apresentações
+
+## Miltinho
+
+### Quer se apresentar e apresentar a disciplina?
+
+---
+
+background-image: url(img/logo_leec_lab.png), url(img/general_unesp_logo.jpg), url(img/person_mauricio_vancine.jpg), url(img/gif_frog.gif)
+background-size: 150px, 300px, 250px, 250px
+background-position: 55% 31%, 84% 31%, 84% 85%, 55% 95%
+
+# Apresentações
+
+## Maurício Vancine
+
+### Ecólogo (2014) | Mestre em Zoologia (2018) | Doutorando em Ecologia (2020)
+
+**Pesquisa**
+- Ecologia Espacial
+- Modelagem Ecológica
+- Ecologia e Conservação de Anfíbios
+
+**Habilidades**
+- Modelos de Distribuição de Espécies (SDMs)
+- Análise de Dados Ecológicos e Geoespaciais
+- *Open source* [R, QGIS, GRASS GIS, GNU/Linux, ...]
+
+**Informações:**
+
+[mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+---
+
+background-image: url(img/general_introduce_yourself.jpg)
+background-size: 300px
+background-position: 90% 20%
+
+# Apresentações
+
+## Participantes (~5-10 segundos)
+
+&lt;br&gt;
+
+### 1. Nome
+
+### 2. Formação
+
+### 3. O que faz ou pensa em fazer da vida?
+
+### 4. Conhece algo de git, GitHub, R ou geoprocessamento?
+
+### 5. O que "sente" ou "espera" em relação à disciplina?
+
+### 6. Como pretende usar a parte geoespacial em seu projeto ou na vida?
+
+---
+
+background-image: url(img/general_master_meme.jpg)
+background-size: 300px
+background-position: 95% 45%
+
+# Apresentações
+
+## Informações
+
+### Carga horária
+
+60 h (4 créditos)
+
+--
+
+### Participantes
+
+Sei lá...
+
+--
+
+### Aulas expositivas
+
+Teórico-prático:  [09:00 h - 12:00 h | 14:00 h - 17:00 h] (30 horas)
+
+--
+
+### Avaliação 
+
+Desenvolvimento de um projeto prático: [09:00 h - 12:00 h | 14:00 h - 17:00 h] (30 horas)
+
+Vou atendê-los: [09:00 h - 12:00 h]
+
+---
+
+background-image: url(img/talk_cheap.jpg)
+background-size: 600px
+background-position: 50% 60%
+
+# Apresentações
+
+## Disciplina prática
+
+---
+
+background-image: url(img/git_github.png)
+background-size: 600px
+background-position: 95% 120%
+
+# Apresentações
+
+## Conteúdo
+
+### 1 Controle de versão, git e GitHub
+
+.pull-left[
+1 Conferir os computadores  
+2 Controle de versão  
+3 git e GitHub  
+4 Funcionamento do controle de versão  
+5 GitHub: Fork  
+6 Configuração: RStudio, git, GitHub  
+7 Iniciando localmente: git init  
+8 Iniciando remotamente: git clone  
+9 Versionamento: git add, git commit e git status  
+10 Ignorando: .gitignore  
+11 Histórico: git log e git show  
+12 Diferenças: git diff
+]
+.pull-right[
+13 Desfazer: git revert e git reset  
+14 Ramificações: git branch, git switch e git merge  
+15 Remoto: git remote, git push e git pull  
+16 GitHub: Pull request  
+17 Detalhes do repositório do GitHub  
+18 Interface gráfica do RStudio  
+19 Principal material de estudo
+]
+
+[git](https://git-scm.com/), [GitHub](https://github.com/)
+
+---
+
+background-image: url(img/r_rstudio.png)
+background-size: 400px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 2 Funcionamento da linguagem R
+
+1. Linguagem R
+1. RStudio
+1. Console
+1. Scripts
+1. Operadores
+1. Objetos
+1. Funções
+1. Pacotes
+1. Ajuda
+1. Ambiente
+1. Citações
+1. Principais erros
+1. Principal material de estudo
+
+[R](https://www.r-project.org/), [RStudio](https://www.rstudio.com/)
+
+---
+
+background-image: url(img/r_data_structures01.png)
+background-size: 350px
+background-position: 85% 85%
+
+# Apresentações
+
+## Conteúdo
+
+### 3 Estrutura e manipulação de dados
+
+1. Atributos dos objetos
+1. Manipulação de dados unidimensionais
+1. Manipulação de dados multidimensionais
+1. Valores faltantes e especiais
+1. Diretório de trabalho
+1. Importar dados
+1. Conferência de dados importados
+1. Exportar dados
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[R Programming – Beginners Guide To R Programming Language](https://www.edureka.co/blog/r-programming-language)
+
+---
+
+background-image: url(img/package_tidyverse.png)
+background-size: 300px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 4 Introdução ao tidyverse
+
+1. Contextualização
+1. tidyverse
+1. here
+1. readr, readxl e writexl
+1. tibble
+1. magrittr (pipe - %&gt;%)
+1. tidyr
+1. dplyr
+1. stringr
+1. forcats
+1. lubridate
+1. purrr
+
+[tidyverse](https://www.tidyverse.org/)
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 300px
+background-position: 85% 65%
+
+# Apresentações
+
+## Conteúdo
+
+### 5 Visualização de dados
+
+1. Contextualização
+1. Pacotes para produção de gráficos
+1. Gramática dos gráficos
+1. Principal material de estudo 
+1. Principais tipos de gráficos 
+1. Histograma e Densidade
+1. Gráfico de setores
+1. Gráfico de barras
+1. Gráfico de caixas
+1. Gráfico de dispersão
+1. Gráfico pareado
+1. Combinando gráficos
+1. Gráficos animados
+1. Gráficos interativos
+1. Gráficos usando interface
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+background-image: url(img/general_sig.jpg)
+background-size: 270px
+background-position: 85% 70%
+
+# Apresentações
+
+## Conteúdo
+
+### 6 Estrutura e fonte de dados geoespaciais
+
+1. Geoprocessamento
+1. Cartografia
+1. *Global Positioning System* (GPS)
+1. Sensoriamento Remoto
+1. Sistema de Informação Geográfica (SIG)
+1. Dados geoespaciais
+1. Dados vetoriais
+1. Dados matriciais (gride ou raster)
+1. Conversão de dados geoespaciais (vetor-raster)
+1. Banco de dados geoespaciais
+1. Principais fontes de dados geoespaciais
+1. Principal material de estudo
+
+[Shin et al. (2017)](https://catalog.flatworldknowledge.com/catalog/editions/campbell_2_1-essentials-of-geographic-information-systems-2-1)
+
+---
+
+background-image: url(img/r_spatial.jpeg)
+background-size: 300px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 7 Estrutura e manipulação de dados vetoriais
+
+1. Principais pacotes
+1. Geometrias sf
+1. Classes sf
+1. Importar dados vetoriais
+1. Descrição de objetos sf
+1. Converter objetos para sf
+1. Converter CRS de objetos sf
+1. Operações de objetos sf
+1. Exportar objetos sf
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Lovelace et al. (2019)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/r_spatial.jpeg)
+background-size: 300px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 8 Estrutura e manipulação de dados matriciais
+
+1. Principais pacotes
+1. Classes raster
+1. Importar dados matriciais
+1. Descrição de objetos raster
+1. Converter CRS de objetos raster
+1. Operações de objetos raster
+1. Interações raster-vetor
+1. Conversões raster-vetor
+1. Índices espectrais
+1. Exportar objetos raster
+
+&lt;br&gt;&lt;br&gt;
+[Lovelace et al. (2019)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/package_ggplot2.png), url(img/package_tmap.png), url(img/package_mapsf.png), url(img/package_leaflet.jpeg), url(img/box_anim.gif)
+background-size: 200px, 200px, 200px, 200px, 200px
+background-position: 60% 30%, 85% 30%, 50% 90%, 73% 90%, 95% 90%
+
+# Apresentações
+
+## Conteúdo
+
+### 9 Visualização de dados geoespaciais
+
+1. Elementos de um mapa
+1. Pacotes para produção de mapas
+1. Mapas estáticos
+1. Mapas animados
+1. Mapas interativos
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/), [tmap](https://r-tmap.github.io/tmap/), [mapsf](https://riatelab.github.io/mapsf/), [leaflet](https://rstudio.github.io/leaflet/), [mapview](https://r-spatial.github.io/mapview/)
+
+---
+
+background-image: url(img/package_xaringan.png)
+background-size: 300px
+background-position: 50% 70%
+
+# Apresentações
+
+## Slides
+
+### Todos os slides estão disponibilizados em .html e .pdf
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[xaringan](https://slides.yihui.org/xaringan)
+
+---
+
+background-image: url(img/github_logo.png)
+background-size: 400px
+background-position: 50% 75%
+
+# Apresentações
+
+## Material
+
+### O material da disciplina pode ser acessado nesse repositório
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Repositório no GitHub](https://github.com/mauriciovancine/course-geospatial-data-r)
+
+---
+
+background-image: url(img/general_rio_claro01.jpg), url(img/general_rio_claro02.jpg), url(img/geo_data_fbds.png), url(img/geo_rio_claro-removebg-preview.png)
+background-size: 350px, 350px, 350px, 500px
+background-position: 8% 40%, 51% 90%, 8% 82%, 90% 90%
+
+# Apresentações
+
+## Material
+
+### Vamos usar dados geoespaciais de Rio Claro/SP
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[FBDS](https://www.fbds.org.br/),
+[SRTM](https://srtm.csi.cgiar.org/),
+[WorldClim](https://www.worldclim.org/)
+
+---
+
+background-image: url(img/general_list.jpg), url(img/general_ats.jpg)
+background-size: 150px, 250px
+background-position: 86% 35%, 90% 90%
+
+# Apresentações
+
+## Avaliação
+
+### A avaliação será desenvolver um projeto do início ao fim
+
+**Repositório**
+
+- Criar e versionar um repositório no GitHub
+- Baixar e organizar um conjunto de dados
+- Usaremos os data papers pata a Mata Atlântica, Brasil e Neotrópicos
+
+**Proposta e análise**
+
+- Propor e realizar análises geoespaciais e estatísticas (coisa leve para não complicar)
+- Apresentar esses resultados na forma de seminário no dia 05/11
+
+**Critérios de avaliação**
+
+- Participação, repositório e apresentação final
+
+[Data papers](https://marcoarmello.wordpress.com/2017/09/11/datapaper/)
+
+---
+
+background-image: url(img/discord-logo.png)
+background-size: 300px 
+background-position: 85% 70%
+
+# Apresentações
+
+## Avaliação
+
+### 8 Grupos pré-definidos aleatoriamente com nomes de frutas da Mata Atlântica
+
+- G1-Araçá      
+- G2-Uvaia     
+- G3-Juçara    
+- G4-Cambuci
+- G5-Pitangatuba  
+- G6-Grumixama      
+- G7-Butiá  
+- G8-Guabiroba
+
+### Grupos fechados até quarta-feira (27/10)
+
+### Comunicação através de grupos no Discord
+
+---
+
+class: inverse, center, middle
+
+# Todas e todas de acordo?
+
+---
+
+background-image: url(img/r_principio_agora_pt.png)
+background-size: 350px
+background-position: 97% 85%
+
+# IMPORTANTE!
+
+## Pontos fundamentais
+
+### Disciplina de pós-graduação **à distância** é complicado...
+
+### Com certeza **teremos alguns problemas...**
+
+### Entretanto, o foco será o **ensino**, então tenhamos **paciência**
+
+### Por favor, **perguntem** e **me interrompam**!
+
+### O principal objetivo é que vocês **aprendam**!
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+background-image: url(img/general_starwars_teamwork.png)
+background-size: 500px
+background-position: 50% 80%
+
+# IMPORTANTE!
+
+## Espaço seguro e amigável
+
+### Sintam-se à vontade para me interromper e tirar dúvidas
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: clear, middle
+background-image: url(img/gif_frog.gif),url(img/gif_frogs.gif), url(img/package_xaringan.png)
+background-size: 250px, 500px, 130px
+background-position: 35% 50%, 90% 55%, 5% 86%
+
+## Maurício Vancine
+
+&lt;br&gt;&lt;br&gt;
+
+Contatos:
+
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"&gt;&lt;/path&gt;&lt;/svg&gt; [mauricio.vancine@gmail.com]()  
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"&gt;&lt;/path&gt;&lt;/svg&gt; [@mauriciovancine](https://twitter.com/mauriciovancine)  
+&lt;svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"&gt;&lt;/path&gt;&lt;/svg&gt; [mauriciovancine](https://github.com/mauriciovancine)
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"&gt;&lt;/path&gt;&lt;/svg&gt; [mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+Slides criados via pacote [xaringan](https://github.com/yihui/xaringan) e tema [Metropolis](https://github.com/pat-s/xaringan-metropolis). Animação dos sapos por [@probzz](https://twitter.com/probzz/status/1367613720294170627).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "rainbow",
+"highlightLines": false,
+"highlightSpans": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

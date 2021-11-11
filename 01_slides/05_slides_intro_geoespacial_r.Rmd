@@ -1,0 +1,2795 @@
+---
+title: "Introdução ao uso de dados geoespaciais no R <br><br><br>"
+subtitle: "5 Visualização de dados"
+author: " Maurício H. Vancine <br> Milton C. Ribeiro"
+institute: "UNESP - Rio Claro <br> Laboratório de Ecologia Espacial e Conservação (LEEC)"
+date: "25/10/2021-05/11/2021"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: false
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, eval = TRUE)
+if(!require(tidyverse)) devtools::install_github("tidyverse")
+if(!require(palmerpenguins)) devtools::install_github("palmerpenguins")
+if(!require(countdown)) devtools::install_github("gadenbuie/countdown")
+```
+
+class: clear, center, middle
+background-image: url(img/plot_saurus.png)
+background-size: 800px
+background-position: 50% 50%
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 300px
+background-position: 85% 75%
+
+# 5 Visualização de dados
+
+## Conteúdo
+
+1. Contextualização
+1. Pacotes para produção de gráficos
+1. Gramática dos gráficos
+1. Principal material de estudo 
+1. Principais tipos de gráficos 
+1. Histograma e Densidade
+1. Gráfico de setores
+1. Gráfico de barras
+1. Gráfico de caixas
+1. Gráfico de dispersão
+1. Gráfico pareado
+1. Combinando gráficos
+1. Gráficos animados
+1. Gráficos interativos
+1. Gráficos usando interface
+
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 5 Visualização de dados
+
+## Script
+
+<br><br><br><br><br><br>
+
+## .center[`05_script_intro_geoespacial_r.R`]
+
+---
+
+# 1. Contextualização
+
+## Descrição
+
+### Melhor forma de **apresentar, sintetizar, discutir e interpretar** seus dados
+
+--
+
+### Necessário em quase todas as **análises estatísticas** 
+
+--
+
+### Necessário em quase todas as **publicações**, trabalhos de consultoria, TCC, dissertação, tese, etc. 
+
+--
+
+### Existem vários **tipos de gráficos** para representar os padrões em seus dados para **diferentes tipos de finalidades**
+
+--
+
+### De forma simplificada, os gráficos são **representações** dos nossos dados tabulares
+
+---
+
+# 2. Pacotes para produção de gráficos
+
+### Principais pacotes
+
+--
+
+#### [graphics](http://search.r-project.org/R/library/graphics/html/00Index.html): simples, porém útil para visualizações rápidas de quase todos os formatos de arquivos
+
+--
+
+#### [ggplot2](https://ggplot2.tidyverse.org/): pacote integrado ao tidyverse, possui uma sintaxe própria baseada na gramática de gráficos por camadas (layers)
+
+--
+
+#### [ggplot2 extentions](https://exts.ggplot2.tidyverse.org/): conjunto de pacotes que adicionam diversas expansões ao pacote ggplot2. Exemplos: [GGally](https://ggobi.github.io/ggally/), [gganimate](https://gganimate.com/) e [esquisse](https://dreamrs.github.io/esquisse/)
+
+--
+
+#### [visdat](https://docs.ropensci.org/visdat/): cria visualizações preliminares de um conjunto de dados inteiro para identificar problemas ou recursos inesperados usando `ggplot2`
+
+--
+
+#### [ggpubr](https://rpkgs.datanovia.com/ggpubr/): fornece algumas funções simplificadas para criar gráficos para publicação, baseados no `ggplot2`
+
+--
+
+#### [cowplot]((https://wilkelab.org/cowplot/): pacote que permite combinar vários gráficos de forma elaborada
+
+--
+
+#### [pacthwork](https://patchwork.data-imaginist.com/): pacote que permite combinar vários gráficos em um só de forma extremamente simples e com alta qualidade
+
+--
+
+#### [plotly](https://plotly.com/r/): pacote para criar gráficos interativos da web por meio da biblioteca gráfica de JavaScript de código aberto plotly.js
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+background-image: url(img/package_graphics.png)
+background-size: 250px
+background-position: 85% 85%
+
+# 2. Principais pacotes para gráficos
+
+## **graphics**
+
+### Default do R e mais simples
+
+--
+
+### Pode ser utilizado para objetos de **diversas classes**
+
+--
+
+### Possui funções como:
+
+`plot()`<br>
+`hist()`<br>
+`barplot()`<br>
+`boxplot()`<br>
+`abline()`<br>
+`points()`<br>
+`lines()`<br>
+`polygon()`<br>
+
+---
+
+# 2. Principais pacotes para gráficos
+
+## **graphics**
+
+```{r warning=FALSE, message=FALSE, fig.align="center", out.width="35%"}
+# graphics
+plot(flipper_length_mm ~ body_mass_g, data = penguins)
+```
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+background-image: url(img/cheatsheet_ggplot2.png)
+background-size: 600px
+background-position: 50% 50%
+
+# 2. Principais pacotes para gráficos
+
+## Data Visualization Cheatsheet
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+[Data Visualization with ggplot2 Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf)
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 250px
+background-position: 85% 85%
+
+# 2. Principais pacotes para gráficos
+
+## **ggplot2**
+
+### Integrado ao tidyverse, possui uma sintaxe própria
+
+--
+
+### Necessita de funções específicas para objetos de **classes diferentes**
+
+--
+
+### Estruturado dessa forma:
+
+`ggplot() +`<br>
+`aes() +`<br>
+`geom_() +`<br>
+`facet_() +`<br>
+`stats_() +`<br>
+`coord_() +`<br>
+`theme_()`<br>
+
+---
+
+# 2. Principais pacotes para gráficos
+
+## **ggplot2**
+
+```{r warning=FALSE, message=FALSE, fig.align="center", out.width = "35%"}
+# ggplot2
+library(ggplot2)
+ggplot(data = penguins) + aes(x = body_mass_g, y = flipper_length_mm) + geom_point()
+```
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+background-image: url(img/package_ggpubr.png)
+background-size: 250px
+background-position: 85% 85%
+
+# 2. Principais pacotes para gráficos
+
+## **ggpubr**
+
+### Funções fáceis de usar para criar e personalizar plots para publicações baseadas no "ggplot2"
+
+--
+
+### Necessita de funções específicas para gerar **gráficos específicos**
+
+--
+
+### Funções:
+
+`gghistogram()`<br>
+`ggdensity()`<br>
+`ggboxplot()`<br>
+`ggviolin()`<br>
+`ggbarplot()`<br>
+`ggscatter()`<br>
+
+---
+
+# 2. Principais pacotes para gráficos
+
+## **ggpubr**
+
+```{r warning=FALSE, message=FALSE, fig.align="center", out.width = "35%"}
+# ggpubr
+library(ggpubr)
+ggscatter(penguins, x = "body_mass_g", y = "flipper_length_mm")
+```
+
+---
+
+background-image: url(img/cover_grammar_graphics.jpg), url(img/ggplot2_structure.png)
+background-size: 200px, 600px
+background-position: 20% 70%, 85% 70%
+
+# 3. Gramática dos gráficos
+
+## Descrição
+
+### Wilkinson (2005) *Grammar of Graphics*: representação gráfica dos dados a partir de atributos estéticos (do inglês *aesthetic*)
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Wilkinson (2005)](https://www.springer.com/gp/book/9780387245447)
+
+
+---
+
+background-image: url(img/plot_ggplot.gif)
+background-size: 750px
+background-position: 50% 45%
+
+# 3. Gramática dos gráficos
+
+## Descrição
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Think About the Grammar of Graphics When Improving Your Graphs](https://medium.com/tdebeus/think-about-the-grammar-of-graphics-when-improving-your-graphs-18e3744d8d18)
+
+---
+
+background-image: url(img/plot_ggplot2.png), url(img/ggplot2_gramatica.png)
+background-size: 500px, 600px
+background-position: 5% 70%, 90% 70%
+
+# 3. Gramática dos gráficos
+
+## Descrição
+
+### Wickham (2008) criou o pacote **ggplot2**, onde “gg” representa a contração de Grammar of Graphics
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Wickham (2008)](https://ggplot2-book.org/)
+
+---
+
+background-image: url(img/person_hadley_wickham.jpg)
+background-size: 500px
+background-position: 50% 70%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### O idealizador e mantenedor do pacote **ggplot2** foi de novo o **Hadley Wickham**
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Hadley Wickham](http://hadley.nz/)
+
+---
+
+background-image: url(img/cover_ggplot2.jpg)
+background-size: 230px
+background-position: 50% 63%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### ggplot2 (2009, 2016)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Wickham (2009, 2016)](https://ggplot2.tidyverse.org/)
+
+---
+
+background-image: url(img/cover_r_graphics_cookbook.jpg)
+background-size: 250px
+background-position: 50% 63%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### R Graphics Cookbook (2018)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Chang (2018)](http://www.cookbook-r.com/Graphs/)
+
+---
+
+background-image: url(img/cover_data_science_r.png)
+background-size: 250px
+background-position: 50% 70%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### R for Data Science (2017)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Wickham & Grolemund (2017)](https://r4ds.had.co.nz/)
+
+---
+
+background-image: url(img/cover_data_visualization_with_r.png)
+background-size: 230px
+background-position: 50% 65%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### Data Visualization with R (2018)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Kabacoff (2018)](https://rkabacoff.github.io/datavis/)
+
+---
+
+background-image: url(img/cover_fundamentals_of_data_visualization.png)
+background-size: 260px
+background-position: 50% 63%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### Fundamentals of Data Visualization (2019)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Wilke (2019)](https://serialmentor.com/dataviz/)
+
+---
+
+background-image: url(img/cover_interative.png)
+background-size: 260px
+background-position: 50% 68%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### Interactive web-based data visualization with R, plotly, and shiny (2019)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Sievert (2019)](https://plotly-r.com/)
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 300px
+background-position: 50% 60%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### ggplot2: Reference
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2 reference](https://ggplot2.tidyverse.org/reference/)
+
+---
+
+background-image: url(img/plot_r_graph_gallery.png)
+background-size: 800px
+background-position: 50% 60%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### R Graph Gallery
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[R Graph Gallery](https://www.r-graph-gallery.com/)
+
+---
+
+background-image: url(img/plot_tree_s.png)
+background-size: 400px
+background-position: 50% 60%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### from Data to Viz
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[from Data to Viz](https://www.data-to-viz.com/)
+
+---
+
+background-image: url(img/plot_sthda.png)
+background-size: 300px
+background-position: 50% 70%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### Statistical tools for high-throughput data analysis (STHDA)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[STHDA](http://www.sthda.com/english/)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: inverse, center, middle
+
+# Os elementos de um gráfico são representações das colunas (eixos) e linhas (elementos) de nossas matrizes de dados
+
+---
+
+background-image: url(img/plot_data_table_scatterplot.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 5. Principais tipos de gráficos
+
+## Colunas se tornam eixos e valores a representação
+
+---
+
+background-image: url(img/plot_variables.png)
+background-size: 800px
+background-position: 50% 50%
+
+# 5. Principais tipos de gráficos
+
+## Tipos de variáveis
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Matthiopoulos (2011)](http://greenmaths.st-andrews.ac.uk/)
+
+---
+
+background-image: url(img/nominal_ordinal_binary.png), url(img/continuous_discrete.png), url(img/plot_variables.png)
+background-size: 420px, 335px, 400px
+background-position: 23% 78%, 69% 78%, 50% 15%
+
+# 5. Principais tipos de gráficos
+
+## Tipos de variáveis
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Matthiopoulos (2011)](http://greenmaths.st-andrews.ac.uk/), [@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+class: inverse, center, middle
+
+# O **tipo e quantidade das variáveis** indicará o melhor tipo de gráfico para **representar** os dados
+
+---
+
+background-image: url(img/ggplot_data_from_viz.png)
+background-size: 800px
+background-position: 50% 60%
+
+# 5. Principais tipos de gráficos
+
+## from Data to Viz
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[from Data to Viz](https://www.data-to-viz.com/)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: inverse, center, middle
+
+# E que dados vamos usar?
+
+---
+
+class: clear
+background-image: url(img/package_palmerpenguins.png)
+background-size: 400px
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[palmerpenguins](https://allisonhorst.github.io/palmerpenguins/)
+
+---
+
+background-image: url(img/culmen_depth.png), url(img/lter_penguins.png)
+background-size: 400px, 400px
+background-position: 20% 85%, 80% 85%
+
+# palmerpenguins
+
+## Dados de medidas de pinguins chamados `palmerpenguins`
+
+```{r eval=FALSE}
+# carregar
+library(palmerpenguins)
+
+# visualizar os dados
+penguins
+
+# glimpse
+tibble::glimpse(penguins)
+```
+
+<br><br><br><br><br><br><br><br>
+[palmerpenguins ](https://allisonhorst.github.io/palmerpenguins/)
+
+---
+
+background-image: url(img/plot_histogram.png), url(img/plot_density.png)
+background-size: 300px, 300px
+background-position: 30% 80%, 70% 80%
+
+# 6. Histograma (*Histogram*)
+
+### **Representa os dados de**: uma coluna
+### **Tipo de dado**: discreto ou contínuo
+### Distribuição de frequência e densidade de dados discretos ou contínuos
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+```{r hist_graphics1, eval=FALSE}
+hist(penguins$flipper_length_mm)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_graphics1", echo=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+```{r hist_graphics2, eval=FALSE}
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray")
+```
+]
+
+.pull-right[
+```{r ref.label="hist_graphics2", echo=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+```{r hist_graphics3, eval=FALSE}
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins")
+```
+]
+
+.pull-right[
+```{r ref.label="hist_graphics3", echo=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+```{r hist_graphics4, eval=FALSE}
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência")
+```
+]
+
+.pull-right[
+```{r ref.label="hist_graphics4", echo=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+```{r hist_graphics5, eval=FALSE}
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência",
+     br = 50)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_graphics5", echo=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+```{r hist_graphics6, eval=FALSE}
+par(mar = c(5, 5, 5, 5))
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência",
+     br = 50,
+     cex.main = 2,
+     cex.lab = 2, 
+     cex.axis = 1.5)
+
+```
+]
+
+.pull-right[
+```{r ref.label="hist_graphics6", echo=FALSE}
+```
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## graphics
+.pull-left[
+```{r hist_graphics7, eval = FALSE}
+par(mar = c(5, 5, 5, 5))
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Densidade",
+     br = 50,
+     cex.main = 2,
+     cex.lab = 2, 
+     cex.axis = 1.5,
+     prob = TRUE)
+lines(density(na.omit(penguins$flipper_length_mm)))
+```
+]
+.pull-right[
+```{r ref.label="hist_graphics7", echo=FALSE}
+```
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## graphics
+.pull-left[
+```{r hist_graphics8, eval=FALSE}
+par(mar = c(5, 5, 5, 5))
+plot(density(na.omit(penguins$flipper_length_mm)),
+     col = "gray50",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Densidade",
+     cex.main = 2,
+     cex.lab = 2, 
+     cex.axis = 1.5)
+polygon(density(na.omit(penguins$flipper_length_mm)), 
+        col = "gray50")
+```
+]
+.pull-right[
+```{r ref.label="hist_graphics8", echo=FALSE}
+```
+]
+
+
+---
+
+# 6. Densidade (*Density*)
+
+## graphics
+
+### Exportar
+```{r eval=FALSE}
+png(here::here("03_dados", "graficos", "plot_densidade.png"), 
+    wi = 15, he = 15, un = "cm", res = 300)
+```
+
+--
+
+```{r eval = FALSE}
+par(mar = c(5, 5, 5, 5))
+plot(density(na.omit(penguins$flipper_length_mm)),
+     col = "gray50",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência",
+     cex.main = 2,  cex.lab = 2, cex.axis = 1.5)
+polygon(density(na.omit(penguins$flipper_length_mm)), col = "gray50")
+```
+
+--
+
+```{r eval=FALSE}
+dev.off()
+```
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot1, eval=FALSE}
+ggplot(data = penguins)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot1", echo=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot2, eval=FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm))
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot2", echo=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot3, eval=FALSE, message=FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm)) +
+  geom_histogram()
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot4, eval=FALSE, message=FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm)) +
+  geom_histogram(color = "black", 
+                 fill = "cyan4",
+                 bins = 10)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot4", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot5, eval=FALSE, message=FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm)) +
+  geom_histogram(color = "black", 
+                 fill = "cyan4", 
+                 bins = 10, 
+                 alpha = .5) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot5", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot6, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram(bins = 10, alpha = .5) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot6", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot7, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram(bins = 10, alpha = .5, 
+                 position = "dodge") +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot7", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot8, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram(alpha = .5, position = "identity") +
+  scale_fill_manual(values = c("darkorange", 
+                               "darkorchid", "cyan4")) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot8", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot9, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram() +
+  scale_fill_manual(values = c("darkorange", 
+                               "darkorchid", "cyan4")) +
+  facet_wrap(~ species, ncol = 2, scale = "free_y") +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot9", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot10, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram() +
+  scale_fill_manual(values = c("darkorange",
+                               "darkorchid", "cyan4")) +
+  facet_grid(species ~ .) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot10", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot11, eval=FALSE, message=FALSE}
+ggplot(data = penguins) +
+  aes(x = flipper_length_mm) +
+  geom_density(color = "black", 
+               fill = "cyan4", alpha = .5) + 
+  labs(title = "Comprimento da nadadeira dos penguins",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Densidade") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot11", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggplot2
+.pull-left[
+```{r hist_ggplot12, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, 
+           fill = species)) +
+  geom_density(alpha = .5) +
+  scale_fill_manual(values = c("darkorange", 
+                               "darkorchid", "cyan4")) +
+  labs(x = "Comprimento da nadadeira (mm)", 
+       y = "Densidade", 
+       fill = "Espécie") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggplot12", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+
+### Exportar
+```{r eval = FALSE}
+ggplot_densidade <- ggplot(data = penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_density(alpha = .5) +
+  scale_fill_manual(values = c("darkorange", "darkorchid", "cyan4")) +
+  labs(x = "Comprimento da nadadeira (mm)",  y = "Densidade", fill = "Espécie") +
+  theme_bw(base_size = 15)
+
+ggsave(filename = here::here("03_dados", "graficos", "histogram_ggplot2.png"), 
+       plot = ggplot_densidade, wi = 20, he = 15, un = "cm", dpi = 300)
+```
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggpubr
+.pull-left[
+```{r hist_ggpubr1, eval=FALSE, message=FALSE}
+gghistogram(data = penguins, 
+            x = "flipper_length_mm",
+            add = "median",
+            color = "species",
+            fill = "species",
+            palette = c("darkorange", "darkorchid", "cyan4"),
+            xlab = "Comprimento da nadadeira (mm)",
+            ylab = "Frequência")
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggpubr1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggpubr
+.pull-left[
+```{r hist_ggpubr2, eval=FALSE, message=FALSE}
+ggdensity(data = penguins, 
+          x = "flipper_length_mm",
+          add = "median",
+          color = "species",
+          fill = "species",
+          palette = c("darkorange", "darkorchid", "cyan4"),
+          xlab = "Comprimento da nadadeira (mm)",
+          ylab = "Densidade")
+```
+]
+
+.pull-right[
+```{r ref.label="hist_ggpubr2", echo=FALSE, message=FALSE}
+```
+]
+
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggpubr
+
+### Exportar
+```{r eval = FALSE}
+ggpubr_densidade <- ggdensity(data = penguins, 
+                              x = "flipper_length_mm",
+                              add = "median",
+                              fill = "cyan4",
+                              rug = TRUE,
+                              add_density = TRUE,
+                              xlab = "Comprimento da nadadeira (mm)",
+                              ylab = "Densidade")
+
+ggsave(filename = here::here("03_dados", "graficos", "densidade_ggpubr.png"), 
+       plot = ggpubr_densidade, wi = 20, he = 15, un = "cm", dpi = 300)
+```
+
+---
+
+background-image: url(img/plot_pie.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 7. Gráfico de setores (*Pie chart*)
+
+### **Representa os dados de**: uma coluna
+### **Tipo de dado**: categórico
+### Proporção ou porcentagem de dados categóricos
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+### Clássico
+.pull-left[
+```{r pie1, eval=FALSE, message=FALSE}
+par(mar = c(0, 1, 0, 1))
+pie(c(280, 60, 20),
+    c("Sky", "Sunny side of pyramid", "Shady side of pyramid"),
+    col = c("#0292D8", "#F7EA39", "#C4B632"),
+    init.angle = -50, border = NA)
+```
+]
+
+.pull-right[
+```{r ref.label="pie1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+### Tabela de frequência
+```{r}
+# calculo da proporcao
+penguins_prop <- penguins %>%
+  dplyr::count(species) %>% 
+  dplyr::mutate(prop = round(n/sum(n), 4)*100)
+penguins_prop
+```
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+## graphics
+.pull-left[
+```{r pie2, eval=FALSE, message=FALSE}
+par(mar = c(5, 5, 5, 5))
+pie(penguins_prop$prop,
+    labels = paste(penguins_prop$prop, "%"), 
+    main = "Espécies",
+    col = c("darkorange", "darkorchid", "cyan4"))
+legend("topright", legend = penguins_prop$species, 
+       fill = c("darkorange", "darkorchid", "cyan4"))
+```
+]
+
+.pull-right[
+```{r ref.label="pie2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+## ggplot2
+.pull-left[
+```{r pie3, eval=FALSE, message=FALSE}
+ggplot(data = penguins_prop, 
+       aes(x = "", y = prop, fill = species)) + 
+  geom_bar(stat = "identity", color = "white") +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = paste0(prop, "%")), 
+            color = "white", 
+            position = position_stack(vjust = .5), size = 8) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_void() +
+  labs(fill = "Espécie")
+```
+]
+
+.pull-right[
+```{r ref.label="pie3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+## ggpubr
+.pull-left[
+```{r pie4, eval=FALSE, message=FALSE}
+ggpie(penguins_prop,
+      "prop", 
+      label = "prop",
+      lab.pos = "in", 
+      lab.font = c(8, "white"),
+      fill = "species", 
+      color = "white",
+      palette = c("darkorange", "purple", "cyan4"))
+```
+]
+
+.pull-right[
+```{r ref.label="pie4", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: inverse, center, middle
+
+# Mas todos dizem para jogar o gráfico de pizza fora e pedir uma pizza...
+
+---
+
+class: inverse, center, middle
+
+# ... e eu concordo...
+
+---
+
+class: inverse, center, middle
+
+# Então vamos usar algo mais saudável: vamos retirar o recheio da pizza...
+
+---
+
+background-image: url(img/plot_donut.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 7. Gráfico de setores (*Donut chart*)
+
+### **Representa os dados de**: uma coluna
+### **Tipo de dado**: categórico
+### Proporção ou porcentagem de dados categóricos
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 7. Gráfico de setores (*Donut chart*)
+
+## ggplot2
+.pull-left[
+```{r donut1, eval=FALSE, message=FALSE}
+ggplot(data = penguins_prop, 
+       aes(x = 2, y = prop, fill = species)) +
+  geom_bar(stat = "identity") +
+  coord_polar(theta = "y", start = 0) +
+  geom_text(aes(label = paste0(prop, "%")),
+            color = "white",
+            position = position_stack(vjust = .5), size = 5) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  xlim(0, 2.5) +
+  theme_void() +
+  theme(legend.position = c(.5, .5),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15)) +
+  labs(fill = "Espécie")
+```
+]
+
+.pull-right[
+```{r ref.label="donut1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 7. Gráfico de setores (*Donut chart*)
+
+## ggpubr
+.pull-left[
+```{r donut2, eval=FALSE, message=FALSE}
+ggdonutchart(penguins_prop,
+             "prop", 
+             label = "prop",
+             lab.pos = "in", 
+             lab.font = c(7, "white"),
+             fill = "species", 
+             color = "white",
+             palette = c("darkorange", "purple", "cyan4"))
+```
+]
+
+.pull-right[
+```{r ref.label="donut2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+background-image: url(img/plot_barplot.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 8. Gráfico de barras (*Bar plot*)
+
+### **Representa os dados de**: duas colunas
+### **Modo das colunas**: X = categórico e Y = categórico
+### Resume dados de contagens para uma coluna com diversos tipos de dados
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## Tabela de frequência
+```{r}
+# numero de individuos coletados
+penguins_count <- penguins %>%
+  dplyr::count(species)
+penguins_count
+```
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## graphics
+.pull-left[
+```{r bar1, eval=FALSE, message=FALSE}
+barplot(n ~ species,
+        data = penguins_count, 
+        col = c("darkorange", "purple", "cyan4"),
+        main = "Número de indivíduos medido por espécie",
+        xlab = "Espécies",
+        ylab = "Frequência absoluta",
+        cex.main = 1.5,
+        cex.lab = 1.3,
+        cex.axis = 1.2)
+```
+]
+
+.pull-right[
+```{r ref.label="bar1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## ggplot2
+.pull-left[
+```{r bar2, eval=FALSE, message=FALSE}
+ggplot(data = penguins_count, 
+       aes(x = species, y = n, fill = species)) +
+  geom_bar(stat = "identity") +
+  geom_label(aes(label = n), fill = "white") +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  theme(legend.position = "none") +
+  labs(x = "Espécie", 
+       y = "Número de indivíduos", 
+       fill = "Espécie")
+```
+]
+
+.pull-right[
+```{r ref.label="bar2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## ggplot2
+.pull-left[
+```{r bar3, eval=FALSE, message=FALSE}
+ggplot(data = penguins_count, 
+       aes(x = species, y = n, fill = species)) +
+  geom_bar(stat = "identity") +
+  geom_label(aes(label = n), fill = "white") +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  coord_flip() +
+  theme_bw(base_size = 15) +
+  theme(legend.position = "none") +
+  labs(x = "Espécie", 
+       y = "Número de indivíduos", 
+       fill = "Espécie")
+```
+]
+
+.pull-right[
+```{r ref.label="bar3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 9. Gráfico de barras (*Bar plot*)
+
+### ggpubr
+.pull-left[
+```{r bar4, eval=FALSE, message=FALSE}
+ggbarplot(penguins_count,
+          x = "species",
+          y = "n", 
+          fill = "species", 
+          color = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          label = TRUE, 
+          lab.pos = "in", 
+          lab.col = "white",
+          lab.size = 8,
+          main = "Número de indivíduos medido por espécie",
+          xlab = "Espécies",
+          ylab = "Frequência absoluta",
+          legend = "none")
+```
+]
+
+.pull-right[
+```{r ref.label="bar4", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 9. Gráfico de barras (*Bar plot*)
+
+### ggpubr
+.pull-left[
+```{r bar5, eval=FALSE, message=FALSE}
+ggbarplot(penguins_count,
+          x = "species",
+          y = "n", 
+          fill = "species", 
+          color = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          label = TRUE, 
+          lab.pos = "out", 
+          lab.col = "black",
+          lab.size = 8,
+          main = "Número de indivíduos medido por espécie",
+          xlab = "Espécies",
+          ylab = "Frequência absoluta",
+          legend = "none",
+          orientation = "horiz")
+```
+]
+
+.pull-right[
+```{r ref.label="bar5", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+background-image: url(img/plot_boxplot.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### **Representa os dados de**: duas colunas
+### **Modo das colunas**: X = categórico e Y = contínuo
+### Resume informações de medidas contínuas para dois ou mais fatores categóricos
+
+---
+
+background-image: url(img/plot_boxplot1.png)
+background-size: 600px
+background-position: 50% 70%
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### Intervalo inter-quartil (*interquartile range* - IQR)
+### Limite inferior e limite superipor (1.5 x IQR)
+### Valores exteriores (*outliers*)
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[Understanding Boxplots](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51)
+
+---
+
+background-image: url(img/plot_boxplot2.png)
+background-size: 500px
+background-position: 50% 35%
+
+# 9. Gráfico de caixa (*Box plot*)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Understanding Boxplots](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51)
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+## graphics
+.pull-left[
+```{r box1, eval=FALSE, message=FALSE}
+boxplot(flipper_length_mm ~ as.factor(species),
+        data = penguins,
+        col = c("darkorange", "purple", "cyan4"),
+        border = "black",
+        main = "Espécies por amostragens",
+        xlab = "Espécies",
+        ylab = "Comprimento da nadadeira (mm)",
+        cex.main = 1.5,
+        cex.lab = 1.3,
+        cex.axis = 1.2)
+```
+]
+
+.pull-right[
+```{r ref.label="box1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### ggplott2
+.pull-left[
+```{r box2, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot(width = .3, 
+               show.legend = FALSE) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Species", y = "Flipper length (mm)")
+```
+]
+
+.pull-right[
+```{r ref.label="box2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### ggplott2
+.pull-left[
+```{r box3, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot(width = .3, 
+               show.legend = FALSE) +
+  geom_jitter(alpha = .5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = .1, seed = 0)) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Species", y = "Flipper length (mm)")
+```
+]
+
+.pull-right[
+```{r ref.label="box3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 10. Gráfico de caixa (*Violin plot*)
+
+### ggplott2
+.pull-left[
+```{r box4, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_violin(width = .3, 
+              show.legend = FALSE) +
+  geom_jitter(alpha = .5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = .1, seed = 0)) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(title = "Pontos com jitter", x = "Species", y = "Flipper length (mm)")
+```
+]
+
+.pull-right[
+```{r ref.label="box4", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### ggpubr
+.pull-left[
+```{r box5, eval=FALSE, message=FALSE}
+ggboxplot(data = penguins, 
+          x = "species", 
+          y = "flipper_length_mm",
+          add = "jitter", 
+          shape = "species",
+          fill = "species",
+          color = "black",
+          palette = c("darkorange", "purple", "cyan4"),
+          xlab = "Comprimento da nadadeira (mm)",
+          ylab = "Frequência absoluta",
+          legend = "none")
+```
+]
+
+.pull-right[
+```{r ref.label="box5", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 10. Gráfico de caixa (*Violin plot*)
+
+### ggpubr
+.pull-left[
+```{r box6, eval=FALSE, message=FALSE}
+ggviolin(data = penguins, 
+         x = "species", 
+         y = "flipper_length_mm",
+         add = "jitter", 
+         shape = "species",
+         fill = "species",
+         color = "black",
+         palette = c("darkorange", "purple", "cyan4"),
+         xlab = "Comprimento da nadadeira (mm)",
+         ylab = "Frequência absoluta",
+         legend = "none")
+```
+]
+
+.pull-right[
+```{r ref.label="box6", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+background-image: url(img/plot_scatter.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+### **Representa os dados de**: duas colunas
+### **Modo das colunas**: X = numérico e Y = numérico
+### Plota a relação entre duas variáveis contínuas
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## graphics
+.pull-left[
+```{r sca1, eval=FALSE, message=FALSE}
+par(mar = c(5, 5, 1, 1))
+plot(bill_depth_mm ~ bill_length_mm,
+     data = penguins,
+     pch = 20,
+     cex = 1.5,
+     xlab = "Comprimento do bico (mm)", 
+     ylab = "Profundidade do bico (mm)",
+     cex.lab = 1.5,
+     cex.axis = 1.3,
+     bty = "l")
+```
+]
+
+.pull-right[
+```{r ref.label="sca1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggplot2
+.pull-left[
+```{r sca2, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm,
+           color = species,
+           shape = species)) +
+  geom_point(size = 3, alpha = .8) +
+  scale_shape_manual(values = c(19, 15, 17)) +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies")
+```
+]
+
+.pull-right[
+```{r ref.label="sca2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggplot2
+.pull-left[
+```{r sca3, eval=FALSE, message=FALSE}
+ggplot(data = penguins, 
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm,
+           color = species,
+           shape = species)) +
+  geom_point(size = 3, alpha = .8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_shape_manual(values = c(19, 15, 17)) +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies")
+```
+]
+
+.pull-right[
+```{r ref.label="sca3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+background-image: url(img/gif_data_dino_statistics.gif)
+background-size: 600px
+background-position: 50% 70%
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+### Same Stats, Different Graphs: Generating Datasets with Varied Appearance and Identical Statistics through Simulated Annealing
+
+#### Justin Matejka, George Fitzmaurice
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Matejka & Fitzmaurice (2017)](https://www.autodeskresearch.com/publications/samestats)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## dino
+.pull-left[
+```{r sca4, eval=FALSE, message=FALSE}
+# package
+library(datasauRus)
+
+# data + plot
+datasaurus_dozen %>% 
+  dplyr::filter(dataset == "dino") %>% 
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_point(colour = "black", fill = "black", 
+             size = 5, alpha = .75, pch = 21) +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="sca4", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## Todos os plots
+.pull-left[
+```{r sca5, eval=FALSE, message=FALSE}
+datasaurus_dozen %>% 
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_point(colour = "black", fill = "black", 
+             size = 1, alpha = .75, pch = 21) +
+  facet_wrap(~dataset) +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="sca5", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+```{r sca6, eval=FALSE, message=FALSE}
+ggscatter(data = penguins,
+          x = "flipper_length_mm", 
+          y = "bill_depth_mm",
+          color = "species",
+          fill = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          shape = "species", 
+          size = 5,
+          xlab = "Comprimento do bico (mm)", 
+          ylab = "Profundidade do bico (mm)")
+```
+]
+
+.pull-right[
+```{r ref.label="sca6", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+```{r sca7, eval=FALSE, message=FALSE}
+ggscatter(data = penguins,
+          x = "flipper_length_mm", 
+          y = "bill_depth_mm",
+          color = "species",
+          fill = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          shape = "species", 
+          size = 5,
+          xlab = "Comprimento do bico (mm)", 
+          ylab = "Profundidade do bico (mm)",
+          ellipse = TRUE, 
+          mean.point = TRUE)
+```
+]
+
+.pull-right[
+```{r ref.label="sca7", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+```{r sca8, eval=FALSE, message=FALSE}
+ggscatter(data = datasaurus_dozen %>% 
+            dplyr::filter(dataset == "dino"),
+          x = "x", 
+          y = "y",
+          size = 5,
+          xlab = "X", 
+          ylab = "Y")
+```
+]
+
+.pull-right[
+```{r ref.label="sca8", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+```{r sca9, eval=FALSE, message=FALSE}
+ggscatter(data = datasaurus_dozen,
+          x = "x", 
+          y = "y",
+          size = 1,
+          xlab = "X", 
+          ylab = "Y",
+          facet.by = "dataset")
+```
+]
+
+.pull-right[
+```{r ref.label="sca9", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+background-image: url(img/plot_correlogram.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+### **Representa os dados de**: muitas colunas
+### **Modo das colunas**: X = numérico e Y = numérico
+### Plota a relação entre duas variáveis contínuas, mas para várias colunas
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## graphics
+.pull-left[
+```{r pair1, eval=FALSE, message=FALSE}
+penguins %>%
+  dplyr::select(body_mass_g, ends_with("_mm")) %>%
+  pairs(pch = 20,
+        upper.panel = NULL)
+```
+]
+
+.pull-right[
+```{r ref.label="pair1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[GGally](http://ggobi.github.io/ggally/)
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## GGally
+.pull-left[
+```{r pair2, eval=FALSE, message=FALSE}
+# pacote
+# install.packages("GGally")
+library(GGally)
+
+penguins %>%
+  dplyr::select(body_mass_g, ends_with("_mm")) %>%
+  ggpairs() +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="pair2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## GGally
+.pull-left[
+```{r pair3, eval=FALSE, message=FALSE}
+penguins %>%
+  dplyr::select(species, sex, body_mass_g, ends_with("_mm")) %>%
+  GGally::ggpairs(aes(color = species)) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+```{r ref.label="pair3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## psych
+.pull-left[
+```{r pair4, eval=FALSE, message=FALSE}
+# pacote
+# install.packages("psych")
+library(psych)
+
+penguins %>%
+  dplyr::select(body_mass_g, ends_with("_mm")) %>%
+  pairs.panels(pch = 20, 
+               ellipses = FALSE, 
+               density = FALSE, 
+               stars = TRUE, 
+               hist.col = "gray",
+               digits = 2,
+               rug = FALSE,
+               breaks = 10,
+               ci = TRUE)
+```
+]
+
+.pull-right[
+```{r ref.label="pair4", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+background-image: url(img/cowplot_graphics.png), url(img/patchwork_graphics.png)
+background-size: 600px, 350px
+background-position: 10% 97%, 85% 95%
+
+# 12. Combinando gráficos
+
+## Descrição
+
+### Muitas vezes precisamos **combinar gráficos** para representar nossos dados
+
+--
+
+### Essa tarefa pode ser realizada depois da criação dos gráficos em aplicativos como [Inkscape](https://inkscape.org/pt-br/) ou [GIMP](https://www.gimp.org/)
+
+--
+
+### Outras vezes, podemos usar códigos e pacotes do R para fazer essa tarefa
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 12. Combinando gráficos
+
+## graphics
+
+.pull-left[
+```{r com1, eval=FALSE, message=FALSE}
+par(mfrow = c(1, 2))
+
+boxplot(flipper_length_mm ~ as.factor(species),
+        data = penguins,
+        col = c("darkorange", "purple", "cyan4"),
+        main = "Espécies por amostragens",
+        xlab = "Espécies",
+        ylab = "Comprimento da nadadeira (mm)",
+        cex.main = 1.5, cex.lab = 1.3, cex.axis = 1.2)
+
+plot(bill_depth_mm ~ bill_length_mm,
+     data = penguins,
+     pch = 20,
+     cex = 1.5,
+     main = "Comprimento e profundidade do bico", 
+     xlab = "Comprimento do bico (mm)", 
+     ylab = "Profundidade do bico (mm)",
+     cex.lab = 1.5, cex.axis = 1.3)
+```
+]
+
+.pull-right[
+```{r ref.label="com1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 12. Combinando gráficos
+
+## graphics
+
+.pull-left[
+```{r com2, eval=FALSE, message=FALSE}
+par(mfrow = c(2, 1))
+
+boxplot(flipper_length_mm ~ as.factor(species),
+        data = penguins,
+        col = c("darkorange", "purple", "cyan4"),
+        main = "Espécies por amostragens",
+        xlab = "Espécies",
+        ylab = "Comprimento da nadadeira (mm)",
+        cex.main = 1.5, cex.lab = 1.3, cex.axis = 1.2)
+
+plot(bill_depth_mm ~ bill_length_mm,
+     data = penguins,
+     pch = 20,
+     cex = 1.5,
+     main = "Comprimento e profundidade do bico", 
+     xlab = "Comprimento do bico (mm)", 
+     ylab = "Profundidade do bico (mm)",
+     cex.lab = 1.5, cex.axis = 1.3)
+```
+]
+
+.pull-right[
+```{r ref.label="com2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 12. Combinando gráficos
+
+## ggplot2
+
+.pull-left[
+```{r com3, eval=FALSE, message=FALSE}
+ggplot_boxplot <- ggplot(data = penguins, 
+                         aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot(width = .3, 
+               show.legend = FALSE) +
+  geom_jitter(alpha = .5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = .1, seed = 0)) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Species", y = "Flipper length (mm)")
+ggplot_boxplot
+```
+]
+
+.pull-right[
+```{r ref.label="com3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 12. Combinando gráficos
+
+## ggplot2
+
+.pull-left[
+```{r com4, eval=FALSE, message=FALSE}
+ggplot_scatterplot <- ggplot(data = penguins, 
+                             aes(x = bill_length_mm, 
+                                 y = bill_depth_mm,
+                                 color = species,
+                                 shape = species)) +
+  geom_point(size = 3, alpha = .8) +
+  scale_shape_manual(values = c(19, 15, 17)) +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies")
+ggplot_scatterplot
+```
+]
+
+.pull-right[
+```{r ref.label="com4", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/cowplot_package.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[cowplot](https://wilkelab.org/cowplot/)
+
+---
+
+# 12. Combinando gráficos
+
+## cowplot
+
+.pull-left[
+```{r com5, eval=FALSE, message=FALSE}
+# pacote
+# install.packages("cowplot")
+library(cowplot)
+
+# combinacao horizontal
+plot_grid(ggplot_boxplot, ggplot_scatterplot, 
+          align = "h", rel_widths = c(1, 1.5),
+          labels = "AUTO")
+```
+]
+
+.pull-right[
+```{r ref.label="com5", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 12. Combinando gráficos
+
+## cowplot
+
+.pull-left[
+```{r com6, eval=FALSE, message=FALSE}
+# combinacao vertical
+plot_grid(ggplot_boxplot, ggplot_scatterplot, 
+          ncol = 1, align = "v", 
+          labels = "AUTO")
+```
+]
+
+.pull-right[
+```{r ref.label="com6", echo=FALSE, message=FALSE}
+```
+]
+
+
+---
+
+class: clear
+background-image: url(img/patchwork_package.png)
+background-size: 300px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[patchwork](https://patchwork.data-imaginist.com/)
+
+---
+
+# 12. Combinando gráficos
+
+## patchwork
+
+.pull-left[
+```{r com7, eval=FALSE, message=FALSE}
+# pacote
+# install.packages("patchwork")
+library(patchwork)
+
+# combinacao horizontal
+ggplot_boxplot + ggplot_scatterplot
+```
+]
+
+.pull-right[
+```{r ref.label="com7", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 12. Combinando gráficos
+
+## patchwork
+
+.pull-left[
+```{r com8, eval=FALSE, message=FALSE}
+# combinacao vertical
+ggplot_boxplot / ggplot_scatterplot
+```
+]
+
+.pull-right[
+```{r ref.label="com8", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+class: clear
+background-image: url(img/gganimate_package.png)
+background-size: 400px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[gganimate](https://gganimate.com/)
+
+---
+
+# 13. Gráficos animados
+
+## gganimate
+
+.pull-left[
+```{r ani, eval=FALSE, message=FALSE}
+# pacote
+# devtools::install_github('thomasp85/gganimate')
+library(gganimate)
+
+plot_animate <- ggplot(data = penguins,
+                       aes(x = bill_length_mm, 
+                           y = bill_depth_mm, 
+                           color = species)) +
+  geom_point() +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies") +
+  labs(title = "{closest_state}") +
+  transition_states(species) +
+  enter_grow() + 
+  exit_fade()
+plot_animate
+```
+]
+
+.pull-right[
+```{r ref.label="ani", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 13. Gráficos animados
+
+## gganimate
+
+### Exportar
+```{r eval=FALSE}
+gganimate::anim_save(filename = here::here("03_dados", 
+                                           "graficos" ,
+                                           "plot_animate.gif"),
+                     animation = plot_animate)
+```
+
+---
+
+class: clear
+background-image: url(img/package_plotly.png)
+background-size: 600px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[plotly](https://plotly.com/r/)
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+.pull-left[
+```{r int1, eval=FALSE, message=FALSE}
+# pacote
+# install.packages("plotly")
+library(plotly)
+
+plot_ly(data = penguins,
+        x = ~bill_length_mm, 
+        y = ~bill_depth_mm, 
+        type = "scatter",
+        color = ~species,
+        colors = c("darkorange", "purple", "cyan4")) %>% 
+  layout(xaxis = list(title = "Comprimento do bico (mm)"),
+         yaxis = list(title = "Profundidade do bico (mm)"))
+```
+]
+
+.pull-right[
+```{r ref.label="int1", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+
+.pull-left[
+```{r int2, eval=FALSE, message=FALSE}
+plot_ly(data = penguins,
+        x = ~bill_length_mm, 
+        y = ~bill_depth_mm, 
+        z = ~body_mass_g,
+        type = "scatter3d",
+        color = ~species,
+        colors = c("darkorange", "purple", "cyan4")) %>% 
+  layout(scene = list(xaxis = list(title = "Comprimento do bico (mm)"),
+                      yaxis = list(title = "Profundidade do bico (mm)"),
+                      zaxis = list(title = "Massa (g)")))
+```
+]
+
+.pull-right[
+```{r ref.label="int2", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+
+.pull-left[
+```{r int3, eval=FALSE, message=FALSE}
+plot_penguins_scatter_int <- ggplotly(
+  ggplot(data = penguins, 
+         aes(x = bill_length_mm, 
+             y = bill_depth_mm,
+             color = species,
+             shape = species)) +
+    geom_point(size = 3, alpha = .8) +
+    geom_smooth(method = "lm", se = FALSE) +
+    scale_shape_manual(values = c(19, 15, 17)) +
+    scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+    theme_bw(base_size = 15) +
+    labs(x = "Comprimento do bico (mm)", 
+         y = "Profundidade do bico (mm)", 
+         color = "Espécies", shape = "Espécies"))
+plot_penguins_scatter_int
+```
+]
+
+.pull-right[
+```{r ref.label="int3", echo=FALSE, message=FALSE}
+```
+]
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+
+### Exportar
+```{r eval=FALSE}
+# pacote
+# install.packages("htmlwidgets")
+library(htmlwidgets)
+
+# export
+htmlwidgets::saveWidget(widget = plot_penguins_scatter_int, 
+                        file = here::here("03_dados", "graficos" ,"plot_penguins_scatter_int.html"))
+```
+
+---
+
+class: clear
+background-image: url(img/esquisse_package.png)
+background-size: 500px
+background-position: 50% 50%
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[gganimate](https://dreamrs.github.io/esquisse/)
+
+---
+
+# 15. Gráficos usando interface
+
+## esquisse
+.pull-left[
+```{r eval=FALSE}
+# pacote
+#install.packages("esquisse")
+library(esquisse)
+
+# iniciar
+esquisse::esquisser(iris)
+esquisse::esquisser(palmerpenguins::penguins)
+```
+]
+
+.pull-right[
+```{r fig.show='animate', ffmpeg.format='gif', echo=FALSE, message=FALSE}
+knitr::include_graphics("img/esquisse.gif")
+```
+]
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: inverse, center, middle
+
+# Leitura
+
+---
+
+background-image: url(img/geo_geoprocessing02.png)
+background-size: 800px
+background-position: 50% 40%
+
+# Leitura
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Xavier-da-Silva (2009)](http://www.ufrrj.br/lga/tiagomarino/artigos/oqueegeoprocessamento.pdf)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: clear, middle
+background-image: url(img/gif_frog.gif),url(img/gif_frogs.gif), url(img/package_xaringan.png)
+background-size: 250px, 500px, 130px
+background-position: 35% 50%, 90% 55%, 5% 86%
+
+## Maurício Vancine
+
+<br><br>
+
+Contatos:
+
+`r icons::icon_style(icons::fontawesome(name = "envelope", style = "solid"), fill = "#23373b")` [mauricio.vancine@gmail.com]()  
+`r icons::icon_style(icons::fontawesome("twitter"), fill = "#23373b")` [@mauriciovancine](https://twitter.com/mauriciovancine)  
+`r icons::icon_style(icons::fontawesome(name = "github"), fill = "#23373b")` [mauriciovancine](https://github.com/mauriciovancine)
+`r icons::icon_style(icons::fontawesome(name = "link", style = "solid"), fill = "#23373b")` [mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+<br><br><br><br><br>
+
+Slides criados via pacote [xaringan](https://github.com/yihui/xaringan) e tema [Metropolis](https://github.com/pat-s/xaringan-metropolis). Animação dos sapos por [@probzz](https://twitter.com/probzz/status/1367613720294170627).

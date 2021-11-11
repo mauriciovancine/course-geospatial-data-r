@@ -1,0 +1,2209 @@
+---
+title: "Introdução ao uso de dados geoespaciais no R <br><br><br>"
+subtitle: "7 Estrutura e manipulação de dados vetoriais"
+author: " Maurício H. Vancine <br> Milton C. Ribeiro"
+institute: "UNESP - Rio Claro <br> Laboratório de Ecologia Espacial e Conservação (LEEC)"
+date: "25/10/2021-05/11/2021"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: false
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"      
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, encoding = "UTF-8")
+knitr::opts_chunk$set(fig.retina = 3, 
+                      fig.align = 'center', 
+                      out.width = '40%',
+                      eval = TRUE,
+                      warning = FALSE, 
+                      message = FALSE)
+if(!require(knitr)) install.packages("knitr")
+if(!require(emo)) devtools::install_github("hadley/emo")
+if(!require(sf)) install.packages("sf")
+if(!require(tidyverse)) install.packages("tidyverse")
+if(!require(geobr)) install.packages("geobr")
+if(!require(rnaturalearth)) install.packages("rnaturalearth")
+```
+
+class: clear
+background-image: url(img/geo_vector_sf_allison.png)
+background-size: 800px
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+background-image: url(img/r_spatial.jpeg)
+background-size: 350px
+background-position: 80% 65%
+
+# 7 Estrutura e manipulação de vetores
+
+## Tópicos
+
+1. Principais pacotes
+1. Geometrias sf
+1. Classes sf
+1. Importar dados vetoriais
+1. Descrição de objetos sf
+1. Converter objetos para sf
+1. Converter CRS de objetos sf
+1. Operações de objetos sf
+1. Exportar objetos sf
+
+<br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 7´ Estrutura e manipulação de vetores
+
+## Script
+
+<br><br><br><br>
+
+## .center[`07_script_intro_geoespacial_r.R`]
+
+---
+
+background-image: url(img/geo_sp_dep.png)
+background-size: 700px
+background-position: 50% 75%
+
+# 1. Principais pacotes
+
+## Pacote sp
+
+```{r eval=FALSE}
+# sp
+install.packages("sp")
+library(sp)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[sp](https://github.com/edzer/sp/)
+
+---
+
+background-image: url(img/package_sf.gif)
+background-size: 350px
+background-position: 50% 80%
+
+# 1. Principais pacotes
+
+## Pacote sf
+
+```{r eval=FALSE}
+# sf
+install.packages("sf")
+library(sf)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[sf](https://r-spatial.github.io/sf/)
+
+---
+
+background-image: url(img/cheatsheet_sf.png)
+background-size: 500px
+background-position: 50% 70%
+
+# 1. Principais pacotes
+
+## Pacote sf
+
+### Spatial manipulation with sf cheat sheets
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Spatial manipulation with sf](https://raw.githubusercontent.com/rstudio/cheatsheets/master/sf.pdf)
+
+---
+
+background-image: url(img/geo_sf_article.png)
+background-size: 500px
+background-position: 50% 85%
+
+# 1. Principais pacotes
+
+## Pacote sf
+
+### Artigo
+> - Pebesma, Edzer. ["Simple Features for R: Standardized Support for Spatial Vector Data."](https://journal.r-project.org/archive/2018/RJ-2018-009/) The R Journal 10.01 (2018): 439-446.
+
+---
+
+background-image: url(img/geo_sf_deps.png)
+background-size: 700px
+background-position: 50% 85%
+
+# 1. Principais pacotes
+
+## Pacote sf
+
+### Dependências de outros pacotes
+
+---
+
+background-image: url(img/geo_sf_methods.png)
+background-size: 600px
+background-position: 50% 80%
+
+# 1. Principais pacotes
+
+## Pacote sf
+
+### Métodos
+
+---
+
+background-image: url(img/geo_sf_functions.png)
+background-size: 700px
+background-position: 50% 70%
+
+# 1. Principais pacotes
+
+## Pacote sf
+
+### Funções
+
+---
+
+# 1. Principais pacotes
+
+## Pacote sf - Descrição
+
+### **Rápida importação e exportação** de dados
+
+--
+
+### **Desempenho aprimorado** de mapas e gráficos
+
+--
+
+### Objetos `sf` podem ser tratados como `data frames` (`tibbles`) na maioria das **operações de manipulação**
+
+--
+
+### As funções `sf` **podem ser combinadas** usando o operador `%>%` e funcionam bem com `tidyverse`
+
+--
+
+### Os nomes das funções sf são relativamente **consistentes e intuitivos** (todos começam com `sf::st_`)
+
+---
+
+background-image: url(img/geo_vetor_dados.png), url(img/geo_vector_types.jpg)
+background-size: 650px, 450px
+background-position: 8% 60%, 95% 65%
+
+# 2. Tipos de geometrias sf
+
+## Tipos de dados geoespaciais vetoriais
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Shin et al. (2017)](https://catalog.flatworldknowledge.com/catalog/editions/campbell_2_1-essentials-of-geographic-information-systems-2-1),
+[Silva et al. (in prep.)](https://paternogbc.github.io/livro_aer/)
+
+---
+
+background-image: url(img/geo_vector_sf_types.png), url(img/geo_sf_geometries.png)
+background-size: 400px, 550px
+background-position: 15% 60%, 85% 60%
+
+# 2. Tipos de geometrias sf
+
+## Tipos de geometrias
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Lovelace et al. (2020)](https://geocompr.robinlovelace.net/)
+
+---
+
+# 3. Classes sf
+
+## O pacote sf define um sistema de três classes hierárquicas
+
+<br>
+
+```{r echo=FALSE}
+kable(tibble(Classes = c("1. Simple feature geometries (`sfg`)", 
+                         "2. Simple feature columns (`sfc`)", 
+                         "3. Simple feature (`sf`)"), 
+             Hierarquia = c("Geometria", 
+                            "Coluna de geometria", 
+                            "Camada"),
+             Informação = c("Tipo de geometria e coordenadas", 
+                            "Conjunto de `sfg` + CRS", 
+                            "Conjunto de `sfc` + atributos")))
+```
+
+<br>
+
+-   1. Classe `sfg` - uma geometria única
+-   2. Classe `sfc` - uma coluna de geometria, que é um conjunto de geometrias `sfg` e informações Sistema de Referência de Coordenadas (do inglês *Coordinate Reference Systems - CRS*)
+-   3. Classe `sf` - uma camada, que é uma coluna de geometria `sfc` dentro de um data frame com atributos não espaciais (tabela de atributos)
+
+---
+
+# 3. Classes sf
+
+## **1. Simple feature geometries (`sfg`)**
+
+### A classe `sfg` representa os **diferentes tipos de geometrias** no R: ponto, linha, polígono (e seus equivalentes ‘multi’) ou coleção de geometrias
+
+--
+
+#### Funções para criar geometrias da classe `sfg`:
+
+```{r}
+# simple
+sf::st_point()
+sf::st_linestring()
+sf::st_polygon()
+
+# multi
+sf::st_multipoint()
+sf::st_multilinestring()
+sf::st_multipolygon()
+
+# collections
+sf::st_geometrycollection()
+```
+
+---
+
+# 3. Classes sf
+
+## **1. Simple feature geometries (`sfg`)**
+
+### Os objetos `sfg` podem ser **criados** a partir de **três tipos de dados R base**:
+
+<br>
+
+### 1. **vetor numérico**: um único ponto
+### 2. **matriz**: um conjunto de pontos, onde cada linha representa um ponto, um multiponto ou uma linha
+### 3. **lista**: uma coleção de objetos como matrizes, cadeias multilinha ou coleções de geometrias
+
+---
+
+# 3. Classes sf
+
+## **1. Simple feature geometries (`sfg`)**
+
+```{r}
+# vector - point
+vec <- c(5, 2)
+po <- sf::st_point(vec)
+po
+```
+
+```{r out.width='25%'}
+# plot
+plot(po, pch = 20, cex = 4, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 3. Classes sf
+
+## **1. Simple feature geometries (`sfg`)**
+
+```{r}
+# matrix - multipoint
+multipoint_matrix <- rbind(c(5, 2), c(1, 3), c(3, 4), c(3, 2))
+po_mul <- sf::st_multipoint(multipoint_matrix)
+po_mul
+```
+
+```{r out.width='25%'}
+# plot
+plot(po_mul, pch = 20, cex = 4, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 3. Classes sf
+
+## **1. Simple feature geometries (`sfg`)**
+
+```{r}
+# matrix - linestring
+multipoint_matrix <- rbind(c(5, 2), c(1, 3), c(3, 4), c(3, 2))
+lin <- sf::st_linestring(multipoint_matrix)
+lin
+```
+
+```{r out.width='30%'}
+# plot
+plot(lin, lwd = 2, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 3. Classes sf
+
+## **1. Simple feature geometries (`sfg`)**
+
+```{r}
+# list - polygon
+polygon_list <- list(rbind(c(1, 5), c(2, 2), c(4, 1), c(4, 4), c(1, 5)))
+pol <- sf::st_polygon(polygon_list)
+pol
+```
+
+```{r out.width='25%'}
+# plot
+plot(pol, col = "gray", axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+
+### Uma **lista de objetos** `sfg` que possui o **mesmo CSR** (*Coordinate Reference System*)
+
+--
+
+### Pode conter objetos da **mesma geometria** ou de **geometrias diferentes**
+
+--
+
+### Funções para **criar** a classe `sfc` e verificar o **tipo da geometria e CRS**:
+```{r eval=FALSE}
+sf::st_sfc()
+sf::st_geometry_type()
+sf::st_crs()
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+```{r}
+# sfc point
+point1 <- sf::st_point(c(5, 2))
+point2 <- sf::st_point(c(1, 3))
+points_sfc <- sf::st_sfc(point1, point2)
+points_sfc
+```
+
+```{r}
+sf::st_geometry_type(points_sfc)
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+```{r}
+# plot
+plot(points_sfc, pch = 20, cex = 4, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+```{r}
+# sfc geometry
+po_pol_sfc <- sf::st_sfc(po, pol)
+po_pol_sfc
+```
+
+```{r}
+sf::st_geometry_type(po_pol_sfc)
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+```{r}
+# plot
+plot(po_pol_sfc, pch = 20, cex = 4, lwd = 2, col = "gray", axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+
+### Coordinate Reference Systems (CRS) - EPSG
+```{r}
+# epsg definition
+points_sfc_wgs <- sf::st_sfc(point1, point2, crs = 4326)
+sf::st_crs(points_sfc_wgs)
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+
+### Coordinate Reference Systems (CRS) - proj4string
+```{r}
+# proj4string definition
+points_sfc_wgs <- sf::st_sfc(point1, point2, crs = "+proj=longlat +datum=WGS84 +no_defs")
+sf::st_crs(points_sfc_wgs)
+```
+
+---
+
+# 3. Classes sf
+
+## **2. Simple feature columns (`sfc`)**
+```{r}
+# plot
+plot(points_sfc_wgs, pch = 20, cex = 4, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 3. Classes sf
+
+## **3. Simple feature (`sf`)**
+
+### A classe sf (simple features) são *data frames* com **atributos espaciais** armazenados em uma coluna, geralmente chamada de **geometry** 
+
+--
+
+### Essa **dualidade** é central para o conceito de **simple features**: na maioria das vezes, um sf pode **ser tratado e se comporta** como um *data frame *
+
+--
+
+### **Simple features** são, em essência, *data frames* com uma **extensão espacial**
+
+---
+
+# 3. Classes sf
+
+## **3. Simple feature (`sf`)**
+
+### Criar um objeto sf
+```{r}
+rc_point <- sf::st_point(c(-47.57, -22.39))         # `sfg` object
+rc_geom <- sf::st_sfc(rc_point, crs = 4326)        # `sfc` object
+rc_attrib <- data.frame(                       # data frame object
+  name = "Rio Claro",
+  temperature = 19,
+  date = as.Date("2020-10-13")
+)
+rc_sf <- sf::st_sf(rc_attrib, geometry = rc_geom)  # sf object
+```
+
+---
+
+# 3. Classes sf
+
+## **3. Simple feature (`sf`)**
+
+### A estrutura de um objeto sf
+```{r}
+rc_sf
+```
+
+### As duas classes do objeto sf
+```{r}
+class(rc_sf)
+```
+
+---
+
+# 3. Classes sf
+
+## **3. Simple feature (`sf`)**
+```{r out.width='35%'}
+# plot
+plot(rc_sf[1], pch = 20, cex = 4, axes = TRUE, graticule = TRUE) # rc_sf[1] - plotar a primeira coluna
+```
+
+---
+
+# 3. Classes sf
+
+## **3. Simple feature (`sf`)**
+```{r out.width='35%'}
+# plot
+plot(rc_sf[2], pch = 20, cex = 4, axes = TRUE, graticule = TRUE) # rc_sf[2] - plotar a segunda coluna
+```
+
+---
+
+# 3. Classes sf
+
+## **3. Simple feature (`sf`)**
+```{r}
+# plot
+plot(rc_sf$geometry, pch = 20, cex = 4, axes = TRUE, graticule = TRUE) # rc_sf$geometry - plotar apenas a geometria
+```
+
+---
+
+background-image: url(img/geo_data_fbds.png)
+background-size: 500px
+background-position: 50% 90%
+
+# 4. Importar dados vetoriais
+
+### Fundação Brasileira Desenvolvimento Sustentável (FBDS)
+
+Em 2015, a FBDS deu início ao *Projeto de Mapeamento em Alta Resolução dos Biomas Brasileiros*: 
+- Cobertura da terra
+- Hidrografia (nascentes, rios e lagos)
+- Áreas de Preservação Permanente (APP)
+
+O mapeamento foi concluído para os municípios dos biomas *Mata Atlântica e Cerrado*
+
+Site: https://www.fbds.org.br/<br>
+Repositório: http://geo.fbds.org.br/
+
+---
+
+# 4. Importar dados vetoriais
+
+## Download
+
+### Criar um diretório 
+```{r eval=FALSE}
+# create directory
+dir.create(here::here("03_dados", "vetor"))
+```
+
+--
+
+### Download de **pontos de nascentes** para Rio Claro/SP
+```{r eval=FALSE}
+# increase time to download
+options(timeout = 600)
+
+# download points
+for(i in c(".dbf", ".prj", ".shp", ".shx")){
+  download.file(url = paste0("http://geo.fbds.org.br/SP/RIO_CLARO/HIDROGRAFIA/SP_3543907_NASCENTES", i),
+                destfile = here::here("03_dados", "vetor", paste0("SP_3543907_NASCENTES", i)), mode = "wb")
+}
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Download
+
+### Download de **linhas da hidrografia** para Rio Claro/SP
+```{r eval=FALSE}
+# download lines
+for(i in c(".dbf", ".prj", ".shp", ".shx")){
+  download.file(url = paste0("http://geo.fbds.org.br/SP/RIO_CLARO/HIDROGRAFIA/SP_3543907_RIOS_SIMPLES", i),
+                destfile = here::here("03_dados", "vetor", paste0("SP_3543907_RIOS_SIMPLES", i)), mode = "wb")
+}
+```
+
+### Download de **polígonos de cobertura da terra** para Rio Claro/SP
+```{r eval=FALSE}
+# download polygon
+for(i in c(".dbf", ".prj", ".shp", ".shx")){
+  download.file(url = paste0("http://geo.fbds.org.br/SP/RIO_CLARO/USO/SP_3543907_USO", i),
+                destfile = here::here("03_dados", "vetor", paste0("SP_3543907_USO", i)), mode = "wb")
+}
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados preexistentes
+
+```{r}
+# importar pontos
+rc_nas <- sf::st_read(here::here("03_dados", "vetor", "SP_3543907_NASCENTES.shp"), quiet = TRUE)
+rc_nas
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados preexistentes
+
+```{r}
+# plot
+plot(rc_nas$geometry, pch = 20, col = "blue", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados preexistentes
+
+```{r}
+# importar linhas
+rc_hid <- sf::st_read(here::here("03_dados", "vetor", "SP_3543907_RIOS_SIMPLES.shp"), quiet = TRUE)
+rc_hid
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados preexistentes
+
+```{r}
+# plot
+plot(rc_hid$geometry, col = "steelblue", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados preexistentes
+
+```{r}
+# importar poligonos
+rc_cob <- sf::st_read(here::here("03_dados", "vetor", "SP_3543907_USO.shp"), quiet = TRUE)
+rc_cob
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados preexistentes
+
+```{r out.width='35%'}
+# plot
+plot(rc_cob[5], col = c("blue", "orange", "gray30", "forestgreen", "green"), main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de GPS (.gpx)
+
+```{r}
+# importar dados de gps
+gps_gpx <- sf::st_read(here::here("03_dados", "vetor", "waypoints.gpx"), layer = "waypoints", quiet = TRUE)
+gps_gpx
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de GPS (.gpx)
+
+```{r}
+# plot
+plot(gps_gpx$geometry, cex = 4, pch = 20, col = "red", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de GPS (.kml)
+
+```{r}
+# importar dados de gps
+gps_kml <- sf::st_read(here::here("03_dados", "vetor", "waypoints.kml"), quiet = TRUE)
+gps_kml
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de GPS (.kml)
+
+```{r}
+# plot
+plot(gps_kml$geometry, cex = 4, pch = 20, col = "blue", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de uma tabela de coordenadas
+
+```{r message=FALSE}
+# importar tabela
+si <- readr::read_csv(
+  here::here("03_dados", "tabelas", "ATLANTIC_AMPHIBIANS_sites.csv"))
+si
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de uma tabela de coordenadas (.csv | .xlsx)
+
+```{r}
+# converter para sf
+si_ve <- si %>% 
+  sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+si_ve
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de uma tabela de coordenadas (.csv | .xlsx)
+
+```{r}
+# plot
+plot(si_ve$geometry, pch = 20, main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+background-image: url(img/package_geobr.png)
+background-size: 300px
+background-position: 50% 70%
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r eval=FALSE}
+install.packages("geobr")
+library(geobr)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[geobr](https://github.com/ipeaGIT/geobr)
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r message=FALSE, warning=FALSE}
+# brasil 2020
+br_2020 <- geobr::read_country(year = 2020, showProgress = FALSE)
+br_2020
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# plot
+plot(br_2020$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+```{r}
+# brasil 1872
+br_1872 <- geobr::read_country(year = 1872, showProgress = FALSE)
+br_1872
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# plot
+plot(br_1872$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# sao paulo municipios
+sp_mun_2020 <- geobr::read_municipality(code_muni = "SP", year = 2020, showProgress = FALSE)
+sp_mun_2020
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# plot
+plot(sp_mun_2020$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# rio claro
+rc_2020 <- geobr::read_municipality(code_muni = 3543907, year = 2020, showProgress = FALSE)
+rc_2020
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# plot
+plot(rc_2020$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# biomas
+bi_2019 <- geobr::read_biomes(year = 2019, showProgress = FALSE)
+bi_2019
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# plot
+plot(bi_2019$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+<br>
+
+|Function|Geographies available|Years available|Source|
+|-----|-----|-----|-----|
+|`read_country()`| Country | 1872, 1900, 1911, 1920, 1933, 1940, 1950, 1960, 1970, 1980, 1991, 2000, 2001, 2010, 2013, 2014, 2015, 2016, 2017, 2018, 2019 | IBGE |
+|`read_state()`| States | 1872, 1900, 1911, 1920, 1933, 1940, 1950, 1960, 1970, 1980, 1991, 2000, 2001, 2010, 2013, 2014, 2015, 2016, 2017, 2018, 2019 | IBGE |
+|`read_municipality()`| Municipality | 1872, 1900, 1911, 1920, 1933, 1940, 1950, 1960, 1970, 1980, 1991, 2000, 2001, 2005, 2007, 2010, 2013, 2014, 2015, 2016, 2017, 2018, 2019 | IBGE | 
+|`read_biomes()`| Biomes | 2004, 2019 | IBGE | 
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *geobr*
+
+```{r}
+# list all datasets available in the geobr package
+geobr::list_geobr()
+```
+
+---
+
+background-image: url(img/package_ropensci.png)
+background-size: 500px
+background-position: 50% 70%
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *rnaturalearth*
+
+```{r eval=FALSE}
+# package
+install.packages("rnaturalearth")
+library(rnaturalearth)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br>
+[naturalearthdata](http://www.naturalearthdata.com/),
+[rnaturalearth](https://docs.ropensci.org/rnaturalearth/)
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *rnaturalearth*
+
+```{r}
+# south america
+sa <- rnaturalearth::ne_countries(scale = "small", continent = "South America", returnclass = "sf")
+sa
+```
+
+---
+
+# 4. Importar dados vetoriais
+
+## Dados de pacotes: *rnaturalearth*
+
+```{r}
+# plot
+plot(sa$geometry, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+```
+
+---
+
+# 5. Descrição de objetos sf
+
+## Informações geográficas e tabela de atributos
+
+```{r}
+# rio claro
+rc_2020
+```
+
+---
+
+background-image: url(img/geo_sf_xfig.png)
+background-size: 700px
+background-position: 50% 90%
+
+# 5. Descrição de objetos sf
+
+## Informações
+
+- *resumo do vetor*: indica o número de feições (linhas) e campos (colunas)
+- *tipo da geometria*: umas das sete classes listadas anteriormente
+- *dimensão*: número de dimensões, geralmente duas (XY)
+- *bbox (bordas)*: coordenadas mínimas e máximas da longitude e latitude
+- *informação do CRS*: `epsg` ou `proj4string` indicando o CRS
+- *tibble*: tabela de atributos, com destaque para a coluna `geom` ou `geometry` que representa cada feição ou geometria
+
+---
+
+# 5. Descrição de objetos sf
+
+## Informações geográficas
+
+### Geometry type
+
+```{r}
+# tipo de geometria
+sf::st_geometry_type(rc_2020)
+```
+
+--
+
+### Bounding box
+
+```{r}
+# extensao
+sf::st_bbox(rc_2020)
+```
+
+---
+
+# 5. Descrição de objetos sf
+
+## Informações geográficas
+
+### Coordinate Reference System (CRS)
+
+```{r}
+# crs
+sf::st_crs(rc_2020)
+```
+
+---
+
+background-image: url(img/geo_vector_attribute_table.png)
+background-size: 450px
+background-position: 45% 80%
+
+# 5. Descrição de objetos sf
+
+## Tabela de atributos
+
+### Relação entre a geometria e suas características
+
+---
+
+# 5. Descrição de objetos sf
+
+## Tabela de atributos
+
+### Acessar a tabela de atributos de um `sf`
+
+```{r}
+# acessar a tabela de atributos
+rc_2020_tab <- sf::st_drop_geometry(rc_2020)
+rc_2020_tab
+```
+
+```{r}
+# classe
+class(rc_2020_tab)
+```
+
+---
+
+background-image: url(img/geo_sp.png),url(img/geo_sp_dep.png)
+background-size: 250px, 700px
+background-position: 20% 90%, 93% 50%
+
+# 6. Converter objetos para sf
+
+## Tipos de objetos `sp`
+
+- SpatialPoints 
+- SpatialLines
+- SpatialPolygons
+- SpatialPointsdata frame
+- SpatialLinesdata frame
+- SpatialPolygonsdata frame
+
+---
+
+# 6. Converter objetos para sf
+
+## Dados `sp`
+
+```{r eval=TRUE}
+# paises sp
+co110_sp <- rnaturalearth::countries110
+co110_sp
+```
+
+---
+
+# 6. Converter objetos para sf
+
+## Converter `sp` para `sf`
+
+```{r eval=TRUE}
+# paises sf
+co110_sf <- sf::st_as_sf(co110_sp)
+co110_sf
+```
+
+---
+
+# 6. Converter objetos para sf
+
+## Converter `sf` para `sp`
+
+```{r}
+# plot
+plot(co110_sf$geometry, col = "gray", main = NA, graticule = TRUE)
+```
+
+---
+
+# 6. Converter objetos para sf
+
+## Converter `sf` para `sp`
+
+```{r}
+# paises sp
+co110_sp <- sf::as_Spatial(co110_sf)
+co110_sp
+```
+
+---
+
+# 7. Converter CRS de objetos sf
+
+## Os principais CRSs
+
+<br>
+
+```{r echo=FALSE}
+knitr::kable(tibble(
+  CRS = c("WGS84", 
+          "SIRGAS 2000",
+          "Projeção de Mollweide", 
+          "Projeção de Winkel Tripel", 
+          "Projeção Cônica de Albers",
+          "UTM"),
+  `Tipo de CRS` = c("Geográfico", 
+                    "Geográfico", 
+                    "Projetado", 
+                    "Projetado", 
+                    "Projetado", 
+                    "Projetado"),
+  Descrição = c("CRS geográfico mais comum para o mundo", 
+                "CRS geográfico oficial para o Brasil", 
+                "CRS projetado que  preserva as relações de área", 
+                "CRS projetado que preserva a área e com meridianos elípticos", 
+                "CRS projetado para escala regional, mantendo a área constante em toda sua superfície", 
+                "CRS projetado para escala local, distorcendo áreas e distâncias com a distância do centro da zona UTM"),
+  epsg.io = c("[EPSG:4326](http://epsg.io/4326)", 
+              "[EPSG:4674](http://epsg.io/4674)",
+              "[ESRI:54009](https://epsg.io/54009)", 
+              "[EPSG:54012](https://epsg.io/54012)", 
+              NA, 
+              "[EPSG:31983](https://epsg.io/31983)"),
+  spatialreference.org = c("[EPSG:4326](https://spatialreference.org/ref/epsg/4326/)",
+                           "[EPSG:4674](https://spatialreference.org/ref/epsg/4674/)","[SR-ORG:7099](https://spatialreference.org/ref/sr-org/7099/)", "[ESRI:54012](https://spatialreference.org/ref/esri/54012/)",
+                           "[SR-ORG:7823](https://spatialreference.org/ref/sr-org/7823/)",  "[EPSG:31983](https://spatialreference.org/ref/epsg/31983/)")))
+```
+
+---
+
+background-image: url(img/geo_proj_sirgas2000.png)
+background-size: 200px
+background-position: 50% 75%
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS local
+
+### SIRGAS2000/GCS -> SIRGAS2000/UTM23S
+
+```{r}
+# converter sistema de coordenadas
+rc_2020_sirgas2000_utm23s <- sf::st_transform(rc_2020, crs = 31983)
+```
+
+<br><br><br><br><br><br><br><br><br><br>
+[EPSG: 31983](https://epsg.io/31983)
+[SIRGAS2000](http://www.sirgas.org/pt/sirgas-realizations/sirgas2000/)
+
+---
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS local
+
+### SIRGAS2000/GCS -> SIRGAS2000/UTM23S
+
+```{r echo=FALSE, out.width='60%', fig.height=4.5}
+library(tidyverse)
+p1 <- ggplot() +
+  geom_sf(data = rc_2020) +
+  coord_sf(datum = sf::st_crs(4674)) +
+  labs(x = "Longitude", y = "Latitude", title = "SIRGAS2000/GCS") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7, angle = 90, hjust = .5),
+        panel.grid = element_line(size = .3, color = "black", linetype = 2))
+
+p2 <- ggplot() +
+  geom_sf(data = rc_2020) +
+  coord_sf(datum = sf::st_crs(31983)) +
+  labs(x = "X", y = "Y", title = "SIRGAS2000/UTM23S") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 7),
+        axis.text.y = element_text(size = 7, angle = 90, hjust = .5),
+        panel.grid = element_line(size = .3, color = "black", linetype = 2))
+
+gridExtra::grid.arrange(p1, p2, nrow = 1)
+```
+
+---
+
+background-image: url(img/geo_utm_zones.png)
+background-size: 500px
+background-position: 50% 75%
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS local
+
+### SIRGAS2000/GCS -> WGS84/UTM23S
+
+```{r}
+# converter sistema de coordenadas e datum
+rc_2020_wgs84_utm23s <- sf::st_transform(rc_2020, crs = 32723)
+```
+
+<br><br><br><br><br><br><br><br><br><br>
+[EPSG: 32723](https://epsg.io/32723)
+[ESRI (2021)](https://pro.arcgis.com/en/pro-app/help/mapping/properties/transverse-mercator.htm)
+
+---
+
+background-image: url(img/geo_geographic.png)
+background-size: 500px
+background-position: 50% 80%
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS local
+
+### SIRGAS2000/GCS -> WGS84/GCS
+
+```{r}
+# converter datum
+rc_2020_wgs84_gcs <- sf::st_transform(rc_2020, crs = 4326)
+```
+
+<br><br><br><br><br><br><br><br><br><br>
+[EPSG: 4326](https://epsg.io/4326)
+
+---
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS global
+
+```{r}
+# paises - WGS84/GCS
+co110_sf
+```
+
+---
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS global
+
+```{r fig.height=7}
+# plot
+plot(co110_sf$geometry, col = "gray", graticule = TRUE)
+```
+
+---
+
+background-image: url(img/geo_proj_moll.png)
+background-size: 450px
+background-position: 50% 70%
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS global
+
+### Projeção de Mollweide: preserva as relações de área
+
+```{r}
+# projecao mollweide 
+co110_sf_moll <- sf::st_transform(co110_sf, crs = "+proj=moll")
+```
+
+<br><br><br><br><br><br><br><br><br><br>
+[EPSG: 54009](https://epsg.io/54009)
+[ESRI (2021)](https://pro.arcgis.com/en/pro-app/help/mapping/properties/mollweide.html)
+
+---
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS global
+
+### Projeção de Mollweide
+
+```{r fig.height=6}
+# plot
+plot(co110_sf_moll$geometry, col = "gray", graticule = TRUE)
+```
+
+---
+
+background-image: url(img/geo_proj_laea.png)
+background-size: 200px
+background-position: 50% 80%
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS global
+
+### Projeção azimutal de Lambert: preserva os tamanhos relativos e senso de direção a partir do centro
+
+```{r}
+# projecao lambert
+co110_sf_laea <- sf::st_transform(co110_sf, crs = "+proj=laea +x_0=0 +y_0=0 +lon_0=0 +lat_0=0")
+```
+
+<br><br><br><br><br><br><br><br>
+[ESRI(2021)](https://pro.arcgis.com/en/pro-app/help/mapping/properties/lambert-azimuthal-equal-area.html)
+
+---
+
+# 7. Converter CRS de objetos sf
+
+## Converter CRS global
+
+### Projeção azimutal de Lambert
+
+```{r fig.height=6}
+# plot
+plot(co110_sf_laea$geometry, col = "gray", graticule = TRUE)
+```
+
+---
+
+background-image: url(img/geo_sf_operations.png)
+background-size: 400px
+background-position: 50% 90%
+
+# 8. Operações com objetos sf
+
+## As operações podem ser separadas em três tipos
+
+### 1. **Operações de atributos** (informações não espaciais, como tabela de atributos)
+### 2. **Operações espaciais** (informações espaciais, como localização e formato)
+### 3. **Operações geométricas** (informações geométricas, como mudanças geométricas unárias e binárias)
+
+---
+
+background-image: url(img/geo_attribute_table.jpg)
+background-size: 350px
+background-position: 75% 70%
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### Modificação de objetos espaciais baseado em **informações não espaciais** associadas a objetos sf
+
+### **Operações**
+
+### 1. Filtro
+### 2. Junção
+### 3. Agregação
+### 4. Manipulação da tabela de atributos
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.1 Filtro
+
+```{r message=FALSE}
+# filtro
+rc_cob_floresta <- rc_cob %>% 
+  dplyr::filter(CLASSE_USO == "formação florestal")
+rc_cob_floresta
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.1 Filtro
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_cob_floresta$geometry, col = "forestgreen", add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.2 Junção
+
+```{r}
+# dados
+da_classes <- tibble::tibble(CLASSE_USO = rc_cob$CLASSE_USO, 
+                             classe = c("agua", "antropico", "edificado", "floresta", "silvicultura"))
+da_classes
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.2 Junção
+
+```{r}
+# juncao
+rc_cob_classes <- dplyr::left_join(rc_cob, da_classes, by = "CLASSE_USO") %>% 
+  sf::st_drop_geometry()
+rc_cob_classes
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.3 Agregação
+
+```{r}
+# agregar
+rc_nas_n <- rc_nas %>% 
+  dplyr::group_by(MUNICIPIO, HIDRO) %>% 
+  dplyr::summarise(n = n())
+rc_nas_n
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.3 Agregação
+
+```{r out.width='30%'}
+# plot 
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_nas_n$geometry, pch = 20, col = "blue", add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.4 Manipulação da tabela de atributos
+
+```{r}
+# criar coluna
+rc_cob_cob_col_area <- rc_cob %>% 
+  dplyr::mutate(classe_area = paste0(CLASSE_USO, " (", AREA_HA, " ha)")) %>% 
+  sf::st_drop_geometry()
+rc_cob_cob_col_area
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.4 Manipulação da tabela de atributos
+
+```{r}
+# comprimento das linhas
+rc_hid_comp <- rc_hid %>% 
+  dplyr::mutate(comprimento = sf::st_length(.))
+rc_hid_comp
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 1. Operações de atributos
+
+### 1.4 Manipulação da tabela de atributos
+
+```{r}
+# area das poligonos
+rc_cob_area <- rc_cob %>% 
+  dplyr::mutate(area_m2 = sf::st_area(.))
+rc_cob_area
+```
+
+---
+
+background-image: url(img/geo_sf_spatial_join.webp)
+background-size: 600px
+background-position: 80% 75%
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### Modificação de objetos espaciais baseado na sua **localização e formato**
+
+### **Operações**
+
+### 1. Filtro espacial
+### 2. Junção espacial
+### 3. Agregação espacial
+### 4. Distância espacial
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.1 Filtro espacial
+
+```{r}
+# filtro espacial
+sf::st_intersects(x = rc_nas, y = rc_cob_floresta)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.1 Filtro espacial - interno
+
+```{r}
+# filtro espacial - interno
+rc_nas_floresta_int <- rc_nas %>% 
+  dplyr::filter(sf::st_intersects(x = ., y = rc_cob_floresta, sparse = FALSE))
+rc_nas_floresta_int
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.1 Filtro espacial [] - interno
+
+```{r}
+# filtro espacial com [] - interno
+rc_nas_floresta_int <- rc_nas[rc_cob_floresta, ]
+rc_nas_floresta_int
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.1 Filtro espacial [] - interno
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_cob_floresta$geometry, col = "forestgreen", add = TRUE)
+plot(rc_nas_floresta_int$geometry, col = "blue", pch = 20, cex = 1, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.1 Filtro espacial - externo
+
+```{r}
+# filtro espacial - externo
+rc_nas_floresta_ext <- rc_nas %>% 
+  dplyr::filter(sf::st_disjoint(x = ., y = rc_cob_floresta, sparse = FALSE))
+rc_nas_floresta_ext
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.1 Filtro espacial [] - externo 
+
+```{r}
+# filtro espacial com [] - externo
+rc_nas_floresta_ext <- rc_nas[rc_cob_floresta, , op = st_disjoint]
+rc_nas_floresta_ext
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.1 Filtro espacial
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_cob_floresta$geometry, col = "forestgreen", add = TRUE)
+plot(rc_nas_floresta_ext$geometry, col = "steelblue", pch = 20, cex = 1, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.2 Junção espacial
+
+```{r}
+# juncao espacial
+rc_nas_cob_jun <- rc_nas %>% 
+  sf::st_join(x = ., y = rc_cob) %>% 
+  dplyr::group_by(CLASSE_USO) %>% 
+  dplyr::summarise(n = n())
+rc_nas_cob_jun
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.2 Junção espacial
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_nas_cob_jun[1], col = c("blue", "orange", "gray30", "forestgreen", "green"), pch = 20, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.3 Agregação espacial
+
+```{r}
+# agregacao espacial
+rc_cob_nas_agre <- rc_nas %>% 
+  aggregate(x = ., by = rc_cob, FUN = length)
+rc_cob_nas_agre
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.3 Agregação espacial
+
+```{r out.width='30%'}
+# plot
+plot(rc_cob_nas_agre[1], axes = TRUE, graticule = TRUE, main = NA)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.4 Distância espacial
+
+```{r}
+# distancia
+rc_nas_dist_flo <- rc_nas %>% 
+  dplyr::mutate(dist_flo = sf::st_distance(rc_nas, rc_cob_floresta))
+rc_nas_dist_flo
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 2 Operações espaciais
+
+### 2.4 Distância espacial
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_cob_floresta$geometry, col = "forestgreen", add = TRUE)
+plot(rc_nas_dist_flo[7], pch = 20, add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_sf_simplify.png), url(img/geo_sf_venn.png)
+background-size: 400px, 500px
+background-position: 90% 85%, 50% 55%
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### Modificação de objetos espaciais baseado em operações que mudam a **geometria do vetor**
+
+### **Operações**
+
+1. Simplificação
+1. Centroides
+1. Pontos aleatórios
+1. Buffers
+1. Polígono convexo
+1. Polígonos de Voronoi
+1. Quadrículas e hexágonos
+1. União ("dissolver")
+1. Recorte ("clipar")
+1. Transformações de tipo
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.1 Simplificação
+
+```{r}
+# simplificacao
+rc_hid_simplificado <- sf::st_simplify(x = rc_hid, dTolerance = 1000)
+rc_hid_simplificado
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.1 Simplificação
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_hid$geometry, col = "steelblue", lwd = 2, add = TRUE)
+plot(rc_hid_simplificado$geometry, col = adjustcolor("black", .7), add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.2 Centroides
+
+```{r}
+# centroides
+rc_2020_sirgas2000_utm23s_cent <- sf::st_centroid(rc_2020_sirgas2000_utm23s)
+rc_2020_sirgas2000_utm23s_cent
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.2 Centroides
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_cent$geom, cex = 3, pch = 20, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.3 Pontos aleatórios
+
+```{r}
+# fixar amostragem
+set.seed(42)
+
+# pontos aleatorios
+rc_2020_sirgas2000_utm23s_pontos_aleatorios <- sf::st_sample(rc_2020_sirgas2000_utm23s, size = 30)
+rc_2020_sirgas2000_utm23s_pontos_aleatorios
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.3 Pontos aleatórios
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios, pch = 20, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.4 Buffer
+
+```{r}
+# buffer
+rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer <- sf::st_buffer(x = rc_2020_sirgas2000_utm23s_pontos_aleatorios, dist = 1000)
+rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.4 Buffer
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer, col = NA, lwd = 2, border = "red", add = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios, pch = 20, cex = 1, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.5 Polígono convexo
+
+```{r}
+# poligono convexo
+rc_2020_sirgas2000_utm23s_convexo <- rc_2020_sirgas2000_utm23s_pontos_aleatorios %>% 
+  sf::st_union() %>% 
+  sf::st_convex_hull()
+rc_2020_sirgas2000_utm23s_convexo 
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.5 Polígono convexo
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_convexo, col = NA, lwd = 2, border = "red", add = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios, pch = 20, cex = 1, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.6 Polígonos de Voronoi
+
+```{r}
+# poligono de voronoi
+rc_2020_sirgas2000_utm23s_voronoi <- rc_2020_sirgas2000_utm23s_pontos_aleatorios %>% 
+  sf::st_union() %>% 
+  sf::st_voronoi()
+rc_2020_sirgas2000_utm23s_voronoi
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.6 Polígonos de Voronoi
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_voronoi, col = NA, lwd = 2, border = "red", add = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios, pch = 20, cex = 1, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.7 Quadrículas e hexágonos
+
+```{r}
+# quadriculas
+rc_2020_sirgas2000_utm23s_grid <- sf::st_make_grid(x = rc_2020_sirgas2000_utm23s, cellsize = 2000, what = "polygons") %>%
+  sf::st_as_sf() %>%
+  dplyr::filter(sf::st_intersects(x = ., y = rc_2020_sirgas2000_utm23s, sparse = FALSE))
+
+# centroides das quadriculas
+rc_2020_sirgas2000_utm23s_grid_cent <- rc_2020_sirgas2000_utm23s %>% 
+  sf::st_make_grid(cellsize = 2000, what = "centers") %>%
+  sf::st_as_sf() %>%
+  dplyr::filter(sf::st_intersects(x = ., y = sf::st_union(rc_2020_sirgas2000_utm23s_grid), sparse = FALSE))
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.7 Quadrículas e hexágonos
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_grid, col = NA, border = "red", lwd = 2, add = TRUE)
+plot(rc_2020_sirgas2000_utm23s_grid_cent, pch = 20, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.7 Quadrículas e hexágonos
+
+```{r}
+# hexagonos
+rc_2020_sirgas2000_utm23s_hex <- rc_2020_sirgas2000_utm23s %>% 
+  sf::st_make_grid(cellsize = 2000, square = FALSE) %>% 
+  sf::st_as_sf() %>%
+  dplyr::filter(sf::st_intersects(x = ., y = rc_2020_sirgas2000_utm23s, sparse = FALSE))
+
+# centroides de hexagonos
+rc_2020_sirgas2000_utm23s_hex_cent <- rc_2020_sirgas2000_utm23s %>% 
+  sf::st_make_grid(cellsize = 2000, square = FALSE, what = "centers") %>% 
+  sf::st_as_sf() %>% 
+  dplyr::filter(sf::st_intersects(x = ., y = sf::st_union(rc_2020_sirgas2000_utm23s_hex), sparse = FALSE))
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.7 Quadrículas e hexágonos
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_hex, col = NA, border = "red", lwd = 2, add = TRUE)
+plot(rc_2020_sirgas2000_utm23s_hex_cent, pch = 20, add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.8 União ("dissolver")
+
+```{r}
+# uniao
+rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer_uniao <- sf::st_union(rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer)
+rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer_uniao
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.8 União ("dissolver")
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer_uniao, col = adjustcolor("blue", .1), add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.9 Recorte ("clipar")
+
+```{r}
+# recorte - interseccao
+rc_hid_interseccao <- sf::st_intersection(x = rc_hid, y = rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer_uniao)
+rc_hid_interseccao
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.9 Recorte ("clipar")
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer_uniao, col = adjustcolor("blue", .1), add = TRUE)
+plot(rc_hid_interseccao$geometry, col = "blue", add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.9 Recorte ("clipar") - diferença
+
+```{r}
+# recorte - diferenca
+rc_hid_diferenca <- sf::st_difference(x = rc_hid, y = rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer_uniao)
+rc_hid_diferenca
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.9 Recorte ("clipar") - diferença
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_2020_sirgas2000_utm23s_pontos_aleatorios_buffer_uniao, col = adjustcolor("blue", .1), add = TRUE)
+plot(rc_hid_diferenca$geometry, col = "blue", add = TRUE)
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.10 Transformações de tipo
+
+```{r}
+# transformacao de tipo
+rc_cob_floresta_polygon <- rc_cob_floresta %>% 
+  sf::st_cast("POLYGON") %>% 
+  dplyr::mutate(area_ha = sf::st_area(.)/1e4 %>% round(2))
+rc_cob_floresta_polygon
+```
+
+---
+
+# 8. Operações com objetos sf
+
+## 3 Operações geométricas
+
+### 3.10 Transformações de tipo
+
+```{r out.width='30%'}
+# plot
+plot(rc_2020_sirgas2000_utm23s$geom, col = "gray", main = NA, axes = TRUE, graticule = TRUE)
+plot(rc_cob_floresta_polygon["area_ha"], col = viridis::viridis(100),  add = TRUE)
+```
+
+---
+
+background-image: url(img/geo_shp_logo.png), url(img/geo_shp_formats.png)
+background-size: 150px, 450px
+background-position: 50% 50%, 50% 85%
+
+# 9. Exportar objetos sf
+
+## Exportar como shapefile
+
+```{r eval=FALSE}
+# exportar o vetor de floresta na extensão esri shapefile
+sf::st_write(obj = rc_cob_floresta_polygon, dsn = here::here("03_dados", "vetor", "rc_cob_floresta_polygon.shp"))
+```
+
+---
+
+background-image: url(img/geo_ban_shp.png), url(img/geo_geopackage.png)
+background-size: 250px, 600px
+background-position: 15% 65%, 85% 70%
+
+# 9. Exportar objetos sf
+
+## Exportar como geopackage
+
+```{r eval=FALSE}
+# exportar o vetor de floresta na extensão geopackage
+sf::st_write(obj = rc_cob_floresta_polygon, dsn = here::here("03_dados", "vetor", "vetores.gpkg"), layer = "rc_cob_floresta_polygon")
+
+```
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Switch from Shapefile](http://switchfromshapefile.org/),
+[Using the Geopackage Format with R](https://jsta.rbind.io/blog/2016-07-14-geopackage-r/)
+
+---
+
+background-image: url(img/geo_ban_shp.png), url(img/geo_geopackage.png)
+background-size: 250px, 600px
+background-position: 15% 65%, 85% 70%
+
+# 9. Exportar objetos sf
+
+## Exportar como geopackage
+
+```{r eval=FALSE}
+# exportar o vetor da america do sul na extensão geopackage
+sf::st_write(obj = sa, dsn = here::here("03_dados", "vetor", "vetores.gpkg"), layer = "south_america")
+```
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[Switch from Shapefile](http://switchfromshapefile.org/),
+[Using the Geopackage Format with R](https://jsta.rbind.io/blog/2016-07-14-geopackage-r/)
+
+---
+
+class: inverse, middle, center
+
+# Dúvidas?
+
+---
+
+class: clear, middle
+background-image: url(img/gif_frog.gif),url(img/gif_frogs.gif), url(img/package_xaringan.png)
+background-size: 250px, 500px, 130px
+background-position: 35% 50%, 90% 55%, 5% 86%
+
+## Maurício Vancine
+
+<br><br>
+
+Contatos:
+
+`r icons::icon_style(icons::fontawesome(name = "envelope", style = "solid"), fill = "#23373b")` [mauricio.vancine@gmail.com]()  
+`r icons::icon_style(icons::fontawesome("twitter"), fill = "#23373b")` [@mauriciovancine](https://twitter.com/mauriciovancine)  
+`r icons::icon_style(icons::fontawesome(name = "github"), fill = "#23373b")` [mauriciovancine](https://github.com/mauriciovancine)
+`r icons::icon_style(icons::fontawesome(name = "link", style = "solid"), fill = "#23373b")` [mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+<br><br><br><br><br>
+
+Slides criados via pacote [xaringan](https://github.com/yihui/xaringan) e tema [Metropolis](https://github.com/pat-s/xaringan-metropolis). Animação dos sapos por [@probzz](https://twitter.com/probzz/status/1367613720294170627).

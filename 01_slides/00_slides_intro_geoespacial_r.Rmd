@@ -1,0 +1,595 @@
+---
+title: "Introdução ao uso de dados geoespaciais no R <br><br><br>"
+subtitle: "PPG Ecologia, Evolução e Biodiversidade"
+author: " Maurício H. Vancine <br> Milton C. Ribeiro"
+institute: "UNESP - Rio Claro <br> Laboratório de Ecologia Espacial e Conservação (LEEC)"
+date: "25/10/2021-05/11/2021"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts, custom.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: false
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%/%total%"
+      ratio: "16:9"
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, encoding = "UTF-8")
+knitr::opts_chunk$set(fig.retina = 3, warning = FALSE, message = FALSE)
+```
+
+class: inverse, center, middle
+
+# Primeiramente, gostaria de agradecê-los pela presença na disciplina, sejam muito bem-vindas e bem-vindos!
+
+---
+
+class: inverse, center, middle
+
+# Apresentações
+
+---
+
+background-image: url(img/general_licenca.png)
+background-size: 400px
+background-position: 50% 90%
+
+# Licença
+
+## Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)
+
+- **Atribuição** — Você deve dar o crédito apropriado, prover um link para a licença e indicar se mudanças foram feitas. Você deve fazê-lo em qualquer circunstância razoável, mas de nenhuma maneira que sugira que o licenciante apoia você ou o seu uso
+
+- **NãoComercial** — Você não pode usar o material para fins comerciais
+
+- **CompartilhaIgual** — Se você remixar, transformar, ou criar a partir do material, tem de distribuir as suas contribuições sob a mesma licença que o original. 
+
+### Saiba mais em: [Creative Commons](https://br.creativecommons.net/licencas/)
+
+---
+
+# Apresentações
+
+## Edições
+
+### 1.0 - Ministrada em 2019, a pedido do **Prof. Thiago Gonçalves Souza (Toyoyo)** na UFRPE
+
+--
+
+### 2.0 - Ministrada em 2020, a pedido do **Prof. Miltinho** na UNESP (remoto)
+
+--
+
+### 3.0 - Ministrada agora em 2021, a pedido do **Prof. Miltinho** na UNESP (remoto)
+
+--
+
+...
+
+---
+
+background-image: url(img/person_miltinho.jpg)
+background-size: 300px
+background-position: 50% 70%
+
+# Apresentações
+
+## Miltinho
+
+### Quer se apresentar e apresentar a disciplina?
+
+---
+
+background-image: url(img/logo_leec_lab.png), url(img/general_unesp_logo.jpg), url(img/person_mauricio_vancine.jpg), url(img/gif_frog.gif)
+background-size: 150px, 300px, 250px, 250px
+background-position: 55% 31%, 84% 31%, 84% 85%, 55% 95%
+
+# Apresentações
+
+## Maurício Vancine
+
+### Ecólogo (2014) | Mestre em Zoologia (2018) | Doutorando em Ecologia (2020)
+
+**Pesquisa**
+- Ecologia Espacial
+- Modelagem Ecológica
+- Ecologia e Conservação de Anfíbios
+
+**Habilidades**
+- Modelos de Distribuição de Espécies (SDMs)
+- Análise de Dados Ecológicos e Geoespaciais
+- *Open source* [R, QGIS, GRASS GIS, GNU/Linux, ...]
+
+**Informações:**
+
+[mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+---
+
+background-image: url(img/general_introduce_yourself.jpg)
+background-size: 300px
+background-position: 90% 20%
+
+# Apresentações
+
+## Participantes (~5-10 segundos)
+
+<br>
+
+### 1. Nome
+
+### 2. Formação
+
+### 3. O que faz ou pensa em fazer da vida?
+
+### 4. Conhece algo de git, GitHub, R ou geoprocessamento?
+
+### 5. O que "sente" ou "espera" em relação à disciplina?
+
+### 6. Como pretende usar a parte geoespacial em seu projeto ou na vida?
+
+---
+
+background-image: url(img/general_master_meme.jpg)
+background-size: 300px
+background-position: 95% 45%
+
+# Apresentações
+
+## Informações
+
+### Carga horária
+
+60 h (4 créditos)
+
+--
+
+### Participantes
+
+Sei lá...
+
+--
+
+### Aulas expositivas
+
+Teórico-prático:  [09:00 h - 12:00 h | 14:00 h - 17:00 h] (30 horas)
+
+--
+
+### Avaliação 
+
+Desenvolvimento de um projeto prático: [09:00 h - 12:00 h | 14:00 h - 17:00 h] (30 horas)
+
+Vou atendê-los: [09:00 h - 12:00 h]
+
+---
+
+background-image: url(img/talk_cheap.jpg)
+background-size: 600px
+background-position: 50% 60%
+
+# Apresentações
+
+## Disciplina prática
+
+---
+
+background-image: url(img/git_github.png)
+background-size: 600px
+background-position: 95% 120%
+
+# Apresentações
+
+## Conteúdo
+
+### 1 Controle de versão, git e GitHub
+
+.pull-left[
+1 Conferir os computadores  
+2 Controle de versão  
+3 git e GitHub  
+4 Funcionamento do controle de versão  
+5 GitHub: Fork  
+6 Configuração: RStudio, git, GitHub  
+7 Iniciando localmente: git init  
+8 Iniciando remotamente: git clone  
+9 Versionamento: git add, git commit e git status  
+10 Ignorando: .gitignore  
+11 Histórico: git log e git show  
+12 Diferenças: git diff
+]
+.pull-right[
+13 Desfazer: git revert e git reset  
+14 Ramificações: git branch, git switch e git merge  
+15 Remoto: git remote, git push e git pull  
+16 GitHub: Pull request  
+17 Detalhes do repositório do GitHub  
+18 Interface gráfica do RStudio  
+19 Principal material de estudo
+]
+
+[git](https://git-scm.com/), [GitHub](https://github.com/)
+
+---
+
+background-image: url(img/r_rstudio.png)
+background-size: 400px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 2 Funcionamento da linguagem R
+
+1. Linguagem R
+1. RStudio
+1. Console
+1. Scripts
+1. Operadores
+1. Objetos
+1. Funções
+1. Pacotes
+1. Ajuda
+1. Ambiente
+1. Citações
+1. Principais erros
+1. Principal material de estudo
+
+[R](https://www.r-project.org/), [RStudio](https://www.rstudio.com/)
+
+---
+
+background-image: url(img/r_data_structures01.png)
+background-size: 350px
+background-position: 85% 85%
+
+# Apresentações
+
+## Conteúdo
+
+### 3 Estrutura e manipulação de dados
+
+1. Atributos dos objetos
+1. Manipulação de dados unidimensionais
+1. Manipulação de dados multidimensionais
+1. Valores faltantes e especiais
+1. Diretório de trabalho
+1. Importar dados
+1. Conferência de dados importados
+1. Exportar dados
+
+<br><br><br><br>
+[R Programming – Beginners Guide To R Programming Language](https://www.edureka.co/blog/r-programming-language)
+
+---
+
+background-image: url(img/package_tidyverse.png)
+background-size: 300px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 4 Introdução ao tidyverse
+
+1. Contextualização
+1. tidyverse
+1. here
+1. readr, readxl e writexl
+1. tibble
+1. magrittr (pipe - %>%)
+1. tidyr
+1. dplyr
+1. stringr
+1. forcats
+1. lubridate
+1. purrr
+
+[tidyverse](https://www.tidyverse.org/)
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 300px
+background-position: 85% 65%
+
+# Apresentações
+
+## Conteúdo
+
+### 5 Visualização de dados
+
+1. Contextualização
+1. Pacotes para produção de gráficos
+1. Gramática dos gráficos
+1. Principal material de estudo 
+1. Principais tipos de gráficos 
+1. Histograma e Densidade
+1. Gráfico de setores
+1. Gráfico de barras
+1. Gráfico de caixas
+1. Gráfico de dispersão
+1. Gráfico pareado
+1. Combinando gráficos
+1. Gráficos animados
+1. Gráficos interativos
+1. Gráficos usando interface
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+background-image: url(img/general_sig.jpg)
+background-size: 270px
+background-position: 85% 70%
+
+# Apresentações
+
+## Conteúdo
+
+### 6 Estrutura e fonte de dados geoespaciais
+
+1. Geoprocessamento
+1. Cartografia
+1. *Global Positioning System* (GPS)
+1. Sensoriamento Remoto
+1. Sistema de Informação Geográfica (SIG)
+1. Dados geoespaciais
+1. Dados vetoriais
+1. Dados matriciais (gride ou raster)
+1. Conversão de dados geoespaciais (vetor-raster)
+1. Banco de dados geoespaciais
+1. Principais fontes de dados geoespaciais
+1. Principal material de estudo
+
+[Shin et al. (2017)](https://catalog.flatworldknowledge.com/catalog/editions/campbell_2_1-essentials-of-geographic-information-systems-2-1)
+
+---
+
+background-image: url(img/r_spatial.jpeg)
+background-size: 300px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 7 Estrutura e manipulação de dados vetoriais
+
+1. Principais pacotes
+1. Geometrias sf
+1. Classes sf
+1. Importar dados vetoriais
+1. Descrição de objetos sf
+1. Converter objetos para sf
+1. Converter CRS de objetos sf
+1. Operações de objetos sf
+1. Exportar objetos sf
+
+<br><br><br>
+[Lovelace et al. (2019)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/r_spatial.jpeg)
+background-size: 300px
+background-position: 85% 75%
+
+# Apresentações
+
+## Conteúdo
+
+### 8 Estrutura e manipulação de dados matriciais
+
+1. Principais pacotes
+1. Classes raster
+1. Importar dados matriciais
+1. Descrição de objetos raster
+1. Converter CRS de objetos raster
+1. Operações de objetos raster
+1. Interações raster-vetor
+1. Conversões raster-vetor
+1. Índices espectrais
+1. Exportar objetos raster
+
+<br><br>
+[Lovelace et al. (2019)](https://geocompr.robinlovelace.net/)
+
+---
+
+background-image: url(img/package_ggplot2.png), url(img/package_tmap.png), url(img/package_mapsf.png), url(img/package_leaflet.jpeg), url(img/box_anim.gif)
+background-size: 200px, 200px, 200px, 200px, 200px
+background-position: 60% 30%, 85% 30%, 50% 90%, 73% 90%, 95% 90%
+
+# Apresentações
+
+## Conteúdo
+
+### 9 Visualização de dados geoespaciais
+
+1. Elementos de um mapa
+1. Pacotes para produção de mapas
+1. Mapas estáticos
+1. Mapas animados
+1. Mapas interativos
+
+<br><br><br><br><br><br><br>
+[ggplot2](https://ggplot2.tidyverse.org/), [tmap](https://r-tmap.github.io/tmap/), [mapsf](https://riatelab.github.io/mapsf/), [leaflet](https://rstudio.github.io/leaflet/), [mapview](https://r-spatial.github.io/mapview/)
+
+---
+
+background-image: url(img/package_xaringan.png)
+background-size: 300px
+background-position: 50% 70%
+
+# Apresentações
+
+## Slides
+
+### Todos os slides estão disponibilizados em .html e .pdf
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+[xaringan](https://slides.yihui.org/xaringan)
+
+---
+
+background-image: url(img/github_logo.png)
+background-size: 400px
+background-position: 50% 75%
+
+# Apresentações
+
+## Material
+
+### O material da disciplina pode ser acessado nesse repositório
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[Repositório no GitHub](https://github.com/mauriciovancine/course-geospatial-data-r)
+
+---
+
+background-image: url(img/general_rio_claro01.jpg), url(img/general_rio_claro02.jpg), url(img/geo_data_fbds.png), url(img/geo_rio_claro-removebg-preview.png)
+background-size: 350px, 350px, 350px, 500px
+background-position: 8% 40%, 51% 90%, 8% 82%, 90% 90%
+
+# Apresentações
+
+## Material
+
+### Vamos usar dados geoespaciais de Rio Claro/SP
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[FBDS](https://www.fbds.org.br/),
+[SRTM](https://srtm.csi.cgiar.org/),
+[WorldClim](https://www.worldclim.org/)
+
+---
+
+background-image: url(img/general_list.jpg), url(img/general_ats.jpg)
+background-size: 150px, 250px
+background-position: 86% 35%, 90% 90%
+
+# Apresentações
+
+## Avaliação
+
+### A avaliação será desenvolver um projeto do início ao fim
+
+**Repositório**
+
+- Criar e versionar um repositório no GitHub
+- Baixar e organizar um conjunto de dados
+- Usaremos os data papers pata a Mata Atlântica, Brasil e Neotrópicos
+
+**Proposta e análise**
+
+- Propor e realizar análises geoespaciais e estatísticas (coisa leve para não complicar)
+- Apresentar esses resultados na forma de seminário no dia 05/11
+
+**Critérios de avaliação**
+
+- Participação, repositório e apresentação final
+
+[Data papers](https://marcoarmello.wordpress.com/2017/09/11/datapaper/)
+
+---
+
+background-image: url(img/discord-logo.png)
+background-size: 300px 
+background-position: 85% 70%
+
+# Apresentações
+
+## Avaliação
+
+### 8 Grupos pré-definidos aleatoriamente com nomes de frutas da Mata Atlântica
+
+- G1-Araçá      
+- G2-Uvaia     
+- G3-Juçara    
+- G4-Cambuci
+- G5-Pitangatuba  
+- G6-Grumixama      
+- G7-Butiá  
+- G8-Guabiroba
+
+### Grupos fechados até quarta-feira (27/10)
+
+### Comunicação através de grupos no Discord
+
+---
+
+class: inverse, center, middle
+
+# Todas e todas de acordo?
+
+---
+
+background-image: url(img/r_principio_agora_pt.png)
+background-size: 350px
+background-position: 97% 85%
+
+# IMPORTANTE!
+
+## Pontos fundamentais
+
+### Disciplina de pós-graduação **à distância** é complicado...
+
+### Com certeza **teremos alguns problemas...**
+
+### Entretanto, o foco será o **ensino**, então tenhamos **paciência**
+
+### Por favor, **perguntem** e **me interrompam**!
+
+### O principal objetivo é que vocês **aprendam**!
+
+<br><br><br><br>
+[@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+background-image: url(img/general_starwars_teamwork.png)
+background-size: 500px
+background-position: 50% 80%
+
+# IMPORTANTE!
+
+## Espaço seguro e amigável
+
+### Sintam-se à vontade para me interromper e tirar dúvidas
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+[@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: clear, middle
+background-image: url(img/gif_frog.gif),url(img/gif_frogs.gif), url(img/package_xaringan.png)
+background-size: 250px, 500px, 130px
+background-position: 35% 50%, 90% 55%, 5% 86%
+
+## Maurício Vancine
+
+<br><br>
+
+Contatos:
+
+`r icons::icon_style(icons::fontawesome(name = "envelope", style = "solid"), fill = "#23373b")` [mauricio.vancine@gmail.com]()  
+`r icons::icon_style(icons::fontawesome("twitter"), fill = "#23373b")` [@mauriciovancine](https://twitter.com/mauriciovancine)  
+`r icons::icon_style(icons::fontawesome(name = "github"), fill = "#23373b")` [mauriciovancine](https://github.com/mauriciovancine)
+`r icons::icon_style(icons::fontawesome(name = "link", style = "solid"), fill = "#23373b")` [mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+<br><br><br><br><br>
+
+Slides criados via pacote [xaringan](https://github.com/yihui/xaringan) e tema [Metropolis](https://github.com/pat-s/xaringan-metropolis). Animação dos sapos por [@probzz](https://twitter.com/probzz/status/1367613720294170627).

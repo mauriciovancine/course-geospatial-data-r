@@ -1,0 +1,2950 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introdução ao uso de dados geoespaciais no R    </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Maurício H. Vancine   Milton C. Ribeiro" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <script src="libs/plotly-binding/plotly.js"></script>
+    <script src="libs/typedarray/typedarray.min.js"></script>
+    <script src="libs/jquery/jquery.min.js"></script>
+    <link href="libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+    <script src="libs/crosstalk/js/crosstalk.min.js"></script>
+    <link href="libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+    <script src="libs/plotly-main/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introdução ao uso de dados geoespaciais no R <br><br><br>
+## 5 Visualização de dados
+### Maurício H. Vancine <br> Milton C. Ribeiro
+### UNESP - Rio Claro <br> Laboratório de Ecologia Espacial e Conservação (LEEC)
+### 25/10/2021-05/11/2021
+
+---
+
+
+
+
+class: clear, center, middle
+background-image: url(img/plot_saurus.png)
+background-size: 800px
+background-position: 50% 50%
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 300px
+background-position: 85% 75%
+
+# 5 Visualização de dados
+
+## Conteúdo
+
+1. Contextualização
+1. Pacotes para produção de gráficos
+1. Gramática dos gráficos
+1. Principal material de estudo 
+1. Principais tipos de gráficos 
+1. Histograma e Densidade
+1. Gráfico de setores
+1. Gráfico de barras
+1. Gráfico de caixas
+1. Gráfico de dispersão
+1. Gráfico pareado
+1. Combinando gráficos
+1. Gráficos animados
+1. Gráficos interativos
+1. Gráficos usando interface
+
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 5 Visualização de dados
+
+## Script
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+## .center[`05_script_intro_geoespacial_r.R`]
+
+---
+
+# 1. Contextualização
+
+## Descrição
+
+### Melhor forma de **apresentar, sintetizar, discutir e interpretar** seus dados
+
+--
+
+### Necessário em quase todas as **análises estatísticas** 
+
+--
+
+### Necessário em quase todas as **publicações**, trabalhos de consultoria, TCC, dissertação, tese, etc. 
+
+--
+
+### Existem vários **tipos de gráficos** para representar os padrões em seus dados para **diferentes tipos de finalidades**
+
+--
+
+### De forma simplificada, os gráficos são **representações** dos nossos dados tabulares
+
+---
+
+# 2. Pacotes para produção de gráficos
+
+### Principais pacotes
+
+--
+
+#### [graphics](http://search.r-project.org/R/library/graphics/html/00Index.html): simples, porém útil para visualizações rápidas de quase todos os formatos de arquivos
+
+--
+
+#### [ggplot2](https://ggplot2.tidyverse.org/): pacote integrado ao tidyverse, possui uma sintaxe própria baseada na gramática de gráficos por camadas (layers)
+
+--
+
+#### [ggplot2 extentions](https://exts.ggplot2.tidyverse.org/): conjunto de pacotes que adicionam diversas expansões ao pacote ggplot2. Exemplos: [GGally](https://ggobi.github.io/ggally/), [gganimate](https://gganimate.com/) e [esquisse](https://dreamrs.github.io/esquisse/)
+
+--
+
+#### [visdat](https://docs.ropensci.org/visdat/): cria visualizações preliminares de um conjunto de dados inteiro para identificar problemas ou recursos inesperados usando `ggplot2`
+
+--
+
+#### [ggpubr](https://rpkgs.datanovia.com/ggpubr/): fornece algumas funções simplificadas para criar gráficos para publicação, baseados no `ggplot2`
+
+--
+
+#### [cowplot]((https://wilkelab.org/cowplot/): pacote que permite combinar vários gráficos de forma elaborada
+
+--
+
+#### [pacthwork](https://patchwork.data-imaginist.com/): pacote que permite combinar vários gráficos em um só de forma extremamente simples e com alta qualidade
+
+--
+
+#### [plotly](https://plotly.com/r/): pacote para criar gráficos interativos da web por meio da biblioteca gráfica de JavaScript de código aberto plotly.js
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+background-image: url(img/package_graphics.png)
+background-size: 250px
+background-position: 85% 85%
+
+# 2. Principais pacotes para gráficos
+
+## **graphics**
+
+### Default do R e mais simples
+
+--
+
+### Pode ser utilizado para objetos de **diversas classes**
+
+--
+
+### Possui funções como:
+
+`plot()`&lt;br&gt;
+`hist()`&lt;br&gt;
+`barplot()`&lt;br&gt;
+`boxplot()`&lt;br&gt;
+`abline()`&lt;br&gt;
+`points()`&lt;br&gt;
+`lines()`&lt;br&gt;
+`polygon()`&lt;br&gt;
+
+---
+
+# 2. Principais pacotes para gráficos
+
+## **graphics**
+
+
+```r
+# graphics
+plot(flipper_length_mm ~ body_mass_g, data = penguins)
+```
+
+&lt;img src="05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-1-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+background-image: url(img/cheatsheet_ggplot2.png)
+background-size: 600px
+background-position: 50% 50%
+
+# 2. Principais pacotes para gráficos
+
+## Data Visualization Cheatsheet
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+[Data Visualization with ggplot2 Cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf)
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 250px
+background-position: 85% 85%
+
+# 2. Principais pacotes para gráficos
+
+## **ggplot2**
+
+### Integrado ao tidyverse, possui uma sintaxe própria
+
+--
+
+### Necessita de funções específicas para objetos de **classes diferentes**
+
+--
+
+### Estruturado dessa forma:
+
+`ggplot() +`&lt;br&gt;
+`aes() +`&lt;br&gt;
+`geom_() +`&lt;br&gt;
+`facet_() +`&lt;br&gt;
+`stats_() +`&lt;br&gt;
+`coord_() +`&lt;br&gt;
+`theme_()`&lt;br&gt;
+
+---
+
+# 2. Principais pacotes para gráficos
+
+## **ggplot2**
+
+
+```r
+# ggplot2
+library(ggplot2)
+ggplot(data = penguins) + aes(x = body_mass_g, y = flipper_length_mm) + geom_point()
+```
+
+&lt;img src="05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-2-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+background-image: url(img/package_ggpubr.png)
+background-size: 250px
+background-position: 85% 85%
+
+# 2. Principais pacotes para gráficos
+
+## **ggpubr**
+
+### Funções fáceis de usar para criar e personalizar plots para publicações baseadas no "ggplot2"
+
+--
+
+### Necessita de funções específicas para gerar **gráficos específicos**
+
+--
+
+### Funções:
+
+`gghistogram()`&lt;br&gt;
+`ggdensity()`&lt;br&gt;
+`ggboxplot()`&lt;br&gt;
+`ggviolin()`&lt;br&gt;
+`ggbarplot()`&lt;br&gt;
+`ggscatter()`&lt;br&gt;
+
+---
+
+# 2. Principais pacotes para gráficos
+
+## **ggpubr**
+
+
+```r
+# ggpubr
+library(ggpubr)
+ggscatter(penguins, x = "body_mass_g", y = "flipper_length_mm")
+```
+
+&lt;img src="05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-3-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+
+background-image: url(img/cover_grammar_graphics.jpg), url(img/ggplot2_structure.png)
+background-size: 200px, 600px
+background-position: 20% 70%, 85% 70%
+
+# 3. Gramática dos gráficos
+
+## Descrição
+
+### Wilkinson (2005) *Grammar of Graphics*: representação gráfica dos dados a partir de atributos estéticos (do inglês *aesthetic*)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Wilkinson (2005)](https://www.springer.com/gp/book/9780387245447)
+
+
+---
+
+background-image: url(img/plot_ggplot.gif)
+background-size: 750px
+background-position: 50% 45%
+
+# 3. Gramática dos gráficos
+
+## Descrição
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Think About the Grammar of Graphics When Improving Your Graphs](https://medium.com/tdebeus/think-about-the-grammar-of-graphics-when-improving-your-graphs-18e3744d8d18)
+
+---
+
+background-image: url(img/plot_ggplot2.png), url(img/ggplot2_gramatica.png)
+background-size: 500px, 600px
+background-position: 5% 70%, 90% 70%
+
+# 3. Gramática dos gráficos
+
+## Descrição
+
+### Wickham (2008) criou o pacote **ggplot2**, onde “gg” representa a contração de Grammar of Graphics
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Wickham (2008)](https://ggplot2-book.org/)
+
+---
+
+background-image: url(img/person_hadley_wickham.jpg)
+background-size: 500px
+background-position: 50% 70%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### O idealizador e mantenedor do pacote **ggplot2** foi de novo o **Hadley Wickham**
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Hadley Wickham](http://hadley.nz/)
+
+---
+
+background-image: url(img/cover_ggplot2.jpg)
+background-size: 230px
+background-position: 50% 63%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### ggplot2 (2009, 2016)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Wickham (2009, 2016)](https://ggplot2.tidyverse.org/)
+
+---
+
+background-image: url(img/cover_r_graphics_cookbook.jpg)
+background-size: 250px
+background-position: 50% 63%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### R Graphics Cookbook (2018)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Chang (2018)](http://www.cookbook-r.com/Graphs/)
+
+---
+
+background-image: url(img/cover_data_science_r.png)
+background-size: 250px
+background-position: 50% 70%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### R for Data Science (2017)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Wickham &amp; Grolemund (2017)](https://r4ds.had.co.nz/)
+
+---
+
+background-image: url(img/cover_data_visualization_with_r.png)
+background-size: 230px
+background-position: 50% 65%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### Data Visualization with R (2018)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Kabacoff (2018)](https://rkabacoff.github.io/datavis/)
+
+---
+
+background-image: url(img/cover_fundamentals_of_data_visualization.png)
+background-size: 260px
+background-position: 50% 63%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### Fundamentals of Data Visualization (2019)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Wilke (2019)](https://serialmentor.com/dataviz/)
+
+---
+
+background-image: url(img/cover_interative.png)
+background-size: 260px
+background-position: 50% 68%
+
+# 4. Principal material de estudo
+
+## Livros
+
+### Interactive web-based data visualization with R, plotly, and shiny (2019)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Sievert (2019)](https://plotly-r.com/)
+
+---
+
+background-image: url(img/package_ggplot2.png)
+background-size: 300px
+background-position: 50% 60%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### ggplot2: Reference
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2 reference](https://ggplot2.tidyverse.org/reference/)
+
+---
+
+background-image: url(img/plot_r_graph_gallery.png)
+background-size: 800px
+background-position: 50% 60%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### R Graph Gallery
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[R Graph Gallery](https://www.r-graph-gallery.com/)
+
+---
+
+background-image: url(img/plot_tree_s.png)
+background-size: 400px
+background-position: 50% 60%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### from Data to Viz
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[from Data to Viz](https://www.data-to-viz.com/)
+
+---
+
+background-image: url(img/plot_sthda.png)
+background-size: 300px
+background-position: 50% 70%
+
+# 4. Principal material de estudo
+
+## Sites
+
+### Statistical tools for high-throughput data analysis (STHDA)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[STHDA](http://www.sthda.com/english/)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: inverse, center, middle
+
+# Os elementos de um gráfico são representações das colunas (eixos) e linhas (elementos) de nossas matrizes de dados
+
+---
+
+background-image: url(img/plot_data_table_scatterplot.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 5. Principais tipos de gráficos
+
+## Colunas se tornam eixos e valores a representação
+
+---
+
+background-image: url(img/plot_variables.png)
+background-size: 800px
+background-position: 50% 50%
+
+# 5. Principais tipos de gráficos
+
+## Tipos de variáveis
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Matthiopoulos (2011)](http://greenmaths.st-andrews.ac.uk/)
+
+---
+
+background-image: url(img/nominal_ordinal_binary.png), url(img/continuous_discrete.png), url(img/plot_variables.png)
+background-size: 420px, 335px, 400px
+background-position: 23% 78%, 69% 78%, 50% 15%
+
+# 5. Principais tipos de gráficos
+
+## Tipos de variáveis
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Matthiopoulos (2011)](http://greenmaths.st-andrews.ac.uk/), [@allison_horst](https://twitter.com/allison_horst)
+
+---
+
+class: inverse, center, middle
+
+# O **tipo e quantidade das variáveis** indicará o melhor tipo de gráfico para **representar** os dados
+
+---
+
+background-image: url(img/ggplot_data_from_viz.png)
+background-size: 800px
+background-position: 50% 60%
+
+# 5. Principais tipos de gráficos
+
+## from Data to Viz
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[from Data to Viz](https://www.data-to-viz.com/)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: inverse, center, middle
+
+# E que dados vamos usar?
+
+---
+
+class: clear
+background-image: url(img/package_palmerpenguins.png)
+background-size: 400px
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[palmerpenguins](https://allisonhorst.github.io/palmerpenguins/)
+
+---
+
+background-image: url(img/culmen_depth.png), url(img/lter_penguins.png)
+background-size: 400px, 400px
+background-position: 20% 85%, 80% 85%
+
+# palmerpenguins
+
+## Dados de medidas de pinguins chamados `palmerpenguins`
+
+
+```r
+# carregar
+library(palmerpenguins)
+
+# visualizar os dados
+penguins
+
+# glimpse
+tibble::glimpse(penguins)
+```
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[palmerpenguins ](https://allisonhorst.github.io/palmerpenguins/)
+
+---
+
+background-image: url(img/plot_histogram.png), url(img/plot_density.png)
+background-size: 300px, 300px
+background-position: 30% 80%, 70% 80%
+
+# 6. Histograma (*Histogram*)
+
+### **Representa os dados de**: uma coluna
+### **Tipo de dado**: discreto ou contínuo
+### Distribuição de frequência e densidade de dados discretos ou contínuos
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+
+```r
+hist(penguins$flipper_length_mm)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+
+```r
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+
+```r
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+
+```r
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+
+```r
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência",
+     br = 50)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## graphics
+.pull-left[
+
+```r
+par(mar = c(5, 5, 5, 5))
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência",
+     br = 50,
+     cex.main = 2,
+     cex.lab = 2, 
+     cex.axis = 1.5)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## graphics
+.pull-left[
+
+```r
+par(mar = c(5, 5, 5, 5))
+hist(penguins$flipper_length_mm,
+     col = "gray50",
+     border = "gray",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Densidade",
+     br = 50,
+     cex.main = 2,
+     cex.lab = 2, 
+     cex.axis = 1.5,
+     prob = TRUE)
+lines(density(na.omit(penguins$flipper_length_mm)))
+```
+]
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## graphics
+.pull-left[
+
+```r
+par(mar = c(5, 5, 5, 5))
+plot(density(na.omit(penguins$flipper_length_mm)),
+     col = "gray50",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Densidade",
+     cex.main = 2,
+     cex.lab = 2, 
+     cex.axis = 1.5)
+polygon(density(na.omit(penguins$flipper_length_mm)), 
+        col = "gray50")
+```
+]
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+]
+
+
+---
+
+# 6. Densidade (*Density*)
+
+## graphics
+
+### Exportar
+
+```r
+png(here::here("03_dados", "graficos", "plot_densidade.png"), 
+    wi = 15, he = 15, un = "cm", res = 300)
+```
+
+--
+
+
+```r
+par(mar = c(5, 5, 5, 5))
+plot(density(na.omit(penguins$flipper_length_mm)),
+     col = "gray50",
+     main = "Comprimento da nadadeira dos penguins",
+     xlab = "Comprimento da nadadeira (mm)",
+     ylab = "Frequência",
+     cex.main = 2,  cex.lab = 2, cex.axis = 1.5)
+polygon(density(na.omit(penguins$flipper_length_mm)), col = "gray50")
+```
+
+--
+
+
+```r
+dev.off()
+```
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, aes(x = flipper_length_mm))
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, aes(x = flipper_length_mm)) +
+  geom_histogram()
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, aes(x = flipper_length_mm)) +
+  geom_histogram(color = "black", 
+                 fill = "cyan4",
+                 bins = 10)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, aes(x = flipper_length_mm)) +
+  geom_histogram(color = "black", 
+                 fill = "cyan4", 
+                 bins = 10, 
+                 alpha = .5) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram(bins = 10, alpha = .5) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram(bins = 10, alpha = .5, 
+                 position = "dodge") +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram(alpha = .5, position = "identity") +
+  scale_fill_manual(values = c("darkorange", 
+                               "darkorchid", "cyan4")) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram() +
+  scale_fill_manual(values = c("darkorange", 
+                               "darkorchid", "cyan4")) +
+  facet_wrap(~ species, ncol = 2, scale = "free_y") +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram() +
+  scale_fill_manual(values = c("darkorange",
+                               "darkorchid", "cyan4")) +
+  facet_grid(species ~ .) +
+  labs(title = "Comprimento da nadadeira dos penguins",
+       fill = "Espécies",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Frequência") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins) +
+  aes(x = flipper_length_mm) +
+  geom_density(color = "black", 
+               fill = "cyan4", alpha = .5) + 
+  labs(title = "Comprimento da nadadeira dos penguins",
+       x = "Comprimento da nadadeira (mm)", 
+       y = "Densidade") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, 
+           fill = species)) +
+  geom_density(alpha = .5) +
+  scale_fill_manual(values = c("darkorange", 
+                               "darkorchid", "cyan4")) +
+  labs(x = "Comprimento da nadadeira (mm)", 
+       y = "Densidade", 
+       fill = "Espécie") +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggplot2
+
+### Exportar
+
+```r
+ggplot_densidade &lt;- ggplot(data = penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_density(alpha = .5) +
+  scale_fill_manual(values = c("darkorange", "darkorchid", "cyan4")) +
+  labs(x = "Comprimento da nadadeira (mm)",  y = "Densidade", fill = "Espécie") +
+  theme_bw(base_size = 15)
+
+ggsave(filename = here::here("03_dados", "graficos", "histogram_ggplot2.png"), 
+       plot = ggplot_densidade, wi = 20, he = 15, un = "cm", dpi = 300)
+```
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 6. Histograma (*Histogram*)
+
+## ggpubr
+.pull-left[
+
+```r
+gghistogram(data = penguins, 
+            x = "flipper_length_mm",
+            add = "median",
+            color = "species",
+            fill = "species",
+            palette = c("darkorange", "darkorchid", "cyan4"),
+            xlab = "Comprimento da nadadeira (mm)",
+            ylab = "Frequência")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggpubr
+.pull-left[
+
+```r
+ggdensity(data = penguins, 
+          x = "flipper_length_mm",
+          add = "median",
+          color = "species",
+          fill = "species",
+          palette = c("darkorange", "darkorchid", "cyan4"),
+          xlab = "Comprimento da nadadeira (mm)",
+          ylab = "Densidade")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+]
+
+
+---
+
+# 6. Densidade (*Density*)
+
+## ggpubr
+
+### Exportar
+
+```r
+ggpubr_densidade &lt;- ggdensity(data = penguins, 
+                              x = "flipper_length_mm",
+                              add = "median",
+                              fill = "cyan4",
+                              rug = TRUE,
+                              add_density = TRUE,
+                              xlab = "Comprimento da nadadeira (mm)",
+                              ylab = "Densidade")
+
+ggsave(filename = here::here("03_dados", "graficos", "densidade_ggpubr.png"), 
+       plot = ggpubr_densidade, wi = 20, he = 15, un = "cm", dpi = 300)
+```
+
+---
+
+background-image: url(img/plot_pie.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 7. Gráfico de setores (*Pie chart*)
+
+### **Representa os dados de**: uma coluna
+### **Tipo de dado**: categórico
+### Proporção ou porcentagem de dados categóricos
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+### Clássico
+.pull-left[
+
+```r
+par(mar = c(0, 1, 0, 1))
+pie(c(280, 60, 20),
+    c("Sky", "Sunny side of pyramid", "Shady side of pyramid"),
+    col = c("#0292D8", "#F7EA39", "#C4B632"),
+    init.angle = -50, border = NA)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+### Tabela de frequência
+
+```r
+# calculo da proporcao
+penguins_prop &lt;- penguins %&gt;%
+  dplyr::count(species) %&gt;% 
+  dplyr::mutate(prop = round(n/sum(n), 4)*100)
+penguins_prop
+```
+
+```
+## # A tibble: 3 × 3
+##   species       n  prop
+##   &lt;fct&gt;     &lt;int&gt; &lt;dbl&gt;
+## 1 Adelie      152  44.2
+## 2 Chinstrap    68  19.8
+## 3 Gentoo      124  36.0
+```
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+## graphics
+.pull-left[
+
+```r
+par(mar = c(5, 5, 5, 5))
+pie(penguins_prop$prop,
+    labels = paste(penguins_prop$prop, "%"), 
+    main = "Espécies",
+    col = c("darkorange", "darkorchid", "cyan4"))
+legend("topright", legend = penguins_prop$species, 
+       fill = c("darkorange", "darkorchid", "cyan4"))
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins_prop, 
+       aes(x = "", y = prop, fill = species)) + 
+  geom_bar(stat = "identity", color = "white") +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = paste0(prop, "%")), 
+            color = "white", 
+            position = position_stack(vjust = .5), size = 8) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_void() +
+  labs(fill = "Espécie")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 7. Gráfico de setores (*Pie chart*)
+
+## ggpubr
+.pull-left[
+
+```r
+ggpie(penguins_prop,
+      "prop", 
+      label = "prop",
+      lab.pos = "in", 
+      lab.font = c(8, "white"),
+      fill = "species", 
+      color = "white",
+      palette = c("darkorange", "purple", "cyan4"))
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: inverse, center, middle
+
+# Mas todos dizem para jogar o gráfico de pizza fora e pedir uma pizza...
+
+---
+
+class: inverse, center, middle
+
+# ... e eu concordo...
+
+---
+
+class: inverse, center, middle
+
+# Então vamos usar algo mais saudável: vamos retirar o recheio da pizza...
+
+---
+
+background-image: url(img/plot_donut.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 7. Gráfico de setores (*Donut chart*)
+
+### **Representa os dados de**: uma coluna
+### **Tipo de dado**: categórico
+### Proporção ou porcentagem de dados categóricos
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 7. Gráfico de setores (*Donut chart*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins_prop, 
+       aes(x = 2, y = prop, fill = species)) +
+  geom_bar(stat = "identity") +
+  coord_polar(theta = "y", start = 0) +
+  geom_text(aes(label = paste0(prop, "%")),
+            color = "white",
+            position = position_stack(vjust = .5), size = 5) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  xlim(0, 2.5) +
+  theme_void() +
+  theme(legend.position = c(.5, .5),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15)) +
+  labs(fill = "Espécie")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 7. Gráfico de setores (*Donut chart*)
+
+## ggpubr
+.pull-left[
+
+```r
+ggdonutchart(penguins_prop,
+             "prop", 
+             label = "prop",
+             lab.pos = "in", 
+             lab.font = c(7, "white"),
+             fill = "species", 
+             color = "white",
+             palette = c("darkorange", "purple", "cyan4"))
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+]
+
+---
+
+background-image: url(img/plot_barplot.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 8. Gráfico de barras (*Bar plot*)
+
+### **Representa os dados de**: duas colunas
+### **Modo das colunas**: X = categórico e Y = categórico
+### Resume dados de contagens para uma coluna com diversos tipos de dados
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## Tabela de frequência
+
+```r
+# numero de individuos coletados
+penguins_count &lt;- penguins %&gt;%
+  dplyr::count(species)
+penguins_count
+```
+
+```
+## # A tibble: 3 × 2
+##   species       n
+##   &lt;fct&gt;     &lt;int&gt;
+## 1 Adelie      152
+## 2 Chinstrap    68
+## 3 Gentoo      124
+```
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## graphics
+.pull-left[
+
+```r
+barplot(n ~ species,
+        data = penguins_count, 
+        col = c("darkorange", "purple", "cyan4"),
+        main = "Número de indivíduos medido por espécie",
+        xlab = "Espécies",
+        ylab = "Frequência absoluta",
+        cex.main = 1.5,
+        cex.lab = 1.3,
+        cex.axis = 1.2)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins_count, 
+       aes(x = species, y = n, fill = species)) +
+  geom_bar(stat = "identity") +
+  geom_label(aes(label = n), fill = "white") +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  theme(legend.position = "none") +
+  labs(x = "Espécie", 
+       y = "Número de indivíduos", 
+       fill = "Espécie")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 8. Gráfico de barras (*Bar plot*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins_count, 
+       aes(x = species, y = n, fill = species)) +
+  geom_bar(stat = "identity") +
+  geom_label(aes(label = n), fill = "white") +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  coord_flip() +
+  theme_bw(base_size = 15) +
+  theme(legend.position = "none") +
+  labs(x = "Espécie", 
+       y = "Número de indivíduos", 
+       fill = "Espécie")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 9. Gráfico de barras (*Bar plot*)
+
+### ggpubr
+.pull-left[
+
+```r
+ggbarplot(penguins_count,
+          x = "species",
+          y = "n", 
+          fill = "species", 
+          color = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          label = TRUE, 
+          lab.pos = "in", 
+          lab.col = "white",
+          lab.size = 8,
+          main = "Número de indivíduos medido por espécie",
+          xlab = "Espécies",
+          ylab = "Frequência absoluta",
+          legend = "none")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 9. Gráfico de barras (*Bar plot*)
+
+### ggpubr
+.pull-left[
+
+```r
+ggbarplot(penguins_count,
+          x = "species",
+          y = "n", 
+          fill = "species", 
+          color = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          label = TRUE, 
+          lab.pos = "out", 
+          lab.col = "black",
+          lab.size = 8,
+          main = "Número de indivíduos medido por espécie",
+          xlab = "Espécies",
+          ylab = "Frequência absoluta",
+          legend = "none",
+          orientation = "horiz")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
+]
+
+---
+
+background-image: url(img/plot_boxplot.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### **Representa os dados de**: duas colunas
+### **Modo das colunas**: X = categórico e Y = contínuo
+### Resume informações de medidas contínuas para dois ou mais fatores categóricos
+
+---
+
+background-image: url(img/plot_boxplot1.png)
+background-size: 600px
+background-position: 50% 70%
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### Intervalo inter-quartil (*interquartile range* - IQR)
+### Limite inferior e limite superipor (1.5 x IQR)
+### Valores exteriores (*outliers*)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Understanding Boxplots](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51)
+
+---
+
+background-image: url(img/plot_boxplot2.png)
+background-size: 500px
+background-position: 50% 35%
+
+# 9. Gráfico de caixa (*Box plot*)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Understanding Boxplots](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51)
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+## graphics
+.pull-left[
+
+```r
+boxplot(flipper_length_mm ~ as.factor(species),
+        data = penguins,
+        col = c("darkorange", "purple", "cyan4"),
+        border = "black",
+        main = "Espécies por amostragens",
+        xlab = "Espécies",
+        ylab = "Comprimento da nadadeira (mm)",
+        cex.main = 1.5,
+        cex.lab = 1.3,
+        cex.axis = 1.2)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### ggplott2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot(width = .3, 
+               show.legend = FALSE) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Species", y = "Flipper length (mm)")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-46-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### ggplott2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot(width = .3, 
+               show.legend = FALSE) +
+  geom_jitter(alpha = .5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = .1, seed = 0)) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Species", y = "Flipper length (mm)")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 10. Gráfico de caixa (*Violin plot*)
+
+### ggplott2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_violin(width = .3, 
+              show.legend = FALSE) +
+  geom_jitter(alpha = .5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = .1, seed = 0)) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(title = "Pontos com jitter", x = "Species", y = "Flipper length (mm)")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-48-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 9. Gráfico de caixa (*Box plot*)
+
+### ggpubr
+.pull-left[
+
+```r
+ggboxplot(data = penguins, 
+          x = "species", 
+          y = "flipper_length_mm",
+          add = "jitter", 
+          shape = "species",
+          fill = "species",
+          color = "black",
+          palette = c("darkorange", "purple", "cyan4"),
+          xlab = "Comprimento da nadadeira (mm)",
+          ylab = "Frequência absoluta",
+          legend = "none")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 10. Gráfico de caixa (*Violin plot*)
+
+### ggpubr
+.pull-left[
+
+```r
+ggviolin(data = penguins, 
+         x = "species", 
+         y = "flipper_length_mm",
+         add = "jitter", 
+         shape = "species",
+         fill = "species",
+         color = "black",
+         palette = c("darkorange", "purple", "cyan4"),
+         xlab = "Comprimento da nadadeira (mm)",
+         ylab = "Frequência absoluta",
+         legend = "none")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
+]
+
+---
+
+background-image: url(img/plot_scatter.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+### **Representa os dados de**: duas colunas
+### **Modo das colunas**: X = numérico e Y = numérico
+### Plota a relação entre duas variáveis contínuas
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## graphics
+.pull-left[
+
+```r
+par(mar = c(5, 5, 1, 1))
+plot(bill_depth_mm ~ bill_length_mm,
+     data = penguins,
+     pch = 20,
+     cex = 1.5,
+     xlab = "Comprimento do bico (mm)", 
+     ylab = "Profundidade do bico (mm)",
+     cex.lab = 1.5,
+     cex.axis = 1.3,
+     bty = "l")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm,
+           color = species,
+           shape = species)) +
+  geom_point(size = 3, alpha = .8) +
+  scale_shape_manual(values = c(19, 15, 17)) +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggplot2
+.pull-left[
+
+```r
+ggplot(data = penguins, 
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm,
+           color = species,
+           shape = species)) +
+  geom_point(size = 3, alpha = .8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_shape_manual(values = c(19, 15, 17)) +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
+]
+
+---
+
+background-image: url(img/gif_data_dino_statistics.gif)
+background-size: 600px
+background-position: 50% 70%
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+### Same Stats, Different Graphs: Generating Datasets with Varied Appearance and Identical Statistics through Simulated Annealing
+
+#### Justin Matejka, George Fitzmaurice
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Matejka &amp; Fitzmaurice (2017)](https://www.autodeskresearch.com/publications/samestats)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## dino
+.pull-left[
+
+```r
+# package
+library(datasauRus)
+
+# data + plot
+datasaurus_dozen %&gt;% 
+  dplyr::filter(dataset == "dino") %&gt;% 
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_point(colour = "black", fill = "black", 
+             size = 5, alpha = .75, pch = 21) +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## Todos os plots
+.pull-left[
+
+```r
+datasaurus_dozen %&gt;% 
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_point(colour = "black", fill = "black", 
+             size = 1, alpha = .75, pch = 21) +
+  facet_wrap(~dataset) +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-55-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggpubr.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggpubr](https://rpkgs.datanovia.com/ggpubr/)
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+
+```r
+ggscatter(data = penguins,
+          x = "flipper_length_mm", 
+          y = "bill_depth_mm",
+          color = "species",
+          fill = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          shape = "species", 
+          size = 5,
+          xlab = "Comprimento do bico (mm)", 
+          ylab = "Profundidade do bico (mm)")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+
+```r
+ggscatter(data = penguins,
+          x = "flipper_length_mm", 
+          y = "bill_depth_mm",
+          color = "species",
+          fill = "species",
+          palette = c("darkorange", "purple", "cyan4"),
+          shape = "species", 
+          size = 5,
+          xlab = "Comprimento do bico (mm)", 
+          ylab = "Profundidade do bico (mm)",
+          ellipse = TRUE, 
+          mean.point = TRUE)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+
+```r
+ggscatter(data = datasaurus_dozen %&gt;% 
+            dplyr::filter(dataset == "dino"),
+          x = "x", 
+          y = "y",
+          size = 5,
+          xlab = "X", 
+          ylab = "Y")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 10. Gráfico de dispersão (*Scatter plot*)
+
+## ggpubr
+.pull-left[
+
+```r
+ggscatter(data = datasaurus_dozen,
+          x = "x", 
+          y = "y",
+          size = 1,
+          xlab = "X", 
+          ylab = "Y",
+          facet.by = "dataset")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-59-1.png)&lt;!-- --&gt;
+]
+
+---
+
+background-image: url(img/plot_correlogram.png)
+background-size: 300px
+background-position: 50% 90%
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+### **Representa os dados de**: muitas colunas
+### **Modo das colunas**: X = numérico e Y = numérico
+### Plota a relação entre duas variáveis contínuas, mas para várias colunas
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## graphics
+.pull-left[
+
+```r
+penguins %&gt;%
+  dplyr::select(body_mass_g, ends_with("_mm")) %&gt;%
+  pairs(pch = 20,
+        upper.panel = NULL)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-60-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[GGally](http://ggobi.github.io/ggally/)
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## GGally
+.pull-left[
+
+```r
+# pacote
+# install.packages("GGally")
+library(GGally)
+
+penguins %&gt;%
+  dplyr::select(body_mass_g, ends_with("_mm")) %&gt;%
+  ggpairs() +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-61-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## GGally
+.pull-left[
+
+```r
+penguins %&gt;%
+  dplyr::select(species, sex, body_mass_g, ends_with("_mm")) %&gt;%
+  GGally::ggpairs(aes(color = species)) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-62-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 11. Gráfico pareado (*Pairs plot*)
+
+## psych
+.pull-left[
+
+```r
+# pacote
+# install.packages("psych")
+library(psych)
+
+penguins %&gt;%
+  dplyr::select(body_mass_g, ends_with("_mm")) %&gt;%
+  pairs.panels(pch = 20, 
+               ellipses = FALSE, 
+               density = FALSE, 
+               stars = TRUE, 
+               hist.col = "gray",
+               digits = 2,
+               rug = FALSE,
+               breaks = 10,
+               ci = TRUE)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-63-1.png)&lt;!-- --&gt;
+]
+
+---
+
+background-image: url(img/cowplot_graphics.png), url(img/patchwork_graphics.png)
+background-size: 600px, 350px
+background-position: 10% 97%, 85% 95%
+
+# 12. Combinando gráficos
+
+## Descrição
+
+### Muitas vezes precisamos **combinar gráficos** para representar nossos dados
+
+--
+
+### Essa tarefa pode ser realizada depois da criação dos gráficos em aplicativos como [Inkscape](https://inkscape.org/pt-br/) ou [GIMP](https://www.gimp.org/)
+
+--
+
+### Outras vezes, podemos usar códigos e pacotes do R para fazer essa tarefa
+
+---
+
+class: clear
+background-image: url(img/package_graphics.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[graphics](http://search.r-project.org/R/library/graphics/html/00Index.html)
+
+---
+
+# 12. Combinando gráficos
+
+## graphics
+
+.pull-left[
+
+```r
+par(mfrow = c(1, 2))
+
+boxplot(flipper_length_mm ~ as.factor(species),
+        data = penguins,
+        col = c("darkorange", "purple", "cyan4"),
+        main = "Espécies por amostragens",
+        xlab = "Espécies",
+        ylab = "Comprimento da nadadeira (mm)",
+        cex.main = 1.5, cex.lab = 1.3, cex.axis = 1.2)
+
+plot(bill_depth_mm ~ bill_length_mm,
+     data = penguins,
+     pch = 20,
+     cex = 1.5,
+     main = "Comprimento e profundidade do bico", 
+     xlab = "Comprimento do bico (mm)", 
+     ylab = "Profundidade do bico (mm)",
+     cex.lab = 1.5, cex.axis = 1.3)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-64-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 12. Combinando gráficos
+
+## graphics
+
+.pull-left[
+
+```r
+par(mfrow = c(2, 1))
+
+boxplot(flipper_length_mm ~ as.factor(species),
+        data = penguins,
+        col = c("darkorange", "purple", "cyan4"),
+        main = "Espécies por amostragens",
+        xlab = "Espécies",
+        ylab = "Comprimento da nadadeira (mm)",
+        cex.main = 1.5, cex.lab = 1.3, cex.axis = 1.2)
+
+plot(bill_depth_mm ~ bill_length_mm,
+     data = penguins,
+     pch = 20,
+     cex = 1.5,
+     main = "Comprimento e profundidade do bico", 
+     xlab = "Comprimento do bico (mm)", 
+     ylab = "Profundidade do bico (mm)",
+     cex.lab = 1.5, cex.axis = 1.3)
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-65-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/package_ggplot2.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[ggplot2](https://ggplot2.tidyverse.org/)
+
+---
+
+# 12. Combinando gráficos
+
+## ggplot2
+
+.pull-left[
+
+```r
+ggplot_boxplot &lt;- ggplot(data = penguins, 
+                         aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot(width = .3, 
+               show.legend = FALSE) +
+  geom_jitter(alpha = .5, 
+              show.legend = FALSE, 
+              position = position_jitter(width = .1, seed = 0)) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Species", y = "Flipper length (mm)")
+ggplot_boxplot
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-66-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 12. Combinando gráficos
+
+## ggplot2
+
+.pull-left[
+
+```r
+ggplot_scatterplot &lt;- ggplot(data = penguins, 
+                             aes(x = bill_length_mm, 
+                                 y = bill_depth_mm,
+                                 color = species,
+                                 shape = species)) +
+  geom_point(size = 3, alpha = .8) +
+  scale_shape_manual(values = c(19, 15, 17)) +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies")
+ggplot_scatterplot
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-67-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/cowplot_package.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[cowplot](https://wilkelab.org/cowplot/)
+
+---
+
+# 12. Combinando gráficos
+
+## cowplot
+
+.pull-left[
+
+```r
+# pacote
+# install.packages("cowplot")
+library(cowplot)
+
+# combinacao horizontal
+plot_grid(ggplot_boxplot, ggplot_scatterplot, 
+          align = "h", rel_widths = c(1, 1.5),
+          labels = "AUTO")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-68-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 12. Combinando gráficos
+
+## cowplot
+
+.pull-left[
+
+```r
+# combinacao vertical
+plot_grid(ggplot_boxplot, ggplot_scatterplot, 
+          ncol = 1, align = "v", 
+          labels = "AUTO")
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-69-1.png)&lt;!-- --&gt;
+]
+
+
+---
+
+class: clear
+background-image: url(img/patchwork_package.png)
+background-size: 300px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[patchwork](https://patchwork.data-imaginist.com/)
+
+---
+
+# 12. Combinando gráficos
+
+## patchwork
+
+.pull-left[
+
+```r
+# pacote
+# install.packages("patchwork")
+library(patchwork)
+
+# combinacao horizontal
+ggplot_boxplot + ggplot_scatterplot
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# 12. Combinando gráficos
+
+## patchwork
+
+.pull-left[
+
+```r
+# combinacao vertical
+ggplot_boxplot / ggplot_scatterplot
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-71-1.png)&lt;!-- --&gt;
+]
+
+---
+
+class: clear
+background-image: url(img/gganimate_package.png)
+background-size: 400px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[gganimate](https://gganimate.com/)
+
+---
+
+# 13. Gráficos animados
+
+## gganimate
+
+.pull-left[
+
+```r
+# pacote
+# devtools::install_github('thomasp85/gganimate')
+library(gganimate)
+
+plot_animate &lt;- ggplot(data = penguins,
+                       aes(x = bill_length_mm, 
+                           y = bill_depth_mm, 
+                           color = species)) +
+  geom_point() +
+  scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_bw(base_size = 15) +
+  labs(x = "Comprimento do bico (mm)", 
+       y = "Profundidade do bico (mm)", 
+       color = "Espécies", shape = "Espécies") +
+  labs(title = "{closest_state}") +
+  transition_states(species) +
+  enter_grow() + 
+  exit_fade()
+plot_animate
+```
+]
+
+.pull-right[
+![](05_slides_intro_geoespacial_r_files/figure-html/unnamed-chunk-72-1.gif)&lt;!-- --&gt;
+]
+
+---
+
+# 13. Gráficos animados
+
+## gganimate
+
+### Exportar
+
+```r
+gganimate::anim_save(filename = here::here("03_dados", 
+                                           "graficos" ,
+                                           "plot_animate.gif"),
+                     animation = plot_animate)
+```
+
+---
+
+class: clear
+background-image: url(img/package_plotly.png)
+background-size: 600px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[plotly](https://plotly.com/r/)
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+.pull-left[
+
+```r
+# pacote
+# install.packages("plotly")
+library(plotly)
+
+plot_ly(data = penguins,
+        x = ~bill_length_mm, 
+        y = ~bill_depth_mm, 
+        type = "scatter",
+        color = ~species,
+        colors = c("darkorange", "purple", "cyan4")) %&gt;% 
+  layout(xaxis = list(title = "Comprimento do bico (mm)"),
+         yaxis = list(title = "Profundidade do bico (mm)"))
+```
+]
+
+.pull-right[
+<div id="htmlwidget-b20dc2a931752ae4f30d" style="width:504px;height:504px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b20dc2a931752ae4f30d">{"x":{"visdat":{"103c27c0bd6a9":["function () ","plotlyVisDat"]},"cur_data":"103c27c0bd6a9","attrs":{"103c27c0bd6a9":{"x":{},"y":{},"color":{},"colors":["darkorange","purple","cyan4"],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Comprimento do bico (mm)"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Profundidade do bico (mm)"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[39.1,39.5,40.3,36.7,39.3,38.9,39.2,34.1,42,37.8,37.8,41.1,38.6,34.6,36.6,38.7,42.5,34.4,46,37.8,37.7,35.9,38.2,38.8,35.3,40.6,40.5,37.9,40.5,39.5,37.2,39.5,40.9,36.4,39.2,38.8,42.2,37.6,39.8,36.5,40.8,36,44.1,37,39.6,41.1,37.5,36,42.3,39.6,40.1,35,42,34.5,41.4,39,40.6,36.5,37.6,35.7,41.3,37.6,41.1,36.4,41.6,35.5,41.1,35.9,41.8,33.5,39.7,39.6,45.8,35.5,42.8,40.9,37.2,36.2,42.1,34.6,42.9,36.7,35.1,37.3,41.3,36.3,36.9,38.3,38.9,35.7,41.1,34,39.6,36.2,40.8,38.1,40.3,33.1,43.2,35,41,37.7,37.8,37.9,39.7,38.6,38.2,38.1,43.2,38.1,45.6,39.7,42.2,39.6,42.7,38.6,37.3,35.7,41.1,36.2,37.7,40.2,41.4,35.2,40.6,38.8,41.5,39,44.1,38.5,43.1,36.8,37.5,38.1,41.1,35.6,40.2,37,39.7,40.2,40.6,32.1,40.7,37.3,39,39.2,36.6,36,37.8,36,41.5],"y":[18.7,17.4,18,19.3,20.6,17.8,19.6,18.1,20.2,17.1,17.3,17.6,21.2,21.1,17.8,19,20.7,18.4,21.5,18.3,18.7,19.2,18.1,17.2,18.9,18.6,17.9,18.6,18.9,16.7,18.1,17.8,18.9,17,21.1,20,18.5,19.3,19.1,18,18.4,18.5,19.7,16.9,18.8,19,18.9,17.9,21.2,17.7,18.9,17.9,19.5,18.1,18.6,17.5,18.8,16.6,19.1,16.9,21.1,17,18.2,17.1,18,16.2,19.1,16.6,19.4,19,18.4,17.2,18.9,17.5,18.5,16.8,19.4,16.1,19.1,17.2,17.6,18.8,19.4,17.8,20.3,19.5,18.6,19.2,18.8,18,18.1,17.1,18.1,17.3,18.9,18.6,18.5,16.1,18.5,17.9,20,16,20,18.6,18.9,17.2,20,17,19,16.5,20.3,17.7,19.5,20.7,18.3,17,20.5,17,18.6,17.2,19.8,17,18.5,15.9,19,17.6,18.3,17.1,18,17.9,19.2,18.5,18.5,17.6,17.5,17.5,20.1,16.5,17.9,17.1,17.2,15.5,17,16.8,18.7,18.6,18.4,17.8,18.1,17.1,18.5],"type":"scatter","mode":"markers","name":"Adelie","marker":{"color":"rgba(255,140,0,1)","line":{"color":"rgba(255,140,0,1)"}},"textfont":{"color":"rgba(255,140,0,1)"},"error_y":{"color":"rgba(255,140,0,1)"},"error_x":{"color":"rgba(255,140,0,1)"},"line":{"color":"rgba(255,140,0,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[46.5,50,51.3,45.4,52.7,45.2,46.1,51.3,46,51.3,46.6,51.7,47,52,45.9,50.5,50.3,58,46.4,49.2,42.4,48.5,43.2,50.6,46.7,52,50.5,49.5,46.4,52.8,40.9,54.2,42.5,51,49.7,47.5,47.6,52,46.9,53.5,49,46.2,50.9,45.5,50.9,50.8,50.1,49,51.5,49.8,48.1,51.4,45.7,50.7,42.5,52.2,45.2,49.3,50.2,45.6,51.9,46.8,45.7,55.8,43.5,49.6,50.8,50.2],"y":[17.9,19.5,19.2,18.7,19.8,17.8,18.2,18.2,18.9,19.9,17.8,20.3,17.3,18.1,17.1,19.6,20,17.8,18.6,18.2,17.3,17.5,16.6,19.4,17.9,19,18.4,19,17.8,20,16.6,20.8,16.7,18.8,18.6,16.8,18.3,20.7,16.6,19.9,19.5,17.5,19.1,17,17.9,18.5,17.9,19.6,18.7,17.3,16.4,19,17.3,19.7,17.3,18.8,16.6,19.9,18.8,19.4,19.5,16.5,17,19.8,18.1,18.2,19,18.7],"type":"scatter","mode":"markers","name":"Chinstrap","marker":{"color":"rgba(160,32,240,1)","line":{"color":"rgba(160,32,240,1)"}},"textfont":{"color":"rgba(160,32,240,1)"},"error_y":{"color":"rgba(160,32,240,1)"},"error_x":{"color":"rgba(160,32,240,1)"},"line":{"color":"rgba(160,32,240,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[46.1,50,48.7,50,47.6,46.5,45.4,46.7,43.3,46.8,40.9,49,45.5,48.4,45.8,49.3,42,49.2,46.2,48.7,50.2,45.1,46.5,46.3,42.9,46.1,44.5,47.8,48.2,50,47.3,42.8,45.1,59.6,49.1,48.4,42.6,44.4,44,48.7,42.7,49.6,45.3,49.6,50.5,43.6,45.5,50.5,44.9,45.2,46.6,48.5,45.1,50.1,46.5,45,43.8,45.5,43.2,50.4,45.3,46.2,45.7,54.3,45.8,49.8,46.2,49.5,43.5,50.7,47.7,46.4,48.2,46.5,46.4,48.6,47.5,51.1,45.2,45.2,49.1,52.5,47.4,50,44.9,50.8,43.4,51.3,47.5,52.1,47.5,52.2,45.5,49.5,44.5,50.8,49.4,46.9,48.4,51.1,48.5,55.9,47.2,49.1,47.3,46.8,41.7,53.4,43.3,48.1,50.5,49.8,43.5,51.5,46.2,55.1,44.5,48.8,47.2,46.8,50.4,45.2,49.9],"y":[13.2,16.3,14.1,15.2,14.5,13.5,14.6,15.3,13.4,15.4,13.7,16.1,13.7,14.6,14.6,15.7,13.5,15.2,14.5,15.1,14.3,14.5,14.5,15.8,13.1,15.1,14.3,15,14.3,15.3,15.3,14.2,14.5,17,14.8,16.3,13.7,17.3,13.6,15.7,13.7,16,13.7,15,15.9,13.9,13.9,15.9,13.3,15.8,14.2,14.1,14.4,15,14.4,15.4,13.9,15,14.5,15.3,13.8,14.9,13.9,15.7,14.2,16.8,14.4,16.2,14.2,15,15,15.6,15.6,14.8,15,16,14.2,16.3,13.8,16.4,14.5,15.6,14.6,15.9,13.8,17.3,14.4,14.2,14,17,15,17.1,14.5,16.1,14.7,15.7,15.8,14.6,14.4,16.5,15,17,15.5,15,13.8,16.1,14.7,15.8,14,15.1,15.2,15.9,15.2,16.3,14.1,16,15.7,16.2,13.7,14.3,15.7,14.8,16.1],"type":"scatter","mode":"markers","name":"Gentoo","marker":{"color":"rgba(0,139,139,1)","line":{"color":"rgba(0,139,139,1)"}},"textfont":{"color":"rgba(0,139,139,1)"},"error_y":{"color":"rgba(0,139,139,1)"},"error_x":{"color":"rgba(0,139,139,1)"},"line":{"color":"rgba(0,139,139,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+]
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+
+.pull-left[
+
+```r
+plot_ly(data = penguins,
+        x = ~bill_length_mm, 
+        y = ~bill_depth_mm, 
+        z = ~body_mass_g,
+        type = "scatter3d",
+        color = ~species,
+        colors = c("darkorange", "purple", "cyan4")) %&gt;% 
+  layout(scene = list(xaxis = list(title = "Comprimento do bico (mm)"),
+                      yaxis = list(title = "Profundidade do bico (mm)"),
+                      zaxis = list(title = "Massa (g)")))
+```
+]
+
+.pull-right[
+<div id="htmlwidget-7598595affc4f25ab85b" style="width:504px;height:504px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7598595affc4f25ab85b">{"x":{"visdat":{"103c2346d4906":["function () ","plotlyVisDat"]},"cur_data":"103c2346d4906","attrs":{"103c2346d4906":{"x":{},"y":{},"z":{},"color":{},"colors":["darkorange","purple","cyan4"],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"Comprimento do bico (mm)"},"yaxis":{"title":"Profundidade do bico (mm)"},"zaxis":{"title":"Massa (g)"}},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[39.1,39.5,40.3,36.7,39.3,38.9,39.2,34.1,42,37.8,37.8,41.1,38.6,34.6,36.6,38.7,42.5,34.4,46,37.8,37.7,35.9,38.2,38.8,35.3,40.6,40.5,37.9,40.5,39.5,37.2,39.5,40.9,36.4,39.2,38.8,42.2,37.6,39.8,36.5,40.8,36,44.1,37,39.6,41.1,37.5,36,42.3,39.6,40.1,35,42,34.5,41.4,39,40.6,36.5,37.6,35.7,41.3,37.6,41.1,36.4,41.6,35.5,41.1,35.9,41.8,33.5,39.7,39.6,45.8,35.5,42.8,40.9,37.2,36.2,42.1,34.6,42.9,36.7,35.1,37.3,41.3,36.3,36.9,38.3,38.9,35.7,41.1,34,39.6,36.2,40.8,38.1,40.3,33.1,43.2,35,41,37.7,37.8,37.9,39.7,38.6,38.2,38.1,43.2,38.1,45.6,39.7,42.2,39.6,42.7,38.6,37.3,35.7,41.1,36.2,37.7,40.2,41.4,35.2,40.6,38.8,41.5,39,44.1,38.5,43.1,36.8,37.5,38.1,41.1,35.6,40.2,37,39.7,40.2,40.6,32.1,40.7,37.3,39,39.2,36.6,36,37.8,36,41.5],"y":[18.7,17.4,18,19.3,20.6,17.8,19.6,18.1,20.2,17.1,17.3,17.6,21.2,21.1,17.8,19,20.7,18.4,21.5,18.3,18.7,19.2,18.1,17.2,18.9,18.6,17.9,18.6,18.9,16.7,18.1,17.8,18.9,17,21.1,20,18.5,19.3,19.1,18,18.4,18.5,19.7,16.9,18.8,19,18.9,17.9,21.2,17.7,18.9,17.9,19.5,18.1,18.6,17.5,18.8,16.6,19.1,16.9,21.1,17,18.2,17.1,18,16.2,19.1,16.6,19.4,19,18.4,17.2,18.9,17.5,18.5,16.8,19.4,16.1,19.1,17.2,17.6,18.8,19.4,17.8,20.3,19.5,18.6,19.2,18.8,18,18.1,17.1,18.1,17.3,18.9,18.6,18.5,16.1,18.5,17.9,20,16,20,18.6,18.9,17.2,20,17,19,16.5,20.3,17.7,19.5,20.7,18.3,17,20.5,17,18.6,17.2,19.8,17,18.5,15.9,19,17.6,18.3,17.1,18,17.9,19.2,18.5,18.5,17.6,17.5,17.5,20.1,16.5,17.9,17.1,17.2,15.5,17,16.8,18.7,18.6,18.4,17.8,18.1,17.1,18.5],"z":[3750,3800,3250,3450,3650,3625,4675,3475,4250,3300,3700,3200,3800,4400,3700,3450,4500,3325,4200,3400,3600,3800,3950,3800,3800,3550,3200,3150,3950,3250,3900,3300,3900,3325,4150,3950,3550,3300,4650,3150,3900,3100,4400,3000,4600,3425,2975,3450,4150,3500,4300,3450,4050,2900,3700,3550,3800,2850,3750,3150,4400,3600,4050,2850,3950,3350,4100,3050,4450,3600,3900,3550,4150,3700,4250,3700,3900,3550,4000,3200,4700,3800,4200,3350,3550,3800,3500,3950,3600,3550,4300,3400,4450,3300,4300,3700,4350,2900,4100,3725,4725,3075,4250,2925,3550,3750,3900,3175,4775,3825,4600,3200,4275,3900,4075,2900,3775,3350,3325,3150,3500,3450,3875,3050,4000,3275,4300,3050,4000,3325,3500,3500,4475,3425,3900,3175,3975,3400,4250,3400,3475,3050,3725,3000,3650,4250,3475,3450,3750,3700,4000],"type":"scatter3d","mode":"markers","name":"Adelie","marker":{"color":"rgba(255,140,0,1)","line":{"color":"rgba(255,140,0,1)"}},"textfont":{"color":"rgba(255,140,0,1)"},"error_y":{"color":"rgba(255,140,0,1)"},"error_x":{"color":"rgba(255,140,0,1)"},"line":{"color":"rgba(255,140,0,1)"},"frame":null},{"x":[46.5,50,51.3,45.4,52.7,45.2,46.1,51.3,46,51.3,46.6,51.7,47,52,45.9,50.5,50.3,58,46.4,49.2,42.4,48.5,43.2,50.6,46.7,52,50.5,49.5,46.4,52.8,40.9,54.2,42.5,51,49.7,47.5,47.6,52,46.9,53.5,49,46.2,50.9,45.5,50.9,50.8,50.1,49,51.5,49.8,48.1,51.4,45.7,50.7,42.5,52.2,45.2,49.3,50.2,45.6,51.9,46.8,45.7,55.8,43.5,49.6,50.8,50.2],"y":[17.9,19.5,19.2,18.7,19.8,17.8,18.2,18.2,18.9,19.9,17.8,20.3,17.3,18.1,17.1,19.6,20,17.8,18.6,18.2,17.3,17.5,16.6,19.4,17.9,19,18.4,19,17.8,20,16.6,20.8,16.7,18.8,18.6,16.8,18.3,20.7,16.6,19.9,19.5,17.5,19.1,17,17.9,18.5,17.9,19.6,18.7,17.3,16.4,19,17.3,19.7,17.3,18.8,16.6,19.9,18.8,19.4,19.5,16.5,17,19.8,18.1,18.2,19,18.7],"z":[3500,3900,3650,3525,3725,3950,3250,3750,4150,3700,3800,3775,3700,4050,3575,4050,3300,3700,3450,4400,3600,3400,2900,3800,3300,4150,3400,3800,3700,4550,3200,4300,3350,4100,3600,3900,3850,4800,2700,4500,3950,3650,3550,3500,3675,4450,3400,4300,3250,3675,3325,3950,3600,4050,3350,3450,3250,4050,3800,3525,3950,3650,3650,4000,3400,3775,4100,3775],"type":"scatter3d","mode":"markers","name":"Chinstrap","marker":{"color":"rgba(160,32,240,1)","line":{"color":"rgba(160,32,240,1)"}},"textfont":{"color":"rgba(160,32,240,1)"},"error_y":{"color":"rgba(160,32,240,1)"},"error_x":{"color":"rgba(160,32,240,1)"},"line":{"color":"rgba(160,32,240,1)"},"frame":null},{"x":[46.1,50,48.7,50,47.6,46.5,45.4,46.7,43.3,46.8,40.9,49,45.5,48.4,45.8,49.3,42,49.2,46.2,48.7,50.2,45.1,46.5,46.3,42.9,46.1,44.5,47.8,48.2,50,47.3,42.8,45.1,59.6,49.1,48.4,42.6,44.4,44,48.7,42.7,49.6,45.3,49.6,50.5,43.6,45.5,50.5,44.9,45.2,46.6,48.5,45.1,50.1,46.5,45,43.8,45.5,43.2,50.4,45.3,46.2,45.7,54.3,45.8,49.8,46.2,49.5,43.5,50.7,47.7,46.4,48.2,46.5,46.4,48.6,47.5,51.1,45.2,45.2,49.1,52.5,47.4,50,44.9,50.8,43.4,51.3,47.5,52.1,47.5,52.2,45.5,49.5,44.5,50.8,49.4,46.9,48.4,51.1,48.5,55.9,47.2,49.1,47.3,46.8,41.7,53.4,43.3,48.1,50.5,49.8,43.5,51.5,46.2,55.1,44.5,48.8,47.2,46.8,50.4,45.2,49.9],"y":[13.2,16.3,14.1,15.2,14.5,13.5,14.6,15.3,13.4,15.4,13.7,16.1,13.7,14.6,14.6,15.7,13.5,15.2,14.5,15.1,14.3,14.5,14.5,15.8,13.1,15.1,14.3,15,14.3,15.3,15.3,14.2,14.5,17,14.8,16.3,13.7,17.3,13.6,15.7,13.7,16,13.7,15,15.9,13.9,13.9,15.9,13.3,15.8,14.2,14.1,14.4,15,14.4,15.4,13.9,15,14.5,15.3,13.8,14.9,13.9,15.7,14.2,16.8,14.4,16.2,14.2,15,15,15.6,15.6,14.8,15,16,14.2,16.3,13.8,16.4,14.5,15.6,14.6,15.9,13.8,17.3,14.4,14.2,14,17,15,17.1,14.5,16.1,14.7,15.7,15.8,14.6,14.4,16.5,15,17,15.5,15,13.8,16.1,14.7,15.8,14,15.1,15.2,15.9,15.2,16.3,14.1,16,15.7,16.2,13.7,14.3,15.7,14.8,16.1],"z":[4500,5700,4450,5700,5400,4550,4800,5200,4400,5150,4650,5550,4650,5850,4200,5850,4150,6300,4800,5350,5700,5000,4400,5050,5000,5100,4100,5650,4600,5550,5250,4700,5050,6050,5150,5400,4950,5250,4350,5350,3950,5700,4300,4750,5550,4900,4200,5400,5100,5300,4850,5300,4400,5000,4900,5050,4300,5000,4450,5550,4200,5300,4400,5650,4700,5700,4650,5800,4700,5550,4750,5000,5100,5200,4700,5800,4600,6000,4750,5950,4625,5450,4725,5350,4750,5600,4600,5300,4875,5550,4950,5400,4750,5650,4850,5200,4925,4875,4625,5250,4850,5600,4975,5500,4725,5500,4700,5500,4575,5500,5000,5950,4650,5500,4375,5850,4875,6000,4925,4850,5750,5200,5400],"type":"scatter3d","mode":"markers","name":"Gentoo","marker":{"color":"rgba(0,139,139,1)","line":{"color":"rgba(0,139,139,1)"}},"textfont":{"color":"rgba(0,139,139,1)"},"error_y":{"color":"rgba(0,139,139,1)"},"error_x":{"color":"rgba(0,139,139,1)"},"line":{"color":"rgba(0,139,139,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+]
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+
+.pull-left[
+
+```r
+plot_penguins_scatter_int &lt;- ggplotly(
+  ggplot(data = penguins, 
+         aes(x = bill_length_mm, 
+             y = bill_depth_mm,
+             color = species,
+             shape = species)) +
+    geom_point(size = 3, alpha = .8) +
+    geom_smooth(method = "lm", se = FALSE) +
+    scale_shape_manual(values = c(19, 15, 17)) +
+    scale_color_manual(values = c("darkorange", "purple", "cyan4")) +
+    theme_bw(base_size = 15) +
+    labs(x = "Comprimento do bico (mm)", 
+         y = "Profundidade do bico (mm)", 
+         color = "Espécies", shape = "Espécies"))
+plot_penguins_scatter_int
+```
+]
+
+.pull-right[
+<div id="htmlwidget-f888dc62471906a988fd" style="width:504px;height:504px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f888dc62471906a988fd">{"x":{"data":[{"x":[39.1,39.5,40.3,null,36.7,39.3,38.9,39.2,34.1,42,37.8,37.8,41.1,38.6,34.6,36.6,38.7,42.5,34.4,46,37.8,37.7,35.9,38.2,38.8,35.3,40.6,40.5,37.9,40.5,39.5,37.2,39.5,40.9,36.4,39.2,38.8,42.2,37.6,39.8,36.5,40.8,36,44.1,37,39.6,41.1,37.5,36,42.3,39.6,40.1,35,42,34.5,41.4,39,40.6,36.5,37.6,35.7,41.3,37.6,41.1,36.4,41.6,35.5,41.1,35.9,41.8,33.5,39.7,39.6,45.8,35.5,42.8,40.9,37.2,36.2,42.1,34.6,42.9,36.7,35.1,37.3,41.3,36.3,36.9,38.3,38.9,35.7,41.1,34,39.6,36.2,40.8,38.1,40.3,33.1,43.2,35,41,37.7,37.8,37.9,39.7,38.6,38.2,38.1,43.2,38.1,45.6,39.7,42.2,39.6,42.7,38.6,37.3,35.7,41.1,36.2,37.7,40.2,41.4,35.2,40.6,38.8,41.5,39,44.1,38.5,43.1,36.8,37.5,38.1,41.1,35.6,40.2,37,39.7,40.2,40.6,32.1,40.7,37.3,39,39.2,36.6,36,37.8,36,41.5],"y":[18.7,17.4,18,null,19.3,20.6,17.8,19.6,18.1,20.2,17.1,17.3,17.6,21.2,21.1,17.8,19,20.7,18.4,21.5,18.3,18.7,19.2,18.1,17.2,18.9,18.6,17.9,18.6,18.9,16.7,18.1,17.8,18.9,17,21.1,20,18.5,19.3,19.1,18,18.4,18.5,19.7,16.9,18.8,19,18.9,17.9,21.2,17.7,18.9,17.9,19.5,18.1,18.6,17.5,18.8,16.6,19.1,16.9,21.1,17,18.2,17.1,18,16.2,19.1,16.6,19.4,19,18.4,17.2,18.9,17.5,18.5,16.8,19.4,16.1,19.1,17.2,17.6,18.8,19.4,17.8,20.3,19.5,18.6,19.2,18.8,18,18.1,17.1,18.1,17.3,18.9,18.6,18.5,16.1,18.5,17.9,20,16,20,18.6,18.9,17.2,20,17,19,16.5,20.3,17.7,19.5,20.7,18.3,17,20.5,17,18.6,17.2,19.8,17,18.5,15.9,19,17.6,18.3,17.1,18,17.9,19.2,18.5,18.5,17.6,17.5,17.5,20.1,16.5,17.9,17.1,17.2,15.5,17,16.8,18.7,18.6,18.4,17.8,18.1,17.1,18.5],"text":["bill_length_mm: 39.1<br />bill_depth_mm: 18.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.5<br />bill_depth_mm: 17.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.3<br />bill_depth_mm: 18.0<br />species: Adelie<br />species: Adelie","bill_length_mm:   NA<br />bill_depth_mm:   NA<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.7<br />bill_depth_mm: 19.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.3<br />bill_depth_mm: 20.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.9<br />bill_depth_mm: 17.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.2<br />bill_depth_mm: 19.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.1<br />bill_depth_mm: 18.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.0<br />bill_depth_mm: 20.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.8<br />bill_depth_mm: 17.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.8<br />bill_depth_mm: 17.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.1<br />bill_depth_mm: 17.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.6<br />bill_depth_mm: 21.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.6<br />bill_depth_mm: 21.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.6<br />bill_depth_mm: 17.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.7<br />bill_depth_mm: 19.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.5<br />bill_depth_mm: 20.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.4<br />bill_depth_mm: 18.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 46.0<br />bill_depth_mm: 21.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.8<br />bill_depth_mm: 18.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.7<br />bill_depth_mm: 18.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.9<br />bill_depth_mm: 19.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.2<br />bill_depth_mm: 18.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.8<br />bill_depth_mm: 17.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.3<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.6<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.5<br />bill_depth_mm: 17.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.9<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.5<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.5<br />bill_depth_mm: 16.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.2<br />bill_depth_mm: 18.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.5<br />bill_depth_mm: 17.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.9<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.4<br />bill_depth_mm: 17.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.2<br />bill_depth_mm: 21.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.8<br />bill_depth_mm: 20.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.2<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.6<br />bill_depth_mm: 19.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.8<br />bill_depth_mm: 19.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.5<br />bill_depth_mm: 18.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.8<br />bill_depth_mm: 18.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.0<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.1<br />bill_depth_mm: 19.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.0<br />bill_depth_mm: 16.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.6<br />bill_depth_mm: 18.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.1<br />bill_depth_mm: 19.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.5<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.0<br />bill_depth_mm: 17.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.3<br />bill_depth_mm: 21.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.6<br />bill_depth_mm: 17.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.1<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.0<br />bill_depth_mm: 17.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.0<br />bill_depth_mm: 19.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.5<br />bill_depth_mm: 18.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.4<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.0<br />bill_depth_mm: 17.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.6<br />bill_depth_mm: 18.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.5<br />bill_depth_mm: 16.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.6<br />bill_depth_mm: 19.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.7<br />bill_depth_mm: 16.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.3<br />bill_depth_mm: 21.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.6<br />bill_depth_mm: 17.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.1<br />bill_depth_mm: 18.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.4<br />bill_depth_mm: 17.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.6<br />bill_depth_mm: 18.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.5<br />bill_depth_mm: 16.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.1<br />bill_depth_mm: 19.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.9<br />bill_depth_mm: 16.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.8<br />bill_depth_mm: 19.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 33.5<br />bill_depth_mm: 19.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.7<br />bill_depth_mm: 18.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.6<br />bill_depth_mm: 17.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 45.8<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.5<br />bill_depth_mm: 17.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.8<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.9<br />bill_depth_mm: 16.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.2<br />bill_depth_mm: 19.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.2<br />bill_depth_mm: 16.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.1<br />bill_depth_mm: 19.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.6<br />bill_depth_mm: 17.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.9<br />bill_depth_mm: 17.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.7<br />bill_depth_mm: 18.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.1<br />bill_depth_mm: 19.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.3<br />bill_depth_mm: 17.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.3<br />bill_depth_mm: 20.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.3<br />bill_depth_mm: 19.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.9<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.3<br />bill_depth_mm: 19.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.9<br />bill_depth_mm: 18.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.7<br />bill_depth_mm: 18.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.1<br />bill_depth_mm: 18.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.0<br />bill_depth_mm: 17.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.6<br />bill_depth_mm: 18.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.2<br />bill_depth_mm: 17.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.8<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.1<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.3<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 33.1<br />bill_depth_mm: 16.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.2<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.0<br />bill_depth_mm: 17.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.0<br />bill_depth_mm: 20.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.7<br />bill_depth_mm: 16.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.8<br />bill_depth_mm: 20.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.9<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.7<br />bill_depth_mm: 18.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.6<br />bill_depth_mm: 17.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.2<br />bill_depth_mm: 20.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.1<br />bill_depth_mm: 17.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.2<br />bill_depth_mm: 19.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.1<br />bill_depth_mm: 16.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 45.6<br />bill_depth_mm: 20.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.7<br />bill_depth_mm: 17.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.2<br />bill_depth_mm: 19.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.6<br />bill_depth_mm: 20.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.7<br />bill_depth_mm: 18.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.6<br />bill_depth_mm: 17.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.3<br />bill_depth_mm: 20.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.7<br />bill_depth_mm: 17.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.1<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.2<br />bill_depth_mm: 17.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.7<br />bill_depth_mm: 19.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.2<br />bill_depth_mm: 17.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.4<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.2<br />bill_depth_mm: 15.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.6<br />bill_depth_mm: 19.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.8<br />bill_depth_mm: 17.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.5<br />bill_depth_mm: 18.3<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.0<br />bill_depth_mm: 17.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.1<br />bill_depth_mm: 18.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.5<br />bill_depth_mm: 17.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.1<br />bill_depth_mm: 19.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.8<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.5<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.1<br />bill_depth_mm: 17.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.1<br />bill_depth_mm: 17.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.6<br />bill_depth_mm: 17.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.2<br />bill_depth_mm: 20.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.0<br />bill_depth_mm: 16.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.7<br />bill_depth_mm: 17.9<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.2<br />bill_depth_mm: 17.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.6<br />bill_depth_mm: 17.2<br />species: Adelie<br />species: Adelie","bill_length_mm: 32.1<br />bill_depth_mm: 15.5<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.7<br />bill_depth_mm: 17.0<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.3<br />bill_depth_mm: 16.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.0<br />bill_depth_mm: 18.7<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.2<br />bill_depth_mm: 18.6<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.6<br />bill_depth_mm: 18.4<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.0<br />bill_depth_mm: 17.8<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.8<br />bill_depth_mm: 18.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.0<br />bill_depth_mm: 17.1<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.5<br />bill_depth_mm: 18.5<br />species: Adelie<br />species: Adelie"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,140,0,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,140,0,1)"}},"hoveron":"points","name":"Adelie","legendgroup":"Adelie","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[46.5,50,51.3,45.4,52.7,45.2,46.1,51.3,46,51.3,46.6,51.7,47,52,45.9,50.5,50.3,58,46.4,49.2,42.4,48.5,43.2,50.6,46.7,52,50.5,49.5,46.4,52.8,40.9,54.2,42.5,51,49.7,47.5,47.6,52,46.9,53.5,49,46.2,50.9,45.5,50.9,50.8,50.1,49,51.5,49.8,48.1,51.4,45.7,50.7,42.5,52.2,45.2,49.3,50.2,45.6,51.9,46.8,45.7,55.8,43.5,49.6,50.8,50.2],"y":[17.9,19.5,19.2,18.7,19.8,17.8,18.2,18.2,18.9,19.9,17.8,20.3,17.3,18.1,17.1,19.6,20,17.8,18.6,18.2,17.3,17.5,16.6,19.4,17.9,19,18.4,19,17.8,20,16.6,20.8,16.7,18.8,18.6,16.8,18.3,20.7,16.6,19.9,19.5,17.5,19.1,17,17.9,18.5,17.9,19.6,18.7,17.3,16.4,19,17.3,19.7,17.3,18.8,16.6,19.9,18.8,19.4,19.5,16.5,17,19.8,18.1,18.2,19,18.7],"text":["bill_length_mm: 46.5<br />bill_depth_mm: 17.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.0<br />bill_depth_mm: 19.5<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.3<br />bill_depth_mm: 19.2<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.4<br />bill_depth_mm: 18.7<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.7<br />bill_depth_mm: 19.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.2<br />bill_depth_mm: 17.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.1<br />bill_depth_mm: 18.2<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.3<br />bill_depth_mm: 18.2<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.0<br />bill_depth_mm: 18.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.3<br />bill_depth_mm: 19.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.6<br />bill_depth_mm: 17.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.7<br />bill_depth_mm: 20.3<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 47.0<br />bill_depth_mm: 17.3<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.0<br />bill_depth_mm: 18.1<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.9<br />bill_depth_mm: 17.1<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.5<br />bill_depth_mm: 19.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.3<br />bill_depth_mm: 20.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 58.0<br />bill_depth_mm: 17.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.4<br />bill_depth_mm: 18.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.2<br />bill_depth_mm: 18.2<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 42.4<br />bill_depth_mm: 17.3<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 48.5<br />bill_depth_mm: 17.5<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 43.2<br />bill_depth_mm: 16.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.6<br />bill_depth_mm: 19.4<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.7<br />bill_depth_mm: 17.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.0<br />bill_depth_mm: 19.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.5<br />bill_depth_mm: 18.4<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.5<br />bill_depth_mm: 19.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.4<br />bill_depth_mm: 17.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.8<br />bill_depth_mm: 20.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 40.9<br />bill_depth_mm: 16.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 54.2<br />bill_depth_mm: 20.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 42.5<br />bill_depth_mm: 16.7<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.0<br />bill_depth_mm: 18.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.7<br />bill_depth_mm: 18.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 47.5<br />bill_depth_mm: 16.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 47.6<br />bill_depth_mm: 18.3<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.0<br />bill_depth_mm: 20.7<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.9<br />bill_depth_mm: 16.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 53.5<br />bill_depth_mm: 19.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.0<br />bill_depth_mm: 19.5<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.2<br />bill_depth_mm: 17.5<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.9<br />bill_depth_mm: 19.1<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.5<br />bill_depth_mm: 17.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.9<br />bill_depth_mm: 17.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.8<br />bill_depth_mm: 18.5<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.1<br />bill_depth_mm: 17.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.0<br />bill_depth_mm: 19.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.5<br />bill_depth_mm: 18.7<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.8<br />bill_depth_mm: 17.3<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 48.1<br />bill_depth_mm: 16.4<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.4<br />bill_depth_mm: 19.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.7<br />bill_depth_mm: 17.3<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.7<br />bill_depth_mm: 19.7<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 42.5<br />bill_depth_mm: 17.3<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.2<br />bill_depth_mm: 18.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.2<br />bill_depth_mm: 16.6<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.3<br />bill_depth_mm: 19.9<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.2<br />bill_depth_mm: 18.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.6<br />bill_depth_mm: 19.4<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.9<br />bill_depth_mm: 19.5<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.8<br />bill_depth_mm: 16.5<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.7<br />bill_depth_mm: 17.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 55.8<br />bill_depth_mm: 19.8<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 43.5<br />bill_depth_mm: 18.1<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.6<br />bill_depth_mm: 18.2<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.8<br />bill_depth_mm: 19.0<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.2<br />bill_depth_mm: 18.7<br />species: Chinstrap<br />species: Chinstrap"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(160,32,240,1)","opacity":0.8,"size":11.3385826771654,"symbol":"square","line":{"width":1.88976377952756,"color":"rgba(160,32,240,1)"}},"hoveron":"points","name":"Chinstrap","legendgroup":"Chinstrap","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[46.1,50,48.7,50,47.6,46.5,45.4,46.7,43.3,46.8,40.9,49,45.5,48.4,45.8,49.3,42,49.2,46.2,48.7,50.2,45.1,46.5,46.3,42.9,46.1,44.5,47.8,48.2,50,47.3,42.8,45.1,59.6,49.1,48.4,42.6,44.4,44,48.7,42.7,49.6,45.3,49.6,50.5,43.6,45.5,50.5,44.9,45.2,46.6,48.5,45.1,50.1,46.5,45,43.8,45.5,43.2,50.4,45.3,46.2,45.7,54.3,45.8,49.8,46.2,49.5,43.5,50.7,47.7,46.4,48.2,46.5,46.4,48.6,47.5,51.1,45.2,45.2,49.1,52.5,47.4,50,44.9,50.8,43.4,51.3,47.5,52.1,47.5,52.2,45.5,49.5,44.5,50.8,49.4,46.9,48.4,51.1,48.5,55.9,47.2,49.1,47.3,46.8,41.7,53.4,43.3,48.1,50.5,49.8,43.5,51.5,46.2,55.1,44.5,48.8,47.2,null,46.8,50.4,45.2,49.9],"y":[13.2,16.3,14.1,15.2,14.5,13.5,14.6,15.3,13.4,15.4,13.7,16.1,13.7,14.6,14.6,15.7,13.5,15.2,14.5,15.1,14.3,14.5,14.5,15.8,13.1,15.1,14.3,15,14.3,15.3,15.3,14.2,14.5,17,14.8,16.3,13.7,17.3,13.6,15.7,13.7,16,13.7,15,15.9,13.9,13.9,15.9,13.3,15.8,14.2,14.1,14.4,15,14.4,15.4,13.9,15,14.5,15.3,13.8,14.9,13.9,15.7,14.2,16.8,14.4,16.2,14.2,15,15,15.6,15.6,14.8,15,16,14.2,16.3,13.8,16.4,14.5,15.6,14.6,15.9,13.8,17.3,14.4,14.2,14,17,15,17.1,14.5,16.1,14.7,15.7,15.8,14.6,14.4,16.5,15,17,15.5,15,13.8,16.1,14.7,15.8,14,15.1,15.2,15.9,15.2,16.3,14.1,16,15.7,16.2,13.7,null,14.3,15.7,14.8,16.1],"text":["bill_length_mm: 46.1<br />bill_depth_mm: 13.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.0<br />bill_depth_mm: 16.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.7<br />bill_depth_mm: 14.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.0<br />bill_depth_mm: 15.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.6<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.5<br />bill_depth_mm: 13.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.4<br />bill_depth_mm: 14.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.7<br />bill_depth_mm: 15.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.3<br />bill_depth_mm: 13.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.8<br />bill_depth_mm: 15.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 40.9<br />bill_depth_mm: 13.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.0<br />bill_depth_mm: 16.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.5<br />bill_depth_mm: 13.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.4<br />bill_depth_mm: 14.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.8<br />bill_depth_mm: 14.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.3<br />bill_depth_mm: 15.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.0<br />bill_depth_mm: 13.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.2<br />bill_depth_mm: 15.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.2<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.7<br />bill_depth_mm: 15.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.2<br />bill_depth_mm: 14.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.1<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.5<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.3<br />bill_depth_mm: 15.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.9<br />bill_depth_mm: 13.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.1<br />bill_depth_mm: 15.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.5<br />bill_depth_mm: 14.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.8<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.2<br />bill_depth_mm: 14.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.0<br />bill_depth_mm: 15.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.3<br />bill_depth_mm: 15.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.8<br />bill_depth_mm: 14.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.1<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 59.6<br />bill_depth_mm: 17.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.1<br />bill_depth_mm: 14.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.4<br />bill_depth_mm: 16.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.6<br />bill_depth_mm: 13.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.4<br />bill_depth_mm: 17.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.0<br />bill_depth_mm: 13.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.7<br />bill_depth_mm: 15.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.7<br />bill_depth_mm: 13.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.6<br />bill_depth_mm: 16.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.3<br />bill_depth_mm: 13.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.6<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.5<br />bill_depth_mm: 15.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.6<br />bill_depth_mm: 13.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.5<br />bill_depth_mm: 13.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.5<br />bill_depth_mm: 15.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.9<br />bill_depth_mm: 13.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.2<br />bill_depth_mm: 15.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.6<br />bill_depth_mm: 14.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.5<br />bill_depth_mm: 14.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.1<br />bill_depth_mm: 14.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.1<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.5<br />bill_depth_mm: 14.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.0<br />bill_depth_mm: 15.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.8<br />bill_depth_mm: 13.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.5<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.2<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.4<br />bill_depth_mm: 15.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.3<br />bill_depth_mm: 13.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.2<br />bill_depth_mm: 14.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.7<br />bill_depth_mm: 13.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 54.3<br />bill_depth_mm: 15.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.8<br />bill_depth_mm: 14.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.8<br />bill_depth_mm: 16.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.2<br />bill_depth_mm: 14.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.5<br />bill_depth_mm: 16.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.5<br />bill_depth_mm: 14.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.7<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.7<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.4<br />bill_depth_mm: 15.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.2<br />bill_depth_mm: 15.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.5<br />bill_depth_mm: 14.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.4<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.6<br />bill_depth_mm: 16.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.5<br />bill_depth_mm: 14.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.1<br />bill_depth_mm: 16.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.2<br />bill_depth_mm: 13.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.2<br />bill_depth_mm: 16.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.1<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.5<br />bill_depth_mm: 15.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.4<br />bill_depth_mm: 14.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.0<br />bill_depth_mm: 15.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.9<br />bill_depth_mm: 13.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.8<br />bill_depth_mm: 17.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.4<br />bill_depth_mm: 14.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.3<br />bill_depth_mm: 14.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.5<br />bill_depth_mm: 14.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.1<br />bill_depth_mm: 17.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.5<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.2<br />bill_depth_mm: 17.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.5<br />bill_depth_mm: 14.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.5<br />bill_depth_mm: 16.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.5<br />bill_depth_mm: 14.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.8<br />bill_depth_mm: 15.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.4<br />bill_depth_mm: 15.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.9<br />bill_depth_mm: 14.6<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.4<br />bill_depth_mm: 14.4<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.1<br />bill_depth_mm: 16.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.5<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 55.9<br />bill_depth_mm: 17.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.2<br />bill_depth_mm: 15.5<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.1<br />bill_depth_mm: 15.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.3<br />bill_depth_mm: 13.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.8<br />bill_depth_mm: 16.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 41.7<br />bill_depth_mm: 14.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 53.4<br />bill_depth_mm: 15.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.3<br />bill_depth_mm: 14.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.1<br />bill_depth_mm: 15.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.5<br />bill_depth_mm: 15.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.8<br />bill_depth_mm: 15.9<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.5<br />bill_depth_mm: 15.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.5<br />bill_depth_mm: 16.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.2<br />bill_depth_mm: 14.1<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 55.1<br />bill_depth_mm: 16.0<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.5<br />bill_depth_mm: 15.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.8<br />bill_depth_mm: 16.2<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.2<br />bill_depth_mm: 13.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm:   NA<br />bill_depth_mm:   NA<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.8<br />bill_depth_mm: 14.3<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.4<br />bill_depth_mm: 15.7<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.2<br />bill_depth_mm: 14.8<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.9<br />bill_depth_mm: 16.1<br />species: Gentoo<br />species: Gentoo"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,139,139,1)","opacity":0.8,"size":11.3385826771654,"symbol":"triangle-up","line":{"width":1.88976377952756,"color":"rgba(0,139,139,1)"}},"hoveron":"points","name":"Gentoo","legendgroup":"Gentoo","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[32.1,32.2759493670886,32.4518987341772,32.6278481012658,32.8037974683544,32.979746835443,33.1556962025316,33.3316455696203,33.5075949367089,33.6835443037975,33.8594936708861,34.0354430379747,34.2113924050633,34.3873417721519,34.5632911392405,34.7392405063291,34.9151898734177,35.0911392405063,35.2670886075949,35.4430379746835,35.6189873417722,35.7949367088608,35.9708860759494,36.146835443038,36.3227848101266,36.4987341772152,36.6746835443038,36.8506329113924,37.026582278481,37.2025316455696,37.3784810126582,37.5544303797468,37.7303797468354,37.9063291139241,38.0822784810127,38.2582278481013,38.4341772151899,38.6101265822785,38.7860759493671,38.9620253164557,39.1379746835443,39.3139240506329,39.4898734177215,39.6658227848101,39.8417721518987,40.0177215189873,40.1936708860759,40.3696202531646,40.5455696202532,40.7215189873418,40.8974683544304,41.073417721519,41.2493670886076,41.4253164556962,41.6012658227848,41.7772151898734,41.953164556962,42.1291139240506,42.3050632911392,42.4810126582278,42.6569620253165,42.8329113924051,43.0088607594937,43.1848101265823,43.3607594936709,43.5367088607595,43.7126582278481,43.8886075949367,44.0645569620253,44.2405063291139,44.4164556962025,44.5924050632911,44.7683544303797,44.9443037974684,45.120253164557,45.2962025316456,45.4721518987342,45.6481012658228,45.8240506329114,46],"y":[17.1497071067625,17.1811728973958,17.2126386880292,17.2441044786625,17.2755702692958,17.3070360599291,17.3385018505624,17.3699676411957,17.401433431829,17.4328992224624,17.4643650130957,17.495830803729,17.5272965943623,17.5587623849956,17.5902281756289,17.6216939662622,17.6531597568956,17.6846255475289,17.7160913381622,17.7475571287955,17.7790229194288,17.8104887100621,17.8419545006954,17.8734202913288,17.9048860819621,17.9363518725954,17.9678176632287,17.999283453862,18.0307492444953,18.0622150351286,18.093680825762,18.1251466163953,18.1566124070286,18.1880781976619,18.2195439882952,18.2510097789285,18.2824755695618,18.3139413601952,18.3454071508285,18.3768729414618,18.4083387320951,18.4398045227284,18.4712703133617,18.502736103995,18.5342018946284,18.5656676852617,18.597133475895,18.6285992665283,18.6600650571616,18.6915308477949,18.7229966384282,18.7544624290616,18.7859282196949,18.8173940103282,18.8488598009615,18.8803255915948,18.9117913822281,18.9432571728615,18.9747229634948,19.0061887541281,19.0376545447614,19.0691203353947,19.100586126028,19.1320519166613,19.1635177072947,19.194983497928,19.2264492885613,19.2579150791946,19.2893808698279,19.3208466604612,19.3523124510945,19.3837782417279,19.4152440323612,19.4467098229945,19.4781756136278,19.5096414042611,19.5411071948944,19.5725729855277,19.6040387761611,19.6355045667944],"text":["bill_length_mm: 32.10000<br />bill_depth_mm: 17.14971<br />species: Adelie<br />species: Adelie","bill_length_mm: 32.27595<br />bill_depth_mm: 17.18117<br />species: Adelie<br />species: Adelie","bill_length_mm: 32.45190<br />bill_depth_mm: 17.21264<br />species: Adelie<br />species: Adelie","bill_length_mm: 32.62785<br />bill_depth_mm: 17.24410<br />species: Adelie<br />species: Adelie","bill_length_mm: 32.80380<br />bill_depth_mm: 17.27557<br />species: Adelie<br />species: Adelie","bill_length_mm: 32.97975<br />bill_depth_mm: 17.30704<br />species: Adelie<br />species: Adelie","bill_length_mm: 33.15570<br />bill_depth_mm: 17.33850<br />species: Adelie<br />species: Adelie","bill_length_mm: 33.33165<br />bill_depth_mm: 17.36997<br />species: Adelie<br />species: Adelie","bill_length_mm: 33.50759<br />bill_depth_mm: 17.40143<br />species: Adelie<br />species: Adelie","bill_length_mm: 33.68354<br />bill_depth_mm: 17.43290<br />species: Adelie<br />species: Adelie","bill_length_mm: 33.85949<br />bill_depth_mm: 17.46437<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.03544<br />bill_depth_mm: 17.49583<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.21139<br />bill_depth_mm: 17.52730<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.38734<br />bill_depth_mm: 17.55876<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.56329<br />bill_depth_mm: 17.59023<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.73924<br />bill_depth_mm: 17.62169<br />species: Adelie<br />species: Adelie","bill_length_mm: 34.91519<br />bill_depth_mm: 17.65316<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.09114<br />bill_depth_mm: 17.68463<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.26709<br />bill_depth_mm: 17.71609<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.44304<br />bill_depth_mm: 17.74756<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.61899<br />bill_depth_mm: 17.77902<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.79494<br />bill_depth_mm: 17.81049<br />species: Adelie<br />species: Adelie","bill_length_mm: 35.97089<br />bill_depth_mm: 17.84195<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.14684<br />bill_depth_mm: 17.87342<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.32278<br />bill_depth_mm: 17.90489<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.49873<br />bill_depth_mm: 17.93635<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.67468<br />bill_depth_mm: 17.96782<br />species: Adelie<br />species: Adelie","bill_length_mm: 36.85063<br />bill_depth_mm: 17.99928<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.02658<br />bill_depth_mm: 18.03075<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.20253<br />bill_depth_mm: 18.06222<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.37848<br />bill_depth_mm: 18.09368<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.55443<br />bill_depth_mm: 18.12515<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.73038<br />bill_depth_mm: 18.15661<br />species: Adelie<br />species: Adelie","bill_length_mm: 37.90633<br />bill_depth_mm: 18.18808<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.08228<br />bill_depth_mm: 18.21954<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.25823<br />bill_depth_mm: 18.25101<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.43418<br />bill_depth_mm: 18.28248<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.61013<br />bill_depth_mm: 18.31394<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.78608<br />bill_depth_mm: 18.34541<br />species: Adelie<br />species: Adelie","bill_length_mm: 38.96203<br />bill_depth_mm: 18.37687<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.13797<br />bill_depth_mm: 18.40834<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.31392<br />bill_depth_mm: 18.43980<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.48987<br />bill_depth_mm: 18.47127<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.66582<br />bill_depth_mm: 18.50274<br />species: Adelie<br />species: Adelie","bill_length_mm: 39.84177<br />bill_depth_mm: 18.53420<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.01772<br />bill_depth_mm: 18.56567<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.19367<br />bill_depth_mm: 18.59713<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.36962<br />bill_depth_mm: 18.62860<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.54557<br />bill_depth_mm: 18.66007<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.72152<br />bill_depth_mm: 18.69153<br />species: Adelie<br />species: Adelie","bill_length_mm: 40.89747<br />bill_depth_mm: 18.72300<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.07342<br />bill_depth_mm: 18.75446<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.24937<br />bill_depth_mm: 18.78593<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.42532<br />bill_depth_mm: 18.81739<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.60127<br />bill_depth_mm: 18.84886<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.77722<br />bill_depth_mm: 18.88033<br />species: Adelie<br />species: Adelie","bill_length_mm: 41.95316<br />bill_depth_mm: 18.91179<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.12911<br />bill_depth_mm: 18.94326<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.30506<br />bill_depth_mm: 18.97472<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.48101<br />bill_depth_mm: 19.00619<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.65696<br />bill_depth_mm: 19.03765<br />species: Adelie<br />species: Adelie","bill_length_mm: 42.83291<br />bill_depth_mm: 19.06912<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.00886<br />bill_depth_mm: 19.10059<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.18481<br />bill_depth_mm: 19.13205<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.36076<br />bill_depth_mm: 19.16352<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.53671<br />bill_depth_mm: 19.19498<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.71266<br />bill_depth_mm: 19.22645<br />species: Adelie<br />species: Adelie","bill_length_mm: 43.88861<br />bill_depth_mm: 19.25792<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.06456<br />bill_depth_mm: 19.28938<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.24051<br />bill_depth_mm: 19.32085<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.41646<br />bill_depth_mm: 19.35231<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.59241<br />bill_depth_mm: 19.38378<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.76835<br />bill_depth_mm: 19.41524<br />species: Adelie<br />species: Adelie","bill_length_mm: 44.94430<br />bill_depth_mm: 19.44671<br />species: Adelie<br />species: Adelie","bill_length_mm: 45.12025<br />bill_depth_mm: 19.47818<br />species: Adelie<br />species: Adelie","bill_length_mm: 45.29620<br />bill_depth_mm: 19.50964<br />species: Adelie<br />species: Adelie","bill_length_mm: 45.47215<br />bill_depth_mm: 19.54111<br />species: Adelie<br />species: Adelie","bill_length_mm: 45.64810<br />bill_depth_mm: 19.57257<br />species: Adelie<br />species: Adelie","bill_length_mm: 45.82405<br />bill_depth_mm: 19.60404<br />species: Adelie<br />species: Adelie","bill_length_mm: 46.00000<br />bill_depth_mm: 19.63550<br />species: Adelie<br />species: Adelie"],"type":"scatter","mode":"lines","name":"Adelie","line":{"width":3.77952755905512,"color":"rgba(255,140,0,1)","dash":"solid"},"hoveron":"points","legendgroup":"Adelie","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[40.9,41.1164556962025,41.3329113924051,41.5493670886076,41.7658227848101,41.9822784810127,42.1987341772152,42.4151898734177,42.6316455696203,42.8481012658228,43.0645569620253,43.2810126582278,43.4974683544304,43.7139240506329,43.9303797468354,44.146835443038,44.3632911392405,44.579746835443,44.7962025316456,45.0126582278481,45.2291139240506,45.4455696202532,45.6620253164557,45.8784810126582,46.0949367088608,46.3113924050633,46.5278481012658,46.7443037974684,46.9607594936709,47.1772151898734,47.393670886076,47.6101265822785,47.826582278481,48.0430379746835,48.2594936708861,48.4759493670886,48.6924050632911,48.9088607594937,49.1253164556962,49.3417721518987,49.5582278481013,49.7746835443038,49.9911392405063,50.2075949367089,50.4240506329114,50.6405063291139,50.8569620253165,51.073417721519,51.2898734177215,51.5063291139241,51.7227848101266,51.9392405063291,52.1556962025316,52.3721518987342,52.5886075949367,52.8050632911392,53.0215189873418,53.2379746835443,53.4544303797468,53.6708860759494,53.8873417721519,54.1037974683544,54.320253164557,54.5367088607595,54.753164556962,54.9696202531646,55.1860759493671,55.4025316455696,55.6189873417722,55.8354430379747,56.0518987341772,56.2683544303797,56.4848101265823,56.7012658227848,56.9177215189873,57.1341772151899,57.3506329113924,57.5670886075949,57.7835443037975,58],"y":[16.6575996308826,16.7056986243062,16.7537976177298,16.8018966111534,16.849995604577,16.8980945980005,16.9461935914241,16.9942925848477,17.0423915782713,17.0904905716948,17.1385895651184,17.186688558542,17.2347875519656,17.2828865453892,17.3309855388127,17.3790845322363,17.4271835256599,17.4752825190835,17.5233815125071,17.5714805059306,17.6195794993542,17.6676784927778,17.7157774862014,17.763876479625,17.8119754730485,17.8600744664721,17.9081734598957,17.9562724533193,18.0043714467429,18.0524704401664,18.10056943359,18.1486684270136,18.1967674204372,18.2448664138608,18.2929654072843,18.3410644007079,18.3891633941315,18.4372623875551,18.4853613809787,18.5334603744022,18.5815593678258,18.6296583612494,18.677757354673,18.7258563480965,18.7739553415201,18.8220543349437,18.8701533283673,18.9182523217909,18.9663513152144,19.014450308638,19.0625493020616,19.1106482954852,19.1587472889088,19.2068462823323,19.2549452757559,19.3030442691795,19.3511432626031,19.3992422560267,19.4473412494502,19.4954402428738,19.5435392362974,19.591638229721,19.6397372231446,19.6878362165681,19.7359352099917,19.7840342034153,19.8321331968389,19.8802321902625,19.928331183686,19.9764301771096,20.0245291705332,20.0726281639568,20.1207271573804,20.1688261508039,20.2169251442275,20.2650241376511,20.3131231310747,20.3612221244983,20.4093211179218,20.4574201113454],"text":["bill_length_mm: 40.90000<br />bill_depth_mm: 16.65760<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 41.11646<br />bill_depth_mm: 16.70570<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 41.33291<br />bill_depth_mm: 16.75380<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 41.54937<br />bill_depth_mm: 16.80190<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 41.76582<br />bill_depth_mm: 16.85000<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 41.98228<br />bill_depth_mm: 16.89809<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 42.19873<br />bill_depth_mm: 16.94619<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 42.41519<br />bill_depth_mm: 16.99429<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 42.63165<br />bill_depth_mm: 17.04239<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 42.84810<br />bill_depth_mm: 17.09049<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 43.06456<br />bill_depth_mm: 17.13859<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 43.28101<br />bill_depth_mm: 17.18669<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 43.49747<br />bill_depth_mm: 17.23479<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 43.71392<br />bill_depth_mm: 17.28289<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 43.93038<br />bill_depth_mm: 17.33099<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 44.14684<br />bill_depth_mm: 17.37908<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 44.36329<br />bill_depth_mm: 17.42718<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 44.57975<br />bill_depth_mm: 17.47528<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 44.79620<br />bill_depth_mm: 17.52338<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.01266<br />bill_depth_mm: 17.57148<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.22911<br />bill_depth_mm: 17.61958<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.44557<br />bill_depth_mm: 17.66768<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.66203<br />bill_depth_mm: 17.71578<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 45.87848<br />bill_depth_mm: 17.76388<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.09494<br />bill_depth_mm: 17.81198<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.31139<br />bill_depth_mm: 17.86007<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.52785<br />bill_depth_mm: 17.90817<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.74430<br />bill_depth_mm: 17.95627<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 46.96076<br />bill_depth_mm: 18.00437<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 47.17722<br />bill_depth_mm: 18.05247<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 47.39367<br />bill_depth_mm: 18.10057<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 47.61013<br />bill_depth_mm: 18.14867<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 47.82658<br />bill_depth_mm: 18.19677<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 48.04304<br />bill_depth_mm: 18.24487<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 48.25949<br />bill_depth_mm: 18.29297<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 48.47595<br />bill_depth_mm: 18.34106<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 48.69241<br />bill_depth_mm: 18.38916<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 48.90886<br />bill_depth_mm: 18.43726<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.12532<br />bill_depth_mm: 18.48536<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.34177<br />bill_depth_mm: 18.53346<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.55823<br />bill_depth_mm: 18.58156<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.77468<br />bill_depth_mm: 18.62966<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 49.99114<br />bill_depth_mm: 18.67776<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.20759<br />bill_depth_mm: 18.72586<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.42405<br />bill_depth_mm: 18.77396<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.64051<br />bill_depth_mm: 18.82205<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 50.85696<br />bill_depth_mm: 18.87015<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.07342<br />bill_depth_mm: 18.91825<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.28987<br />bill_depth_mm: 18.96635<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.50633<br />bill_depth_mm: 19.01445<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.72278<br />bill_depth_mm: 19.06255<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 51.93924<br />bill_depth_mm: 19.11065<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.15570<br />bill_depth_mm: 19.15875<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.37215<br />bill_depth_mm: 19.20685<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.58861<br />bill_depth_mm: 19.25495<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 52.80506<br />bill_depth_mm: 19.30304<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 53.02152<br />bill_depth_mm: 19.35114<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 53.23797<br />bill_depth_mm: 19.39924<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 53.45443<br />bill_depth_mm: 19.44734<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 53.67089<br />bill_depth_mm: 19.49544<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 53.88734<br />bill_depth_mm: 19.54354<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 54.10380<br />bill_depth_mm: 19.59164<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 54.32025<br />bill_depth_mm: 19.63974<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 54.53671<br />bill_depth_mm: 19.68784<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 54.75316<br />bill_depth_mm: 19.73594<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 54.96962<br />bill_depth_mm: 19.78403<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 55.18608<br />bill_depth_mm: 19.83213<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 55.40253<br />bill_depth_mm: 19.88023<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 55.61899<br />bill_depth_mm: 19.92833<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 55.83544<br />bill_depth_mm: 19.97643<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 56.05190<br />bill_depth_mm: 20.02453<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 56.26835<br />bill_depth_mm: 20.07263<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 56.48481<br />bill_depth_mm: 20.12073<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 56.70127<br />bill_depth_mm: 20.16883<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 56.91772<br />bill_depth_mm: 20.21693<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 57.13418<br />bill_depth_mm: 20.26502<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 57.35063<br />bill_depth_mm: 20.31312<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 57.56709<br />bill_depth_mm: 20.36122<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 57.78354<br />bill_depth_mm: 20.40932<br />species: Chinstrap<br />species: Chinstrap","bill_length_mm: 58.00000<br />bill_depth_mm: 20.45742<br />species: Chinstrap<br />species: Chinstrap"],"type":"scatter","mode":"lines","name":"Chinstrap","line":{"width":3.77952755905512,"color":"rgba(160,32,240,1)","dash":"solid"},"hoveron":"points","legendgroup":"Chinstrap","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[40.9,41.1367088607595,41.373417721519,41.6101265822785,41.846835443038,42.0835443037975,42.320253164557,42.5569620253165,42.793670886076,43.0303797468354,43.2670886075949,43.5037974683544,43.7405063291139,43.9772151898734,44.2139240506329,44.4506329113924,44.6873417721519,44.9240506329114,45.1607594936709,45.3974683544304,45.6341772151899,45.8708860759494,46.1075949367089,46.3443037974684,46.5810126582278,46.8177215189873,47.0544303797468,47.2911392405063,47.5278481012658,47.7645569620253,48.0012658227848,48.2379746835443,48.4746835443038,48.7113924050633,48.9481012658228,49.1848101265823,49.4215189873418,49.6582278481013,49.8949367088608,50.1316455696203,50.3683544303797,50.6050632911392,50.8417721518987,51.0784810126582,51.3151898734177,51.5518987341772,51.7886075949367,52.0253164556962,52.2620253164557,52.4987341772152,52.7354430379747,52.9721518987342,53.2088607594937,53.4455696202532,53.6822784810127,53.9189873417722,54.1556962025316,54.3924050632911,54.6291139240506,54.8658227848101,55.1025316455696,55.3392405063291,55.5759493670886,55.8126582278481,56.0493670886076,56.2860759493671,56.5227848101266,56.7594936708861,56.9962025316456,57.2329113924051,57.4696202531646,57.7063291139241,57.9430379746835,58.179746835443,58.4164556962025,58.653164556962,58.8898734177215,59.126582278481,59.3632911392405,59.6],"y":[13.6291419323505,13.6776304028521,13.7261188733536,13.7746073438551,13.8230958143567,13.8715842848582,13.9200727553597,13.9685612258613,14.0170496963628,14.0655381668644,14.1140266373659,14.1625151078674,14.211003578369,14.2594920488705,14.3079805193721,14.3564689898736,14.4049574603751,14.4534459308767,14.5019344013782,14.5504228718798,14.5989113423813,14.6473998128828,14.6958882833844,14.7443767538859,14.7928652243875,14.841353694889,14.8898421653905,14.9383306358921,14.9868191063936,15.0353075768951,15.0837960473967,15.1322845178982,15.1807729883998,15.2292614589013,15.2777499294028,15.3262383999044,15.3747268704059,15.4232153409075,15.471703811409,15.5201922819105,15.5686807524121,15.6171692229136,15.6656576934152,15.7141461639167,15.7626346344182,15.8111231049198,15.8596115754213,15.9081000459229,15.9565885164244,16.0050769869259,16.0535654574275,16.102053927929,16.1505423984306,16.1990308689321,16.2475193394336,16.2960078099352,16.3444962804367,16.3929847509382,16.4414732214398,16.4899616919413,16.5384501624429,16.5869386329444,16.6354271034459,16.6839155739475,16.732404044449,16.7808925149506,16.8293809854521,16.8778694559536,16.9263579264552,16.9748463969567,17.0233348674583,17.0718233379598,17.1203118084613,17.1688002789629,17.2172887494644,17.265777219966,17.3142656904675,17.362754160969,17.4112426314706,17.4597311019721],"text":["bill_length_mm: 40.90000<br />bill_depth_mm: 13.62914<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 41.13671<br />bill_depth_mm: 13.67763<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 41.37342<br />bill_depth_mm: 13.72612<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 41.61013<br />bill_depth_mm: 13.77461<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 41.84684<br />bill_depth_mm: 13.82310<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.08354<br />bill_depth_mm: 13.87158<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.32025<br />bill_depth_mm: 13.92007<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.55696<br />bill_depth_mm: 13.96856<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 42.79367<br />bill_depth_mm: 14.01705<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.03038<br />bill_depth_mm: 14.06554<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.26709<br />bill_depth_mm: 14.11403<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.50380<br />bill_depth_mm: 14.16252<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.74051<br />bill_depth_mm: 14.21100<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 43.97722<br />bill_depth_mm: 14.25949<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.21392<br />bill_depth_mm: 14.30798<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.45063<br />bill_depth_mm: 14.35647<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.68734<br />bill_depth_mm: 14.40496<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 44.92405<br />bill_depth_mm: 14.45345<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.16076<br />bill_depth_mm: 14.50193<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.39747<br />bill_depth_mm: 14.55042<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.63418<br />bill_depth_mm: 14.59891<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 45.87089<br />bill_depth_mm: 14.64740<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.10759<br />bill_depth_mm: 14.69589<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.34430<br />bill_depth_mm: 14.74438<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.58101<br />bill_depth_mm: 14.79287<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 46.81772<br />bill_depth_mm: 14.84135<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.05443<br />bill_depth_mm: 14.88984<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.29114<br />bill_depth_mm: 14.93833<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.52785<br />bill_depth_mm: 14.98682<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 47.76456<br />bill_depth_mm: 15.03531<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.00127<br />bill_depth_mm: 15.08380<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.23797<br />bill_depth_mm: 15.13228<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.47468<br />bill_depth_mm: 15.18077<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.71139<br />bill_depth_mm: 15.22926<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 48.94810<br />bill_depth_mm: 15.27775<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.18481<br />bill_depth_mm: 15.32624<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.42152<br />bill_depth_mm: 15.37473<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.65823<br />bill_depth_mm: 15.42322<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 49.89494<br />bill_depth_mm: 15.47170<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.13165<br />bill_depth_mm: 15.52019<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.36835<br />bill_depth_mm: 15.56868<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.60506<br />bill_depth_mm: 15.61717<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 50.84177<br />bill_depth_mm: 15.66566<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.07848<br />bill_depth_mm: 15.71415<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.31519<br />bill_depth_mm: 15.76263<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.55190<br />bill_depth_mm: 15.81112<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 51.78861<br />bill_depth_mm: 15.85961<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.02532<br />bill_depth_mm: 15.90810<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.26203<br />bill_depth_mm: 15.95659<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.49873<br />bill_depth_mm: 16.00508<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.73544<br />bill_depth_mm: 16.05357<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 52.97215<br />bill_depth_mm: 16.10205<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 53.20886<br />bill_depth_mm: 16.15054<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 53.44557<br />bill_depth_mm: 16.19903<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 53.68228<br />bill_depth_mm: 16.24752<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 53.91899<br />bill_depth_mm: 16.29601<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 54.15570<br />bill_depth_mm: 16.34450<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 54.39241<br />bill_depth_mm: 16.39298<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 54.62911<br />bill_depth_mm: 16.44147<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 54.86582<br />bill_depth_mm: 16.48996<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 55.10253<br />bill_depth_mm: 16.53845<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 55.33924<br />bill_depth_mm: 16.58694<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 55.57595<br />bill_depth_mm: 16.63543<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 55.81266<br />bill_depth_mm: 16.68392<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 56.04937<br />bill_depth_mm: 16.73240<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 56.28608<br />bill_depth_mm: 16.78089<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 56.52278<br />bill_depth_mm: 16.82938<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 56.75949<br />bill_depth_mm: 16.87787<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 56.99620<br />bill_depth_mm: 16.92636<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 57.23291<br />bill_depth_mm: 16.97485<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 57.46962<br />bill_depth_mm: 17.02333<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 57.70633<br />bill_depth_mm: 17.07182<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 57.94304<br />bill_depth_mm: 17.12031<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 58.17975<br />bill_depth_mm: 17.16880<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 58.41646<br />bill_depth_mm: 17.21729<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 58.65316<br />bill_depth_mm: 17.26578<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 58.88987<br />bill_depth_mm: 17.31427<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 59.12658<br />bill_depth_mm: 17.36275<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 59.36329<br />bill_depth_mm: 17.41124<br />species: Gentoo<br />species: Gentoo","bill_length_mm: 59.60000<br />bill_depth_mm: 17.45973<br />species: Gentoo<br />species: Gentoo"],"type":"scatter","mode":"lines","name":"Gentoo","line":{"width":3.77952755905512,"color":"rgba(0,139,139,1)","dash":"solid"},"hoveron":"points","legendgroup":"Gentoo","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":25.9626400996264,"r":9.9626400996264,"b":50.8094645080946,"l":66.7496886674969},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":19.9252801992528},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[30.725,60.975],"tickmode":"array","ticktext":["40","50","60"],"tickvals":[40,50,60],"categoryorder":"array","categoryarray":["40","50","60"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":4.9813200498132,"tickwidth":0.905694554511491,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.905694554511491,"zeroline":false,"anchor":"y","title":{"text":"Comprimento do bico (mm)","font":{"color":"rgba(0,0,0,1)","family":"","size":19.9252801992528}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[12.68,21.92],"tickmode":"array","ticktext":["15.0","17.5","20.0"],"tickvals":[15,17.5,20],"categoryorder":"array","categoryarray":["15.0","17.5","20.0"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":4.9813200498132,"tickwidth":0.905694554511491,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.905694554511491,"zeroline":false,"anchor":"x","title":{"text":"Profundidade do bico (mm)","font":{"color":"rgba(0,0,0,1)","family":"","size":19.9252801992528}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.905694554511491,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":2.57695060844667,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"title":{"text":"Espécies","font":{"color":"rgba(0,0,0,1)","family":"","size":19.9252801992528}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"103c2195ab306":{"x":{},"y":{},"colour":{},"shape":{},"type":"scatter"},"103c26e64b508":{"x":{},"y":{},"colour":{},"shape":{}}},"cur_data":"103c2195ab306","visdat":{"103c2195ab306":["function (y) ","x"],"103c26e64b508":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+]
+
+---
+
+# 14. Gráficos interativos
+
+## plotly
+
+### Exportar
+
+```r
+# pacote
+# install.packages("htmlwidgets")
+library(htmlwidgets)
+
+# export
+htmlwidgets::saveWidget(widget = plot_penguins_scatter_int, 
+                        file = here::here("03_dados", "graficos" ,"plot_penguins_scatter_int.html"))
+```
+
+---
+
+class: clear
+background-image: url(img/esquisse_package.png)
+background-size: 500px
+background-position: 50% 50%
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[gganimate](https://dreamrs.github.io/esquisse/)
+
+---
+
+# 15. Gráficos usando interface
+
+## esquisse
+.pull-left[
+
+```r
+# pacote
+#install.packages("esquisse")
+library(esquisse)
+
+# iniciar
+esquisse::esquisser(iris)
+esquisse::esquisser(palmerpenguins::penguins)
+```
+]
+
+.pull-right[
+![](img/esquisse.gif)&lt;!-- --&gt;
+]
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: inverse, center, middle
+
+# Leitura
+
+---
+
+background-image: url(img/geo_geoprocessing02.png)
+background-size: 800px
+background-position: 50% 40%
+
+# Leitura
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+[Xavier-da-Silva (2009)](http://www.ufrrj.br/lga/tiagomarino/artigos/oqueegeoprocessamento.pdf)
+
+---
+
+class: inverse, center, middle
+
+# Dúvidas?
+
+---
+
+class: clear, middle
+background-image: url(img/gif_frog.gif),url(img/gif_frogs.gif), url(img/package_xaringan.png)
+background-size: 250px, 500px, 130px
+background-position: 35% 50%, 90% 55%, 5% 86%
+
+## Maurício Vancine
+
+&lt;br&gt;&lt;br&gt;
+
+Contatos:
+
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"&gt;&lt;/path&gt;&lt;/svg&gt; [mauricio.vancine@gmail.com]()  
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"&gt;&lt;/path&gt;&lt;/svg&gt; [@mauriciovancine](https://twitter.com/mauriciovancine)  
+&lt;svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"&gt;&lt;/path&gt;&lt;/svg&gt; [mauriciovancine](https://github.com/mauriciovancine)
+&lt;svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#23373b;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"&gt;&lt;/path&gt;&lt;/svg&gt; [mauriciovancine.github.io](https://mauriciovancine.github.io)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+Slides criados via pacote [xaringan](https://github.com/yihui/xaringan) e tema [Metropolis](https://github.com/pat-s/xaringan-metropolis). Animação dos sapos por [@probzz](https://twitter.com/probzz/status/1367613720294170627).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "rainbow",
+"highlightLines": false,
+"highlightSpans": false,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
